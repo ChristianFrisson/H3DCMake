@@ -12,6 +12,7 @@ FIND_PATH( H3DAPI_INCLUDE_DIR NAMES H3D/H3DApi.h
            PATHS $ENV{H3D_ROOT}/include
                  ../include
                  ${module_file_path}/../../include
+                 ${module_file_path}/../../../H3DAPI/include
            DOC "Path in which the file H3D/H3DAPI.h is located." )
 MARK_AS_ADVANCED(H3DAPI_INCLUDE_DIR)
 
