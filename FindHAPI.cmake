@@ -24,6 +24,8 @@ FIND_PATH(HAPI_INCLUDE_DIR NAMES HAPI/HAPI.h
                                  ../../HAPI/include
                                  ${module_file_path}/../../../HAPI/include
                                  ${module_file_path}/../../include
+                                 ../../../support/H3D/HAPI/include
+                                 ${module_file_path}/../../../../support/H3D/HAPI/include
                            DOC "Path in which the file HAPI/HAPI.h is located." )
 MARK_AS_ADVANCED(HAPI_INCLUDE_DIR)
 
@@ -60,6 +62,10 @@ FIND_LIBRARY(HAPI_LIBRARY NAMES ${HAPI_NAME}
                                 ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
                                 $ENV{H3D_ROOT}/../../../${DEFAULT_LIB_INSTALL}
                                 $ENV{H3D_ROOT}/../../${DEFAULT_LIB_INSTALL}
+                                ../../../support/H3D/${DEFAULT_LIB_INSTALL}
+                                ${module_file_path}/../../../../support/H3D/${DEFAULT_LIB_INSTALL}
+                                ../../../${DEFAULT_LIB_INSTALL}
+                                ${module_file_path}/../../../../${DEFAULT_LIB_INSTALL}
                           DOC "Path to ${HAPI_NAME} library." )
 
 FIND_LIBRARY( HAPI_DEBUG_LIBRARY NAMES ${HAPI_NAME}_d
@@ -68,6 +74,10 @@ FIND_LIBRARY( HAPI_DEBUG_LIBRARY NAMES ${HAPI_NAME}_d
                     ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
                     $ENV{H3D_ROOT}/../../../${DEFAULT_LIB_INSTALL}
                     $ENV{H3D_ROOT}/../../${DEFAULT_LIB_INSTALL}
+                    ../../../support/H3D/${DEFAULT_LIB_INSTALL}
+                    ${module_file_path}/../../../../support/H3D/${DEFAULT_LIB_INSTALL}
+                    ../../../${DEFAULT_LIB_INSTALL}
+                    ${module_file_path}/../../../../${DEFAULT_LIB_INSTALL}
                     DOC "Path to ${HAPI_NAME}_d library." )
 MARK_AS_ADVANCED(HAPI_LIBRARY)
 MARK_AS_ADVANCED(HAPI_DEBUG_LIBRARY)
@@ -137,7 +147,6 @@ IF( HAVE_HAPI_LIBRARY AND HAPI_INCLUDE_DIR )
                                PATHS $ENV{H3D_ROOT}/../HAPI/${renderer_name}/include
                                      ../../HAPI/${renderer_name}/include
                                      ${module_file_path}/../../../HAPI/${renderer_name}/include
-                                     ${HAPI_INCLUDE_DIR}/../${renderer_name}/include
                                DOC "Path in which the file HAPI/${renderer_name}.h is located." )
     MARK_AS_ADVANCED(HAPI_${renderer_name}_INCLUDE_DIR)
 

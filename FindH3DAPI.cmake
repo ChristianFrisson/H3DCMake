@@ -13,6 +13,10 @@ FIND_PATH( H3DAPI_INCLUDE_DIR NAMES H3D/H3DApi.h
                  ../include
                  ${module_file_path}/../../include
                  ${module_file_path}/../../../H3DAPI/include
+                 ../../include
+                 ${module_file_path}/../../../include
+                 ../../../support/H3D/H3DAPI/include
+                 ${module_file_path}/../../../../support/H3D/H3DAPI/include
            DOC "Path in which the file H3D/H3DAPI.h is located." )
 MARK_AS_ADVANCED(H3DAPI_INCLUDE_DIR)
 
@@ -47,6 +51,10 @@ FIND_LIBRARY( H3DAPI_LIBRARY NAMES ${H3DAPI_NAME}
                     ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
                     $ENV{H3D_ROOT}/../../../${DEFAULT_LIB_INSTALL}
                     $ENV{H3D_ROOT}/../../${DEFAULT_LIB_INSTALL}
+                    ../../../support/H3D/${DEFAULT_LIB_INSTALL}
+                    ${module_file_path}/../../../../support/H3D/${DEFAULT_LIB_INSTALL}
+                    ../../../${DEFAULT_LIB_INSTALL}
+                    ${module_file_path}/../../../../${DEFAULT_LIB_INSTALL}
               DOC "Path to ${H3DAPI_NAME} library." )
 
 FIND_LIBRARY( H3DAPI_DEBUG_LIBRARY NAMES ${H3DAPI_NAME}_d
@@ -55,6 +63,10 @@ FIND_LIBRARY( H3DAPI_DEBUG_LIBRARY NAMES ${H3DAPI_NAME}_d
                     ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
                     $ENV{H3D_ROOT}/../../../${DEFAULT_LIB_INSTALL}
                     $ENV{H3D_ROOT}/../../${DEFAULT_LIB_INSTALL}
+                    ../../../support/H3D/${DEFAULT_LIB_INSTALL}
+                    ${module_file_path}/../../../../support/H3D/${DEFAULT_LIB_INSTALL}
+                    ../../../${DEFAULT_LIB_INSTALL}
+                    ${module_file_path}/../../../../${DEFAULT_LIB_INSTALL}
               DOC "Path to ${H3DAPI_NAME}_d library." )
 MARK_AS_ADVANCED(H3DAPI_LIBRARY)
 MARK_AS_ADVANCED(H3DAPI_DEBUG_LIBRARY)

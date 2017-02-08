@@ -9,15 +9,25 @@ include( H3DExternalSearchPath )
 GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
+IF( CMAKE_CL_64 )
+  SET( LIB "lib64" )
+ELSE( CMAKE_CL_64 )
+  SET( LIB "lib32" )
+ENDIF( CMAKE_CL_64 )
+
 # Look for the header file.
 FIND_PATH(GLEW_INCLUDE_DIR NAMES GL/glew.h
                            PATHS ${module_include_search_paths}
+                                 ../../../support/H3D/External/include
+                                 ${module_file_path}/../../../../support/H3D/External/include
                            DOC "Path in which the file GL/glew.h is located." )
 MARK_AS_ADVANCED(GLEW_INCLUDE_DIR)
 
 # Look for the library.
 FIND_LIBRARY(GLEW_LIBRARY NAMES GLEW glew32
                                 PATHS ${module_lib_search_paths}
+                                      ../../../support/H3D/External/${LIB}
+                                      ${module_file_path}/../../../../support/H3D/External/${LIB}
                                 DOC "Path to glew32 library." )
 MARK_AS_ADVANCED(GLEW_LIBRARY)
 
@@ -27,6 +37,8 @@ IF( WIN32 AND PREFER_STATIC_LIBRARIES )
   get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
   FIND_LIBRARY( GLEW_STATIC_LIBRARY NAMES glew32s
                                          PATHS ${module_lib_search_paths}
+                                         ../../../support/H3D/External/${LIB}/static
+                                         ${module_file_path}/../../../../support/H3D/External/${LIB}/static
                                     DOC "Path to glew32 static library." )
   MARK_AS_ADVANCED(GLEW_STATIC_LIBRARY)
 ENDIF( WIN32 AND PREFER_STATIC_LIBRARIES )
