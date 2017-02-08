@@ -13,7 +13,7 @@ FIND_PATH( UI_INCLUDE_DIR NAMES H3D/UI/UI.h H3D/UI/UI.cmake
                  ../include
                  ${module_file_path}/../../include
                  ../../../UI/include
-                 ${module_file_path}/../../../UI/include )
+                 ${module_file_path}/../../../UI/include
            DOC "Path in which the file H3D/UI/UI.h is located." )
 MARK_AS_ADVANCED(UI_INCLUDE_DIR)
 
@@ -44,14 +44,16 @@ FIND_LIBRARY( UI_LIBRARY NAMES ${UI_NAME}
               PATHS $ENV{H3D_ROOT}/../UI/${DEFAULT_LIB_INSTALL}
                     ../../${DEFAULT_LIB_INSTALL}
                     ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL} )
+                    ../../../${DEFAULT_LIB_INSTALL}
+                    $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
               DOC "Path to ${UI_NAME} library." )
 
 FIND_LIBRARY( UI_DEBUG_LIBRARY NAMES ${UI_NAME}_d
               PATHS $ENV{H3D_ROOT}/../UI/${DEFAULT_LIB_INSTALL}
                     ../../${DEFAULT_LIB_INSTALL}
                     ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL} )
+                    ../../../${DEFAULT_LIB_INSTALL}
+                    $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
               DOC "Path to ${UI_NAME}_d library." )
 MARK_AS_ADVANCED(UI_LIBRARY)
 MARK_AS_ADVANCED(UI_DEBUG_LIBRARY)
