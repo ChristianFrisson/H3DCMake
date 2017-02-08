@@ -8,7 +8,7 @@
 GET_FILENAME_COMPONENT(module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
 # Look for the header file.
-FIND_PATH( H3DAPI_INCLUDE_DIR NAMES H3D/H3DApi.h
+FIND_PATH( H3DAPI_INCLUDE_DIR NAMES H3D/H3DApi.h H3D/H3DApi.cmake
            PATHS $ENV{H3D_ROOT}/include
                  ../include
                  ${module_file_path}/../../include

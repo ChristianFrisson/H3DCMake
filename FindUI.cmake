@@ -8,7 +8,7 @@
 GET_FILENAME_COMPONENT(module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
 # Look for the header file.
-FIND_PATH( UI_INCLUDE_DIR NAMES H3D/UI/UI.h
+FIND_PATH( UI_INCLUDE_DIR NAMES H3D/UI/UI.h H3D/UI/UI.cmake
            PATHS $ENV{H3D_ROOT}/../UI/include
                  ../include
                  ${module_file_path}/../../include

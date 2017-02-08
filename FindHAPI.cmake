@@ -19,7 +19,7 @@
 GET_FILENAME_COMPONENT(module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
 # Look for the header file.
-FIND_PATH(HAPI_INCLUDE_DIR NAMES HAPI/HAPI.h 
+FIND_PATH(HAPI_INCLUDE_DIR NAMES HAPI/HAPI.h HAPI/HAPI.cmake
                            PATHS $ENV{H3D_ROOT}/../HAPI/include
                                  ../../HAPI/include
                                  ${module_file_path}/../../../HAPI/include

@@ -8,7 +8,7 @@
 GET_FILENAME_COMPONENT(module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
 # Look for the header file.
-FIND_PATH(H3DUTIL_INCLUDE_DIR NAMES H3DUtil/H3DUtil.cmake 
+FIND_PATH(H3DUTIL_INCLUDE_DIR NAMES H3DUtil/H3DUtil.h H3DUtil/H3DUtil.cmake
                               PATHS $ENV{H3D_ROOT}/../H3DUtil/include
                                     ../../H3DUtil/include
                                     ${module_file_path}/../../../H3DUtil/include
