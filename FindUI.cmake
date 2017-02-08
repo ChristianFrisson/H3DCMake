@@ -10,11 +10,13 @@ GET_FILENAME_COMPONENT(module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 # Look for the header file.
 FIND_PATH( UI_INCLUDE_DIR NAMES H3D/UI/UI.h
            PATHS $ENV{H3D_ROOT}/../UI/include
+                 ../include
+                 ${module_file_path}/../../include
                  ../../../UI/include
                  ${module_file_path}/../../../UI/include )
+           DOC "Path in which the file H3D/UI/UI.h is located." )
 MARK_AS_ADVANCED(UI_INCLUDE_DIR)
 
-# Look for the library.
 IF( MSVC )
   SET( H3D_MSVC_VERSION 6 )
   SET( TEMP_MSVC_VERSION 1299 )
@@ -37,15 +39,20 @@ IF( WIN32 )
   ENDIF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 ENDIF( WIN32 )
 
+# Look for the library.
 FIND_LIBRARY( UI_LIBRARY NAMES ${UI_NAME}
               PATHS $ENV{H3D_ROOT}/../UI/${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL}
-                    ${CMAKE_MODULE_PATH}/../../../UI/${DEFAULT_LIB_INSTALL} )
+                    ../../${DEFAULT_LIB_INSTALL}
+                    ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
+                    ../../../${DEFAULT_LIB_INSTALL} )
+              DOC "Path to ${UI_NAME} library." )
 
 FIND_LIBRARY( UI_DEBUG_LIBRARY NAMES ${UI_NAME}_d
               PATHS $ENV{H3D_ROOT}/../UI/${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL}
-                    ${CMAKE_MODULE_PATH}/../../../UI/${DEFAULT_LIB_INSTALL} )
+                    ../../${DEFAULT_LIB_INSTALL}
+                    ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
+                    ../../../${DEFAULT_LIB_INSTALL} )
+              DOC "Path to ${UI_NAME}_d library." )
 MARK_AS_ADVANCED(UI_LIBRARY)
 MARK_AS_ADVANCED(UI_DEBUG_LIBRARY)
 
