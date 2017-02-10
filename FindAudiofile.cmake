@@ -6,41 +6,41 @@
 #  AUDIOFILE_FOUND        - True if AUDIOFILE found.
 
 include( H3DExternalSearchPath )
-GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "libaudiofile" )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "libaudiofile" )
 
 # Look for the header file.
-FIND_PATH( AUDIOFILE_INCLUDE_DIR NAMES audiofile.h
+find_path( AUDIOFILE_INCLUDE_DIR NAMES audiofile.h
            PATHS /usr/local/include
                  ${module_include_search_paths}
            DOC "Path in which the file audiofile.h is located." )
-MARK_AS_ADVANCED(AUDIOFILE_INCLUDE_DIR)
+mark_as_advanced(AUDIOFILE_INCLUDE_DIR)
 
 # Look for the library.
 # Does this work on UNIX systems? (LINUX)
-FIND_LIBRARY( AUDIOFILE_LIBRARY NAMES audiofile
+find_library( AUDIOFILE_LIBRARY NAMES audiofile
               PATHS ${module_lib_search_paths}
               DOC "Path to audiofile library." )
-MARK_AS_ADVANCED(AUDIOFILE_LIBRARY)
+mark_as_advanced(AUDIOFILE_LIBRARY)
 
 # Copy the results to the output variables.
-IF(AUDIOFILE_INCLUDE_DIR AND AUDIOFILE_LIBRARY)
-  SET(AUDIOFILE_FOUND 1)
-  SET(AUDIOFILE_LIBRARIES ${AUDIOFILE_LIBRARY})
-  SET(AUDIOFILE_INCLUDE_DIR ${AUDIOFILE_INCLUDE_DIR})
-ELSE(AUDIOFILE_INCLUDE_DIR AND AUDIOFILE_LIBRARY)
-  SET(AUDIOFILE_FOUND 0)
-  SET(AUDIOFILE_LIBRARIES)
-  SET(AUDIOFILE_INCLUDE_DIR)
-ENDIF(AUDIOFILE_INCLUDE_DIR AND AUDIOFILE_LIBRARY)
+if(AUDIOFILE_INCLUDE_DIR AND AUDIOFILE_LIBRARY)
+  set(AUDIOFILE_FOUND 1)
+  set(AUDIOFILE_LIBRARIES ${AUDIOFILE_LIBRARY})
+  set(AUDIOFILE_INCLUDE_DIR ${AUDIOFILE_INCLUDE_DIR})
+else(AUDIOFILE_INCLUDE_DIR AND AUDIOFILE_LIBRARY)
+  set(AUDIOFILE_FOUND 0)
+  set(AUDIOFILE_LIBRARIES)
+  set(AUDIOFILE_INCLUDE_DIR)
+endif(AUDIOFILE_INCLUDE_DIR AND AUDIOFILE_LIBRARY)
 
 # Report the results.
-IF(NOT AUDIOFILE_FOUND)
-  SET(AUDIOFILE_DIR_MESSAGE
+if(NOT AUDIOFILE_FOUND)
+  set(AUDIOFILE_DIR_MESSAGE
     "AUDIOFILE was not found. Make sure AUDIOFILE_LIBRARY and AUDIOFILE_INCLUDE_DIR are set.")
-  IF(Audiofile_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "${AUDIOFILE_DIR_MESSAGE}")
-  ELSEIF(NOT Audiofile_FIND_QUIETLY)
-    MESSAGE(STATUS "${AUDIOFILE_DIR_MESSAGE}")
-  ENDIF(Audiofile_FIND_REQUIRED)
-ENDIF(NOT AUDIOFILE_FOUND)
+  if(Audiofile_FIND_REQUIRED)
+    message(FATAL_ERROR "${AUDIOFILE_DIR_MESSAGE}")
+  elseif(NOT Audiofile_FIND_QUIETLY)
+    message(STATUS "${AUDIOFILE_DIR_MESSAGE}")
+  endif(Audiofile_FIND_REQUIRED)
+endif(NOT AUDIOFILE_FOUND)

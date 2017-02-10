@@ -5,48 +5,48 @@
 #  NVIDIACG_FOUND        - True if the NVIDIA CG Toolkit is found.
 
 include( H3DExternalSearchPath )
-GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "Cg" "cg" )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "Cg" "cg" )
 
 # Look for the header file.
-FIND_PATH( NVIDIACG_INCLUDE_DIR NAMES cg.h cgGL.h
+find_path( NVIDIACG_INCLUDE_DIR NAMES cg.h cgGL.h
            PATHS /usr/local/include
                  ${module_include_search_paths}
            DOC "Path in which the file cg.h and cgGL.h are located." )
-MARK_AS_ADVANCED(NVIDIACG_INCLUDE_DIR)
+mark_as_advanced(NVIDIACG_INCLUDE_DIR)
 
 # Look for the library cg.
 # Does this work on UNIX systems? (LINUX)
-FIND_LIBRARY( NVIDIACG_LIBRARY NAMES cg Cg
+find_library( NVIDIACG_LIBRARY NAMES cg Cg
               PATHS ${module_lib_search_paths}
               DOC "Path to cg library." )
-MARK_AS_ADVANCED(NVIDIACG_LIBRARY)
+mark_as_advanced(NVIDIACG_LIBRARY)
 
 # Look for the library cg.
 # Does this work on UNIX systems? (LINUX)
-FIND_LIBRARY( NVIDIACG_CGGL_LIBRARY NAMES cgGL CgGL
+find_library( NVIDIACG_CGGL_LIBRARY NAMES cgGL CgGL
               PATHS ${module_lib_search_paths}
               DOC "Path to cgGL library." )
-MARK_AS_ADVANCED(NVIDIACG_CGGL_LIBRARY)
+mark_as_advanced(NVIDIACG_CGGL_LIBRARY)
 
 # Copy the results to the output variables.
-IF(NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY)
-  SET(NVIDIACG_FOUND 1)
-  SET(NVIDIACG_LIBRARIES ${NVIDIACG_LIBRARY} ${NVIDIACG_CGGL_LIBRARY})
-  SET(NVIDIACG_INCLUDE_DIR ${NVIDIACG_INCLUDE_DIR})
-ELSE(NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY)
-  SET(NVIDIACG_FOUND 0)
-  SET(NVIDIACG_LIBRARIES)
-  SET(NVIDIACG_INCLUDE_DIR)
-ENDIF(NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY)
+if(NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY)
+  set(NVIDIACG_FOUND 1)
+  set(NVIDIACG_LIBRARIES ${NVIDIACG_LIBRARY} ${NVIDIACG_CGGL_LIBRARY})
+  set(NVIDIACG_INCLUDE_DIR ${NVIDIACG_INCLUDE_DIR})
+else(NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY)
+  set(NVIDIACG_FOUND 0)
+  set(NVIDIACG_LIBRARIES)
+  set(NVIDIACG_INCLUDE_DIR)
+endif(NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY)
 
 # Report the results.
-IF(NOT NVIDIACG_FOUND)
-  SET(NVIDIACG_DIR_MESSAGE
+if(NOT NVIDIACG_FOUND)
+  set(NVIDIACG_DIR_MESSAGE
     "NVIDIAs CG Toolkit was not found. Make sure NVIDIACG_LIBRARY and NVIDIACG_INCLUDE_DIR are set.")
-  IF(NvidiaCG_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "${NVIDIACG_DIR_MESSAGE}")
-  ELSEIF(NOT NvidiaCG_FIND_QUIETLY)
-    MESSAGE(STATUS "${NVIDIACG_DIR_MESSAGE}")
-  ENDIF(NvidiaCG_FIND_REQUIRED)
-ENDIF(NOT NVIDIACG_FOUND)
+  if(NvidiaCG_FIND_REQUIRED)
+    message(FATAL_ERROR "${NVIDIACG_DIR_MESSAGE}")
+  elseif(NOT NvidiaCG_FIND_QUIETLY)
+    message(STATUS "${NVIDIACG_DIR_MESSAGE}")
+  endif(NvidiaCG_FIND_REQUIRED)
+endif(NOT NVIDIACG_FOUND)

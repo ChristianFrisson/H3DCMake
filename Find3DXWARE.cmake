@@ -5,49 +5,49 @@
 #  3DXWARE_FOUND        - True if 3dxware is found.
 
 include( H3DExternalSearchPath )
-GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "3dconnexion/inc" )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "3dconnexion/inc" )
 
 # Look for the header file.
-FIND_PATH( 3DXWARE_INCLUDE_DIR NAMES si.h siapp.h H3D/xdrvlib.h X11/Xlib.h X11/Xutil.h X11/Xos.h X11/Xatom.h X11/keysym.h
+find_path( 3DXWARE_INCLUDE_DIR NAMES si.h siapp.h H3D/xdrvlib.h X11/Xlib.h X11/Xutil.h X11/Xos.h X11/Xatom.h X11/keysym.h
            PATHS  /usr/local/include 
                  ${module_include_search_paths}
            DOC "Path in which the files si.h, siapp.h, H3D/xdrvlib.h, X11/Xlib.h, X11/Xutil.h, X11/Xos.h, X11/Xatom.h and X11/keysym.h are located." )
-MARK_AS_ADVANCED(3DXWARE_INCLUDE_DIR)
+mark_as_advanced(3DXWARE_INCLUDE_DIR)
 
 # Look for the library siapp.
 # TODO: Does this work on UNIX systems? (LINUX) I strongly doubt it. What are the libraries to find on linux?
-FIND_LIBRARY( 3DXWARE_SIAPP_LIBRARY NAMES siapp
+find_library( 3DXWARE_SIAPP_LIBRARY NAMES siapp
               PATHS ${module_lib_search_paths}
               DOC "Path to siapp library." )
-MARK_AS_ADVANCED(3DXWARE_SIAPP_LIBRARY)
+mark_as_advanced(3DXWARE_SIAPP_LIBRARY)
 
 # Look for the library spwmath.
 # Does this work on UNIX systems? (LINUX)
-FIND_LIBRARY( 3DXWARE_SPWMATH_LIBRARY NAMES spwmath
+find_library( 3DXWARE_SPWMATH_LIBRARY NAMES spwmath
               PATHS ${module_lib_search_paths}
               DOC "Path to spwmath library." )
-MARK_AS_ADVANCED(3DXWARE_SPWMATH_LIBRARY)
+mark_as_advanced(3DXWARE_SPWMATH_LIBRARY)
 
 # Copy the results to the output variables.
-IF(3DXWARE_INCLUDE_DIR AND 3DXWARE_SIAPP_LIBRARY AND 3DXWARE_SPWMATH_LIBRARY)
-  SET(3DXWARE_FOUND 1)
-  SET(3DXWARE_LIBRARIES ${3DXWARE_SIAPP_LIBRARY} ${3DXWARE_SPWMATH_LIBRARY})
-  SET(3DXWARE_INCLUDE_DIR ${3DXWARE_INCLUDE_DIR})
-ELSE(3DXWARE_INCLUDE_DIR AND 3DXWARE_SIAPP_LIBRARY AND 3DXWARE_SPWMATH_LIBRARY)
-  SET(3DXWARE_FOUND 0)
-  SET(3DXWARE_LIBRARIES)
-  SET(3DXWARE_INCLUDE_DIR)
-ENDIF(3DXWARE_INCLUDE_DIR AND 3DXWARE_SIAPP_LIBRARY AND 3DXWARE_SPWMATH_LIBRARY)
+if(3DXWARE_INCLUDE_DIR AND 3DXWARE_SIAPP_LIBRARY AND 3DXWARE_SPWMATH_LIBRARY)
+  set(3DXWARE_FOUND 1)
+  set(3DXWARE_LIBRARIES ${3DXWARE_SIAPP_LIBRARY} ${3DXWARE_SPWMATH_LIBRARY})
+  set(3DXWARE_INCLUDE_DIR ${3DXWARE_INCLUDE_DIR})
+else(3DXWARE_INCLUDE_DIR AND 3DXWARE_SIAPP_LIBRARY AND 3DXWARE_SPWMATH_LIBRARY)
+  set(3DXWARE_FOUND 0)
+  set(3DXWARE_LIBRARIES)
+  set(3DXWARE_INCLUDE_DIR)
+endif(3DXWARE_INCLUDE_DIR AND 3DXWARE_SIAPP_LIBRARY AND 3DXWARE_SPWMATH_LIBRARY)
 
 # Report the results.
-IF(NOT 3DXWARE_FOUND)
-  SET(3DXWARE_DIR_MESSAGE
+if(NOT 3DXWARE_FOUND)
+  set(3DXWARE_DIR_MESSAGE
     "3dxware (www.3dconnexion) was not found. Make sure 3DXWARE_SIAPP_LIBRARY, 3DXWARE_SPWMATH_LIBRARY and 3DXWARE_INCLUDE_DIR are set.")
-  IF(3DXWARE_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "${3DXWARE_DIR_MESSAGE}")
-  ELSEIF(NOT ${3DXWARE_FIND_QUIETLY})
-    MESSAGE(STATUS "${3DXWARE_DIR_MESSAGE}")
-  ENDIF(3DXWARE_FIND_REQUIRED)
-ENDIF(NOT 3DXWARE_FOUND)
+  if(3DXWARE_FIND_REQUIRED)
+    message(FATAL_ERROR "${3DXWARE_DIR_MESSAGE}")
+  elseif(NOT ${3DXWARE_FIND_QUIETLY})
+    message(STATUS "${3DXWARE_DIR_MESSAGE}")
+  endif(3DXWARE_FIND_REQUIRED)
+endif(NOT 3DXWARE_FOUND)
 

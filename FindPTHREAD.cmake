@@ -6,51 +6,51 @@
 #  PTHREAD_FOUND        - True if pthread found.
 
 include( H3DExternalSearchPath )
-GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "pthread" )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "pthread" )
 
 # Look for the header file.
-FIND_PATH(PTHREAD_INCLUDE_DIR NAMES pthread.h
+find_path(PTHREAD_INCLUDE_DIR NAMES pthread.h
                               PATHS ${module_include_search_paths}
                               DOC "Path in which the file pthread.h is located." )
-MARK_AS_ADVANCED(PTHREAD_INCLUDE_DIR)
+mark_as_advanced(PTHREAD_INCLUDE_DIR)
 
 # Look for the library.
-IF(WIN32)
-  FIND_LIBRARY(PTHREAD_LIBRARY NAMES pthreadVC2 
+if(WIN32)
+  find_library(PTHREAD_LIBRARY NAMES pthreadVC2 
                                PATHS ${module_lib_search_paths}
                                DOC "Path to pthreadVC2 library." )
-ELSE(WIN32)
-  FIND_LIBRARY( PTHREAD_LIBRARY NAMES pthread
+else(WIN32)
+  find_library( PTHREAD_LIBRARY NAMES pthread
                 DOC "Path to pthread library." )
-ENDIF(WIN32)
-MARK_AS_ADVANCED(PTHREAD_LIBRARY)
+endif(WIN32)
+mark_as_advanced(PTHREAD_LIBRARY)
 
 # Copy the results to the output variables.
-IF(PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
-  SET(PTHREAD_FOUND 1)
-  SET(PTHREAD_LIBRARIES ${PTHREAD_LIBRARY})
-  IF( NOT WIN32 AND UNIX )
-    SET(PTHREAD_LIBRARIES ${PTHREAD_LIBRARIES} dl)
-  ENDIF( NOT WIN32 AND UNIX )
-  SET(PTHREAD_INCLUDE_DIR ${PTHREAD_INCLUDE_DIR})
-ELSE(PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
-  SET(PTHREAD_FOUND 0)
-  SET(PTHREAD_LIBRARIES)
-  SET(PTHREAD_INCLUDE_DIR)
-ENDIF(PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
+if(PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
+  set(PTHREAD_FOUND 1)
+  set(PTHREAD_LIBRARIES ${PTHREAD_LIBRARY})
+  if( NOT WIN32 AND UNIX )
+    set(PTHREAD_LIBRARIES ${PTHREAD_LIBRARIES} dl)
+  endif( NOT WIN32 AND UNIX )
+  set(PTHREAD_INCLUDE_DIR ${PTHREAD_INCLUDE_DIR})
+else(PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
+  set(PTHREAD_FOUND 0)
+  set(PTHREAD_LIBRARIES)
+  set(PTHREAD_INCLUDE_DIR)
+endif(PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
 
 # Report the results.
-IF(NOT PTHREAD_FOUND)
-  SET(PTHREAD_DIR_MESSAGE
+if(NOT PTHREAD_FOUND)
+  set(PTHREAD_DIR_MESSAGE
     "PTHREAD was not found. Make sure PTHREAD_LIBRARY and PTHREAD_INCLUDE_DIR are set.")
-  IF(PTHREAD_FIND_REQUIRED)
-    SET( PTHREAD_DIR_MESSAGE
+  if(PTHREAD_FIND_REQUIRED)
+    set( PTHREAD_DIR_MESSAGE
          "${PTHREAD_DIR_MESSAGE} Pthread is required to build.")
-    MESSAGE(FATAL_ERROR "${PTHREAD_DIR_MESSAGE}")
-  ELSEIF(NOT PTHREAD_FIND_QUIETLY)
-    SET( PTHREAD_DIR_MESSAGE
+    message(FATAL_ERROR "${PTHREAD_DIR_MESSAGE}")
+  elseif(NOT PTHREAD_FIND_QUIETLY)
+    set( PTHREAD_DIR_MESSAGE
          "${PTHREAD_DIR_MESSAGE} Threading support will be disabled without PTHREAD.")
-    MESSAGE(STATUS "${PTHREAD_DIR_MESSAGE}")
-  ENDIF(PTHREAD_FIND_REQUIRED)
-ENDIF(NOT PTHREAD_FOUND)
+    message(STATUS "${PTHREAD_DIR_MESSAGE}")
+  endif(PTHREAD_FIND_REQUIRED)
+endif(NOT PTHREAD_FOUND)

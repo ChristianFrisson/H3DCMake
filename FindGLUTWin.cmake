@@ -4,53 +4,53 @@
 #  GLUT_LIBRARIES    - List of libraries when using GLUT.
 #  GLUT_FOUND        - True if GLUT found.
 
-IF( WIN32 )
-  SET(GLUT_FIND_QUIETLY 1)
-  FIND_PACKAGE(GLUT)
-ENDIF( WIN32 )
+if( WIN32 )
+  set(GLUT_FIND_QUIETLY 1)
+  find_package(GLUT)
+endif( WIN32 )
 
 include( H3DExternalSearchPath )
-GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
 
 # Look for the header file.
-FIND_PATH( GLUT_INCLUDE_DIR NAMES GL/glut.h
+find_path( GLUT_INCLUDE_DIR NAMES GL/glut.h
            PATHS ${module_include_search_paths}
            DOC "Path in which the file GL/glut.h is located." )
-MARK_AS_ADVANCED(GLUT_INCLUDE_DIR)
+mark_as_advanced(GLUT_INCLUDE_DIR)
 
-SET( GLUT_LIBRARY_NAMES freeglut glut32 )
-IF( WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
-SET( GLUT_LIBRARY_NAMES freeglut_static )
-ENDIF( WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
+set( GLUT_LIBRARY_NAMES freeglut glut32 )
+if( WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
+set( GLUT_LIBRARY_NAMES freeglut_static )
+endif( WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
 
 # Look for the library.
-FIND_LIBRARY( GLUT_LIBRARY NAMES  ${GLUT_LIBRARY_NAMES}
+find_library( GLUT_LIBRARY NAMES  ${GLUT_LIBRARY_NAMES}
               PATHS ${module_lib_search_paths}
               DOC "Path to glut32 library." )
-MARK_AS_ADVANCED(GLUT_LIBRARY)
+mark_as_advanced(GLUT_LIBRARY)
 
 # Copy the results to the output variables.
-IF(GLUT_INCLUDE_DIR AND GLUT_LIBRARY)
-  SET(GLUT_FOUND 1)
-  IF( WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
-    SET( FREEGLUT_STATIC 1 )
-  ENDIF( WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
-  SET(GLUT_LIBRARIES ${GLUT_LIBRARY} )
-  SET(GLUT_INCLUDE_DIR ${GLUT_INCLUDE_DIR})
-ELSE(GLUT_INCLUDE_DIR AND GLUT_LIBRARY)
-  SET(GLUT_FOUND 0)
-  SET(GLUT_LIBRARIES)
-  SET(GLUT_INCLUDE_DIR)
-ENDIF(GLUT_INCLUDE_DIR AND GLUT_LIBRARY)
+if(GLUT_INCLUDE_DIR AND GLUT_LIBRARY)
+  set(GLUT_FOUND 1)
+  if( WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
+    set( FREEGLUT_STATIC 1 )
+  endif( WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
+  set(GLUT_LIBRARIES ${GLUT_LIBRARY} )
+  set(GLUT_INCLUDE_DIR ${GLUT_INCLUDE_DIR})
+else(GLUT_INCLUDE_DIR AND GLUT_LIBRARY)
+  set(GLUT_FOUND 0)
+  set(GLUT_LIBRARIES)
+  set(GLUT_INCLUDE_DIR)
+endif(GLUT_INCLUDE_DIR AND GLUT_LIBRARY)
 
 # Report the results.
-IF(NOT GLUT_FOUND)
-  SET(GLUT_DIR_MESSAGE
+if(NOT GLUT_FOUND)
+  set(GLUT_DIR_MESSAGE
     "GLUT was not found. Make sure GLUT_LIBRARY and GLUT_INCLUDE_DIR are set to where you have your glut header and lib files.")
-  IF(GLUTWin_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "${GLUT_DIR_MESSAGE}")
-  ELSEIF(NOT GLUTWin_FIND_QUIETLY)
-    MESSAGE(STATUS "${GLUT_DIR_MESSAGE}")
-  ENDIF(GLUTWin_FIND_REQUIRED)
-ENDIF(NOT GLUT_FOUND)
+  if(GLUTWin_FIND_REQUIRED)
+      message(FATAL_ERROR "${GLUT_DIR_MESSAGE}")
+  elseif(NOT GLUTWin_FIND_QUIETLY)
+    message(STATUS "${GLUT_DIR_MESSAGE}")
+  endif(GLUTWin_FIND_REQUIRED)
+endif(NOT GLUT_FOUND)

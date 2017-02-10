@@ -5,28 +5,28 @@
 #  FREETYPE_INCLUDE_DIRS -  where to find FREETYPE.h, etc.
 #  FREETYPE_LIBRARIES    - List of libraries when using FREETYPE.
 
-FIND_PROGRAM(FREETYPE_CONFIG_EXECUTABLE freetype-config
+find_program(FREETYPE_CONFIG_EXECUTABLE freetype-config
       ONLY_CMAKE_FIND_ROOT_PATH
       DOC "Path to freetype_config executable. Used to find freetype, not used on a standard Windows installation of H3DAPI.")
-MARK_AS_ADVANCED( FREETYPE_CONFIG_EXECUTABLE )
+mark_as_advanced( FREETYPE_CONFIG_EXECUTABLE )
 
-IF(H3DFreetype_FIND_REQUIRED)
-  IF( WIN32 )
-    FIND_PACKAGE(Freetype QUIET REQUIRED)
-  ELSE( WIN32 )
-    FIND_PACKAGE(Freetype REQUIRED)
-  ENDIF( WIN32 )
-ELSE(H3DFreetype_FIND_REQUIRED)
-  IF( WIN32 )
-    FIND_PACKAGE(Freetype QUIET)
-  ELSE( WIN32 )
-    FIND_PACKAGE(Freetype)
-  ENDIF( WIN32 )
-ENDIF(H3DFreetype_FIND_REQUIRED)
+if(H3DFreetype_FIND_REQUIRED)
+  if( WIN32 )
+    find_package(Freetype QUIET REQUIRED)
+  else( WIN32 )
+    find_package(Freetype REQUIRED)
+  endif( WIN32 )
+else(H3DFreetype_FIND_REQUIRED)
+  if( WIN32 )
+    find_package(Freetype QUIET)
+  else( WIN32 )
+    find_package(Freetype)
+  endif( WIN32 )
+endif(H3DFreetype_FIND_REQUIRED)
 
-IF( NOT FREETYPE_FOUND )
+if( NOT FREETYPE_FOUND )
 
-  IF(FREETYPE_CONFIG_EXECUTABLE)
+  if(FREETYPE_CONFIG_EXECUTABLE)
 
     # run the freetype-config program to get cflags
     EXECUTE_PROCESS(
@@ -36,68 +36,68 @@ IF( NOT FREETYPE_FOUND )
           ERROR_QUIET
           )
 
-    IF(RET EQUAL 0)
-      IF( ${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 6 )
-        STRING(STRIP "${FREETYPE_CFLAGS}" FREETYPE_CFLAGS)
-      ENDIF( ${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 6 )
+    if(RET EQUAL 0)
+      if( ${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 6 )
+        string(STRIP "${FREETYPE_CFLAGS}" FREETYPE_CFLAGS)
+      endif( ${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 6 )
       SEPARATE_ARGUMENTS(FREETYPE_CFLAGS)
 
       # parse definitions from cxxflags; drop -D* from CFLAGS
-      STRING(REGEX REPLACE "-D[^;]+;" ""
+      string(REGEX REPLACE "-D[^;]+;" ""
              FREETYPE_CFLAGS "${FREETYPE_CFLAGS}")
 
       # parse include dirs from cxxflags; drop -I prefix
-      STRING(REGEX MATCHALL "-I[^;]+"
+      string(REGEX MATCHALL "-I[^;]+"
              FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_CFLAGS}")
-      STRING(REGEX REPLACE "-I[^;]+;" ""
+      string(REGEX REPLACE "-I[^;]+;" ""
              FREETYPE_CFLAGS "${FREETYPE_CFLAGS}")
-      STRING(REPLACE "-I" ""
+      string(REPLACE "-I" ""
              FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_INCLUDE_DIR_ft2build}")  
-      STRING(REPLACE "\n" ""
+      string(REPLACE "\n" ""
              FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_INCLUDE_DIR_ft2build}")  
-      SET( FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_INCLUDE_DIR_ft2build}" )  
+      set( FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_INCLUDE_DIR_ft2build}" )  
 
-    ENDIF(RET EQUAL 0)
+    endif(RET EQUAL 0)
 
-  ENDIF(FREETYPE_CONFIG_EXECUTABLE)
+  endif(FREETYPE_CONFIG_EXECUTABLE)
 
   include( H3DExternalSearchPath )
-  GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-  get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "freetype/include" "static" )
+  get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+  getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "freetype/include" "static" )
 
-  IF( NOT FREETYPE_INCLUDE_DIR_ft2build )
+  if( NOT FREETYPE_INCLUDE_DIR_ft2build )
     # Look for the header file.
-    FIND_PATH(FREETYPE_INCLUDE_DIR_ft2build NAMES freetype/freetype.h
+    find_path(FREETYPE_INCLUDE_DIR_ft2build NAMES freetype/freetype.h
                                 PATHS ${module_include_search_paths}
                                 DOC "Path in which the file freetype/freetype.h is located." )
-    MARK_AS_ADVANCED(FREETYPE_INCLUDE_DIR_ft2build)
-  ENDIF( NOT FREETYPE_INCLUDE_DIR_ft2build)
+    mark_as_advanced(FREETYPE_INCLUDE_DIR_ft2build)
+  endif( NOT FREETYPE_INCLUDE_DIR_ft2build)
 
   # Look for the library.
-  FIND_LIBRARY(FREETYPE_LIBRARY NAMES freetype freetype2311 freetype2312MT freetype2312 freetype235
+  find_library(FREETYPE_LIBRARY NAMES freetype freetype2311 freetype2312MT freetype2312 freetype235
                                 PATHS ${module_lib_search_paths}
                                 DOC "Path to freetype library." )
-  MARK_AS_ADVANCED(FREETYPE_LIBRARY)
+  mark_as_advanced(FREETYPE_LIBRARY)
 
   # Copy the results to the output variables.
-  IF(FREETYPE_INCLUDE_DIR_ft2build AND FREETYPE_LIBRARY)
-    SET(FREETYPE_FOUND 1)
-    SET(FREETYPE_LIBRARIES ${FREETYPE_LIBRARY})
-    SET(FREETYPE_INCLUDE_DIRS ${FREETYPE_INCLUDE_DIR_ft2build})
-  ELSE(FREETYPE_INCLUDE_DIR_ft2build AND FREETYPE_LIBRARY)
-    SET(FREETYPE_FOUND 0)
-    SET(FREETYPE_LIBRARIES)
-    SET(FREETYPE_INCLUDE_DIRS)
-  ENDIF(FREETYPE_INCLUDE_DIR_ft2build AND FREETYPE_LIBRARY)
-ENDIF( NOT FREETYPE_FOUND )
+  if(FREETYPE_INCLUDE_DIR_ft2build AND FREETYPE_LIBRARY)
+    set(FREETYPE_FOUND 1)
+    set(FREETYPE_LIBRARIES ${FREETYPE_LIBRARY})
+    set(FREETYPE_INCLUDE_DIRS ${FREETYPE_INCLUDE_DIR_ft2build})
+  else(FREETYPE_INCLUDE_DIR_ft2build AND FREETYPE_LIBRARY)
+    set(FREETYPE_FOUND 0)
+    set(FREETYPE_LIBRARIES)
+    set(FREETYPE_INCLUDE_DIRS)
+  endif(FREETYPE_INCLUDE_DIR_ft2build AND FREETYPE_LIBRARY)
+endif( NOT FREETYPE_FOUND )
 
 # Report the results.
-IF(NOT FREETYPE_FOUND)
-  SET(FREETYPE_DIR_MESSAGE
+if(NOT FREETYPE_FOUND)
+  set(FREETYPE_DIR_MESSAGE
     "FREETYPE was not found. Make sure FREETYPE_-named variables are set to the include directories and library files required.")
-  IF(FreeType_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "${FREETYPE_DIR_MESSAGE}")
-  ELSEIF(NOT FreeType_FIND_QUIETLY)
-    MESSAGE(STATUS "${FREETYPE_DIR_MESSAGE}")
-  ENDIF(FreeType_FIND_REQUIRED)
-ENDIF(NOT FREETYPE_FOUND)
+  if(FreeType_FIND_REQUIRED)
+    message(FATAL_ERROR "${FREETYPE_DIR_MESSAGE}")
+  elseif(NOT FreeType_FIND_QUIETLY)
+    message(STATUS "${FREETYPE_DIR_MESSAGE}")
+  endif(FreeType_FIND_REQUIRED)
+endif(NOT FREETYPE_FOUND)

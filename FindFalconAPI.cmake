@@ -5,62 +5,62 @@
 #  FALCONAPI_LIBRARIES    - List of libraries when using FalconAPI.
 #  FALCONAPI_FOUND        - True if FalconAPI found.
 
-SET( program_files_path "" )
-IF( CMAKE_CL_64 )
-  SET( program_files_path "$ENV{ProgramW6432}" )
-ELSE( CMAKE_CL_64 )
-  SET( program_files_path "$ENV{ProgramFiles}" )
-ENDIF( CMAKE_CL_64 )
+set( program_files_path "" )
+if( CMAKE_CL_64 )
+  set( program_files_path "$ENV{ProgramW6432}" )
+else( CMAKE_CL_64 )
+  set( program_files_path "$ENV{ProgramFiles}" )
+endif( CMAKE_CL_64 )
 
-SET( FALCON_INCLUDE_SEARCH_PATH "" )
-SET( FALCON_LIB_SEARCH_PATH "" )
-IF( WIN32 )
-  IF( NOT CMAKE_CL_64 )
-    SET( FALCON_INCLUDE_SEARCH_PATH $ENV{NOVINT_FALCON_SUPPORT}/include
+set( FALCON_INCLUDE_SEARCH_PATH "" )
+set( FALCON_LIB_SEARCH_PATH "" )
+if( WIN32 )
+  if( NOT CMAKE_CL_64 )
+    set( FALCON_INCLUDE_SEARCH_PATH $ENV{NOVINT_FALCON_SUPPORT}/include
                                     ${program_files_path}/Novint/Falcon/HDAL/include
                                     ${program_files_path}/Novint/HDAL_SDK_2.1.3/include
                                     $ENV{NOVINT_DEVICE_SUPPORT}/include )
-    SET( FALCON_LIB_SEARCH_PATH $ENV{NOVINT_FALCON_SUPPORT}/lib
+    set( FALCON_LIB_SEARCH_PATH $ENV{NOVINT_FALCON_SUPPORT}/lib
                                 ${program_files_path}/Novint/Falcon/HDAL/lib
                                 ${program_files_path}/Novint/HDAL_SDK_2.1.3/lib
                                 $ENV{NOVINT_DEVICE_SUPPORT}/lib )
-  ENDIF( NOT CMAKE_CL_64 )
-ENDIF( WIN32 )
+  endif( NOT CMAKE_CL_64 )
+endif( WIN32 )
 
 # Look for the header file.
-FIND_PATH(FALCONAPI_INCLUDE_DIR NAMES hdl/hdl.h 
+find_path(FALCONAPI_INCLUDE_DIR NAMES hdl/hdl.h 
                                 PATHS ${FALCON_INCLUDE_SEARCH_PATH}
                                 DOC "Path in which the file hdl/hdl.h is located. File is part of HDAL SDK." )
 
-MARK_AS_ADVANCED(FALCONAPI_INCLUDE_DIR)
+mark_as_advanced(FALCONAPI_INCLUDE_DIR)
 
 # Look for the library.
-FIND_LIBRARY(FALCONAPI_HDL_LIBRARY NAMES hdl 
+find_library(FALCONAPI_HDL_LIBRARY NAMES hdl 
                         PATHS ${FALCON_LIB_SEARCH_PATH}
                         DOC "Path to hdl library. Library is part of HDAL SDK." )
-MARK_AS_ADVANCED(FALCONAPI_HDL_LIBRARY)
+mark_as_advanced(FALCONAPI_HDL_LIBRARY)
 
 # Copy the results to the output variables.
-IF(FALCONAPI_INCLUDE_DIR AND FALCONAPI_HDL_LIBRARY)
-  SET(FALCONAPI_FOUND 1)
-  SET(FALCONAPI_LIBRARIES ${FALCONAPI_HDL_LIBRARY} )
-  SET(FALCONAPI_INCLUDE_DIR ${FALCONAPI_INCLUDE_DIR})
-ELSE(FALCONAPI_INCLUDE_DIR AND FALCONAPI_HDL_LIBRARY)
-  SET(FALCONAPI_FOUND 0)
-  SET(FALCONAPI_LIBRARIES)
-  SET(FALCONAPI_INCLUDE_DIR)
-ENDIF(FALCONAPI_INCLUDE_DIR  AND FALCONAPI_HDL_LIBRARY)
+if(FALCONAPI_INCLUDE_DIR AND FALCONAPI_HDL_LIBRARY)
+  set(FALCONAPI_FOUND 1)
+  set(FALCONAPI_LIBRARIES ${FALCONAPI_HDL_LIBRARY} )
+  set(FALCONAPI_INCLUDE_DIR ${FALCONAPI_INCLUDE_DIR})
+else(FALCONAPI_INCLUDE_DIR AND FALCONAPI_HDL_LIBRARY)
+  set(FALCONAPI_FOUND 0)
+  set(FALCONAPI_LIBRARIES)
+  set(FALCONAPI_INCLUDE_DIR)
+endif(FALCONAPI_INCLUDE_DIR  AND FALCONAPI_HDL_LIBRARY)
 
 # Report the results.
-IF(NOT FALCONAPI_FOUND)
-  SET(FALCONAPI_DIR_MESSAGE
+if(NOT FALCONAPI_FOUND)
+  set(FALCONAPI_DIR_MESSAGE
     "The Novint Falcon API(HDAL SDK) was not found. Make sure to set FALCONAPI_HDL_LIBRARY and FALCONAPI_INCLUDE_DIR. If you do not have it you will not be able to use the Novint Falcon Haptics device.")
-  IF( CMAKE_CL_64 )
-    SET( FALCONAPI_DIR_MESSAGE "${FALCONAPI_DIR_MESSAGE} NOVINT HAS NOT RELEASED A 64 BIT VERSION OF HDAL SDK YET." )
-  ENDIF( CMAKE_CL_64 )
-  IF(FalconAPI_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "${FALCONAPI_DIR_MESSAGE}")
-  ELSEIF(NOT FalconAPI_FIND_QUIETLY)
-    MESSAGE(STATUS "${FALCONAPI_DIR_MESSAGE}")
-  ENDIF(FalconAPI_FIND_REQUIRED)
-ENDIF(NOT FALCONAPI_FOUND)
+  if( CMAKE_CL_64 )
+    set( FALCONAPI_DIR_MESSAGE "${FALCONAPI_DIR_MESSAGE} NOVINT HAS NOT RELEASED A 64 BIT VERSION OF HDAL SDK YET." )
+  endif( CMAKE_CL_64 )
+  if(FalconAPI_FIND_REQUIRED)
+    message(FATAL_ERROR "${FALCONAPI_DIR_MESSAGE}")
+  elseif(NOT FalconAPI_FIND_QUIETLY)
+    message(STATUS "${FALCONAPI_DIR_MESSAGE}")
+  endif(FalconAPI_FIND_REQUIRED)
+endif(NOT FALCONAPI_FOUND)

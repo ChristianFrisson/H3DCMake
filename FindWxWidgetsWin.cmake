@@ -6,39 +6,39 @@
 #  wxWidgets_FOUND        - True if WxWidgets found.
 
 include( H3DExternalSearchPath )
-GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
-SET( wxWidgets_LIBRARY_SEARCH_PATHS "" )
-SET( wxWidgets_INCLUDE_SEARCH_PATHS "" )
-IF( MSVC11 )
-  get_external_search_paths_h3d( wxWidgets_INCLUDE_SEARCH_PATHS wxWidgets_LIBRARY_SEARCH_PATHS ${module_file_path} "vc11" )      
-ELSE( MSVC11 )
-  get_external_search_paths_h3d( wxWidgets_INCLUDE_SEARCH_PATHS wxWidgets_LIBRARY_SEARCH_PATHS ${module_file_path} "chai3d/include" "static" )      
-ENDIF( MSVC11 )
+set( wxWidgets_LIBRARY_SEARCH_PATHS "" )
+set( wxWidgets_INCLUDE_SEARCH_PATHS "" )
+if( MSVC11 )
+  getExternalSearchPathsH3D( wxWidgets_INCLUDE_SEARCH_PATHS wxWidgets_LIBRARY_SEARCH_PATHS ${module_file_path} "vc11" )      
+else( MSVC11 )
+  getExternalSearchPathsH3D( wxWidgets_INCLUDE_SEARCH_PATHS wxWidgets_LIBRARY_SEARCH_PATHS ${module_file_path} "chai3d/include" "static" )      
+endif( MSVC11 )
 
 
 
 # Look for the header file.
-FIND_PATH(wxWidgets_INCLUDE_DIR NAMES wx/wx.h 
+find_path(wxWidgets_INCLUDE_DIR NAMES wx/wx.h 
                                 PATHS ${wxWidgets_INCLUDE_SEARCH_PATHS}
                                 DOC "Path in which the file wx/wx.h is located." )
-MARK_AS_ADVANCED(wxWidgets_INCLUDE_DIR)
+mark_as_advanced(wxWidgets_INCLUDE_DIR)
 
-IF(wxWidgets_USE_LIBS)
-  SET(wxlibs ${wxWidgets_USE_LIBS})
-ELSE(wxWidgets_USE_LIBS)
-  SET( wxlibs core adv aui html media xrc gl qa richtext )
-ENDIF(wxWidgets_USE_LIBS)
+if(wxWidgets_USE_LIBS)
+  set(wxlibs ${wxWidgets_USE_LIBS})
+else(wxWidgets_USE_LIBS)
+  set( wxlibs core adv aui html media xrc gl qa richtext )
+endif(wxWidgets_USE_LIBS)
 
-SET( wxWidgets_Win_DEBUG_LIBS "YES" CACHE BOOL "If set to YES debug libraries will be included." )
-MARK_AS_ADVANCED( wxWidgets_Win_DEBUG_LIBS )
-IF( wxWidgets_Win_DEBUG_LIBS )
-  SET( _DBG "d" )
-ELSE( wxWidgets_Win_DEBUG_LIBS )
-  SET( _DBG "" )
-ENDIF( wxWidgets_Win_DEBUG_LIBS )
-FOREACH(WXLIB ${wxlibs} )
-      FIND_LIBRARY(wxWidgets_${WXLIB}_LIBRARY
+set( wxWidgets_Win_DEBUG_LIBS "YES" CACHE BOOL "If set to YES debug libraries will be included." )
+mark_as_advanced( wxWidgets_Win_DEBUG_LIBS )
+if( wxWidgets_Win_DEBUG_LIBS )
+  set( _DBG "d" )
+else( wxWidgets_Win_DEBUG_LIBS )
+  set( _DBG "" )
+endif( wxWidgets_Win_DEBUG_LIBS )
+foreach(WXLIB ${wxlibs} )
+      find_library(wxWidgets_${WXLIB}_LIBRARY
         NAMES
         wxmsw30u_${WXLIB}
         wxbase30u_${WXLIB}
@@ -49,10 +49,10 @@ FOREACH(WXLIB ${wxlibs} )
         PATHS ${wxWidgets_LIBRARY_SEARCH_PATHS}
         DOC "Path to wx ${WXLIB} library."
         )
-        MARK_AS_ADVANCED(wxWidgets_${WXLIB}_LIBRARY)
-  IF( wxWidgets_Win_DEBUG_LIBS )
+        mark_as_advanced(wxWidgets_${WXLIB}_LIBRARY)
+  if( wxWidgets_Win_DEBUG_LIBS )
       # The _DBG variable is not used for 2.8 since the libraries in External works for both debug and release.
-      FIND_LIBRARY(wxWidgets_${WXLIB}${_DBG}_LIBRARY
+      find_library(wxWidgets_${WXLIB}${_DBG}_LIBRARY
       NAMES
       wxmsw30u${_DBG}_${WXLIB}
       wxbase30u${_DBG}_${WXLIB}
@@ -63,63 +63,63 @@ FOREACH(WXLIB ${wxlibs} )
       PATHS ${wxWidgets_LIBRARY_SEARCH_PATHS}
       DOC "Path to wx ${WXLIB}d library."
       )
-      MARK_AS_ADVANCED(wxWidgets_${WXLIB}${_DBG}_LIBRARY)
-  ENDIF( wxWidgets_Win_DEBUG_LIBS )
-ENDFOREACH( WXLIB )
+      mark_as_advanced(wxWidgets_${WXLIB}${_DBG}_LIBRARY)
+  endif( wxWidgets_Win_DEBUG_LIBS )
+endforeach( WXLIB )
 
 
-FIND_LIBRARY(wxWidgets_base_LIBRARY NAMES wxbase30u wxbase29u wxbase28 
+find_library(wxWidgets_base_LIBRARY NAMES wxbase30u wxbase29u wxbase28 
                                       PATHS ${wxWidgets_LIBRARY_SEARCH_PATHS}
                                       DOC "Path to wx base library." )
-MARK_AS_ADVANCED(wxWidgets_base_LIBRARY)
+mark_as_advanced(wxWidgets_base_LIBRARY)
 
-IF( wxWidgets_Win_DEBUG_LIBS )
+if( wxWidgets_Win_DEBUG_LIBS )
   # The _DBG variable is not used for 2.8 since the libraries in External works for both debug and release.
-  FIND_LIBRARY(wxWidgets_base${_DBG}_LIBRARY NAMES wxbase30u${_DBG} wxbase29u${_DBG} wxbase28
+  find_library(wxWidgets_base${_DBG}_LIBRARY NAMES wxbase30u${_DBG} wxbase29u${_DBG} wxbase28
                       PATHS ${wxWidgets_LIBRARY_SEARCH_PATHS}
                       DOC "Path to wx base library." )
-  MARK_AS_ADVANCED(wxWidgets_base${_DBG}_LIBRARY)
-ENDIF( wxWidgets_Win_DEBUG_LIBS )
+  mark_as_advanced(wxWidgets_base${_DBG}_LIBRARY)
+endif( wxWidgets_Win_DEBUG_LIBS )
 
-IF( wxWidgets_base_LIBRARY )
-  SET( wxWidgets_FOUND 1 )
-ELSE( wxWidgets_base_LIBRARY )
-  SET( wxWidgets_FOUND 0 )
-ENDIF( wxWidgets_base_LIBRARY )
+if( wxWidgets_base_LIBRARY )
+  set( wxWidgets_FOUND 1 )
+else( wxWidgets_base_LIBRARY )
+  set( wxWidgets_FOUND 0 )
+endif( wxWidgets_base_LIBRARY )
 
-FOREACH(WXLIB ${wxlibs} )
-  IF( NOT wxWidgets_${WXLIB}_LIBRARY )
-    SET( wxWidgets_FOUND 0 )
-  ENDIF( NOT wxWidgets_${WXLIB}_LIBRARY )
-IF( wxWidgets_Win_DEBUG_LIBS )
-  IF( NOT wxWidgets_${WXLIB}${_DBG}_LIBRARY )
-    SET( wxWidgets_FOUND 0 )
-  ENDIF( NOT wxWidgets_${WXLIB}${_DBG}_LIBRARY )
-ENDIF( wxWidgets_Win_DEBUG_LIBS )
-ENDFOREACH( WXLIB )
+foreach(WXLIB ${wxlibs} )
+  if( NOT wxWidgets_${WXLIB}_LIBRARY )
+    set( wxWidgets_FOUND 0 )
+  endif( NOT wxWidgets_${WXLIB}_LIBRARY )
+if( wxWidgets_Win_DEBUG_LIBS )
+  if( NOT wxWidgets_${WXLIB}${_DBG}_LIBRARY )
+    set( wxWidgets_FOUND 0 )
+  endif( NOT wxWidgets_${WXLIB}${_DBG}_LIBRARY )
+endif( wxWidgets_Win_DEBUG_LIBS )
+endforeach( WXLIB )
 
 # Copy the results to the output variables.
-IF(wxWidgets_INCLUDE_DIR AND wxWidgets_base_LIBRARY AND wxWidgets_FOUND )
-  SET( wxWidgets_FOUND 1)
-  SET( wxWidgets_LIBRARIES comctl32 Rpcrt4 optimized  ${wxWidgets_base_LIBRARY} debug  ${wxWidgets_base${_DBG}_LIBRARY}  )
-  FOREACH( WXLIB ${wxlibs} )
-    SET( wxWidgets_LIBRARIES ${wxWidgets_LIBRARIES} optimized ${wxWidgets_${WXLIB}_LIBRARY} debug ${wxWidgets_${WXLIB}${_DBG}_LIBRARY} )
-  ENDFOREACH( WXLIB ${wxlibs} )
-  SET( wxWidgets_INCLUDE_DIR ${wxWidgets_INCLUDE_DIR})
-ELSE(wxWidgets_INCLUDE_DIR AND wxWidgets_base_LIBRARY AND wxWidgets_FOUND )
-  SET(wxWidgets_FOUND 0)
-  SET(wxWidgets_LIBRARIES)
-  SET(wxWidgets_INCLUDE_DIR)
-ENDIF(wxWidgets_INCLUDE_DIR AND wxWidgets_base_LIBRARY AND wxWidgets_FOUND )
+if(wxWidgets_INCLUDE_DIR AND wxWidgets_base_LIBRARY AND wxWidgets_FOUND )
+  set( wxWidgets_FOUND 1)
+  set( wxWidgets_LIBRARIES comctl32 Rpcrt4 optimized  ${wxWidgets_base_LIBRARY} debug  ${wxWidgets_base${_DBG}_LIBRARY}  )
+  foreach( WXLIB ${wxlibs} )
+    set( wxWidgets_LIBRARIES ${wxWidgets_LIBRARIES} optimized ${wxWidgets_${WXLIB}_LIBRARY} debug ${wxWidgets_${WXLIB}${_DBG}_LIBRARY} )
+  endforeach( WXLIB ${wxlibs} )
+  set( wxWidgets_INCLUDE_DIR ${wxWidgets_INCLUDE_DIR})
+else(wxWidgets_INCLUDE_DIR AND wxWidgets_base_LIBRARY AND wxWidgets_FOUND )
+  set(wxWidgets_FOUND 0)
+  set(wxWidgets_LIBRARIES)
+  set(wxWidgets_INCLUDE_DIR)
+endif(wxWidgets_INCLUDE_DIR AND wxWidgets_base_LIBRARY AND wxWidgets_FOUND )
 
 # Report the results.
-IF(NOT wxWidgets_FOUND)
-  SET(wxWidgets_DIR_MESSAGE
+if(NOT wxWidgets_FOUND)
+  set(wxWidgets_DIR_MESSAGE
     "WxWidgets was not found. Make sure wxWidgets_core_LIBRARY, wxWidgets_base_LIBRARY")
-   SET( wxWidgets_DIR_MESSAGE "${wxWidgets_DIR_MESSAGE} and wxWidgets_INCLUDE_DIR are set and other requested libs are set.")
-  IF(wxWidgets_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "${wxWidgets_DIR_MESSAGE}")
-  ELSEIF(NOT wxWidgets_FIND_QUIETLY)
-    MESSAGE(STATUS "${wxWidgets_DIR_MESSAGE}")
-  ENDIF(wxWidgets_FIND_REQUIRED)
-ENDIF(NOT wxWidgets_FOUND)
+   set( wxWidgets_DIR_MESSAGE "${wxWidgets_DIR_MESSAGE} and wxWidgets_INCLUDE_DIR are set and other requested libs are set.")
+  if(wxWidgets_FIND_REQUIRED)
+      message(FATAL_ERROR "${wxWidgets_DIR_MESSAGE}")
+  elseif(NOT wxWidgets_FIND_QUIETLY)
+    message(STATUS "${wxWidgets_DIR_MESSAGE}")
+  endif(wxWidgets_FIND_REQUIRED)
+endif(NOT wxWidgets_FOUND)

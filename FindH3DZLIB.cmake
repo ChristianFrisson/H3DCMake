@@ -7,48 +7,48 @@
 #  ZLIB_FOUND        - True if zlib found.
 
 
-IF( WIN32 )
-  SET(ZLIB_FIND_QUIETLY 1)
-ENDIF( WIN32 )
-IF(H3DZLIB_FIND_REQUIRED)
-  FIND_PACKAGE(ZLIB REQUIRED)
-ELSE(H3DZLIB_FIND_REQUIRED)
-  FIND_PACKAGE(ZLIB)
-ENDIF(H3DZLIB_FIND_REQUIRED)
+if( WIN32 )
+  set(ZLIB_FIND_QUIETLY 1)
+endif( WIN32 )
+if(H3DZLIB_FIND_REQUIRED)
+  find_package(ZLIB REQUIRED)
+else(H3DZLIB_FIND_REQUIRED)
+  find_package(ZLIB)
+endif(H3DZLIB_FIND_REQUIRED)
 
-IF( NOT ZLIB_FOUND AND WIN32)
+if( NOT ZLIB_FOUND AND WIN32)
   include( H3DExternalSearchPath )
-  GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-  get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "zlib" )
+  get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+  getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "zlib" )
   
   # Look for the header file.
-  FIND_PATH( ZLIB_INCLUDE_DIR NAMES zlib.h
+  find_path( ZLIB_INCLUDE_DIR NAMES zlib.h
              PATHS ${module_include_search_paths}
              DOC "Path in which the file zlib.h is located." )
   
   # Look for the library.
-  FIND_LIBRARY( ZLIB_LIBRARY NAMES zlib 
+  find_library( ZLIB_LIBRARY NAMES zlib 
                 PATHS ${module_lib_search_paths}
                 DOC "Path to zlib library." )
   
-  IF(ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY)
-    SET(ZLIB_FOUND 1)
-    SET(ZLIB_LIBRARIES ${ZLIB_LIBRARY})
-    SET(ZLIB_INCLUDE_DIR ${ZLIB_INCLUDE_DIR} )
-  ENDIF(ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY)
-ENDIF( NOT ZLIB_FOUND AND WIN32)
+  if(ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY)
+    set(ZLIB_FOUND 1)
+    set(ZLIB_LIBRARIES ${ZLIB_LIBRARY})
+    set(ZLIB_INCLUDE_DIR ${ZLIB_INCLUDE_DIR} )
+  endif(ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY)
+endif( NOT ZLIB_FOUND AND WIN32)
 
 # Report the results.
-IF(NOT ZLIB_FOUND)
-  SET(ZLIB_DIR_MESSAGE
+if(NOT ZLIB_FOUND)
+  set(ZLIB_DIR_MESSAGE
     "ZLIB was not found. Make sure ZLIB_LIBRARY and ZLIB_INCLUDE_DIR are set if compressed files support is desired.")
-  IF(H3DZLIB_FIND_REQUIRED)
-      SET(LIB_DIR_MESSAGE
+  if(H3DZLIB_FIND_REQUIRED)
+      set(LIB_DIR_MESSAGE
           "ZLIB was not found. Make sure ZLIB_LIBRARY and ZLIB_INCLUDE_DIR are set. ZLIB is required to build.")
-      MESSAGE(FATAL_ERROR "${ZLIB_DIR_MESSAGE}")
-  ELSEIF(NOT H3DZLIB_FIND_QUIETLY)
-    MESSAGE(STATUS "${LIB_DIR_MESSAGE}")
-  ENDIF(H3DZLIB_FIND_REQUIRED)
-ENDIF(NOT ZLIB_FOUND)
+      message(FATAL_ERROR "${ZLIB_DIR_MESSAGE}")
+  elseif(NOT H3DZLIB_FIND_QUIETLY)
+    message(STATUS "${LIB_DIR_MESSAGE}")
+  endif(H3DZLIB_FIND_REQUIRED)
+endif(NOT ZLIB_FOUND)
 
-MARK_AS_ADVANCED(ZLIB_INCLUDE_DIR ZLIB_LIBRARY)
+mark_as_advanced(ZLIB_INCLUDE_DIR ZLIB_LIBRARY)

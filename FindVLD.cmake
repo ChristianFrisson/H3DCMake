@@ -6,48 +6,48 @@
 #  VLD_FOUND        - True if vld found.
 
 include( H3DExternalSearchPath )
-GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
-IF( CMAKE_CL_64 )
-  MESSAGE( SEND_ERROR "64 bit version of visual leak detector is not tested yet." )
-ENDIF( CMAKE_CL_64 )
+if( CMAKE_CL_64 )
+  message( SEND_ERROR "64 bit version of visual leak detector is not tested yet." )
+endif( CMAKE_CL_64 )
 # Look for the header file.
-FIND_PATH(VLD_INCLUDE_DIR    NAMES vld/vld.h
+find_path(VLD_INCLUDE_DIR    NAMES vld/vld.h
                              PATHS ${module_include_search_paths}
                              DOC "Path in which the file vld/vld.h is located." )
-MARK_AS_ADVANCED(VLD_INCLUDE_DIR)
+mark_as_advanced(VLD_INCLUDE_DIR)
 
 # Look for the library.
-FIND_LIBRARY(VLD_LIBRARY    NAMES  vld
+find_library(VLD_LIBRARY    NAMES  vld
                             PATHS ${module_lib_search_paths}
                             DOC "Path to vld library." )
-MARK_AS_ADVANCED(VLD_LIBRARY)
+mark_as_advanced(VLD_LIBRARY)
 
-SET( VLD_LIBRARIES_FOUND 0 )
+set( VLD_LIBRARIES_FOUND 0 )
 
-IF( VLD_LIBRARY )
-  SET( VLD_LIBRARIES_FOUND 1 )
-ENDIF( VLD_LIBRARY )
+if( VLD_LIBRARY )
+  set( VLD_LIBRARIES_FOUND 1 )
+endif( VLD_LIBRARY )
 
 # Copy the results to the output variables.
-IF(VLD_INCLUDE_DIR AND VLD_LIBRARIES_FOUND)
-  SET(VLD_FOUND 1)
-  SET(VLD_LIBRARIES ${VLD_LIBRARY})
-  SET(VLD_INCLUDE_DIR ${VLD_INCLUDE_DIR})
-ELSE(VLD_INCLUDE_DIR AND VLD_LIBRARIES_FOUND)
-  SET(VLD_FOUND 0)
-  SET(VLD_LIBRARIES)
-  SET(VLD_INCLUDE_DIR)
-ENDIF(VLD_INCLUDE_DIR AND VLD_LIBRARIES_FOUND)
+if(VLD_INCLUDE_DIR AND VLD_LIBRARIES_FOUND)
+  set(VLD_FOUND 1)
+  set(VLD_LIBRARIES ${VLD_LIBRARY})
+  set(VLD_INCLUDE_DIR ${VLD_INCLUDE_DIR})
+else(VLD_INCLUDE_DIR AND VLD_LIBRARIES_FOUND)
+  set(VLD_FOUND 0)
+  set(VLD_LIBRARIES)
+  set(VLD_INCLUDE_DIR)
+endif(VLD_INCLUDE_DIR AND VLD_LIBRARIES_FOUND)
 
 # Report the results.
-IF(NOT VLD_FOUND)
-  SET(VLD_DIR_MESSAGE
+if(NOT VLD_FOUND)
+  set(VLD_DIR_MESSAGE
     "visual leak detector was not found. Make sure VLD_LIBRARY and VLD_INCLUDE_DIR are set to the directory of your visual leak detector lib and include files.")
-  IF(VLD_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "${VLD_DIR_MESSAGE}")
-  ELSEIF(NOT VLD_FIND_QUIETLY)
-    MESSAGE(STATUS "${VLD_DIR_MESSAGE}")
-  ENDIF(VLD_FIND_REQUIRED)
-ENDIF(NOT VLD_FOUND)
+  if(VLD_FIND_REQUIRED)
+    message(FATAL_ERROR "${VLD_DIR_MESSAGE}")
+  elseif(NOT VLD_FIND_QUIETLY)
+    message(STATUS "${VLD_DIR_MESSAGE}")
+  endif(VLD_FIND_REQUIRED)
+endif(NOT VLD_FOUND)

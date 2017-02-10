@@ -1,11 +1,11 @@
 # Contains a function which can be used to get default search paths
 # for include and lib directory on windows.
 
-# This variable can be set after this file is included but before get_external_search_paths_h3d function is called.
+# This variable can be set after this file is included but before getExternalSearchPathsH3D function is called.
 # If set to true then then ExternalPath/include/ACKNOWLEDGMENTS file is checked if it corresponds to the current
 # version of visual studio. If it is not then the External directory is not added to search path. There is one
 # exception though, for visual studio versions below vs2010 the vs2010 year string is looked for.
-SET( CHECK_IF_H3D_EXTERNAL_MATCHES_VS_VERSION OFF )
+set( check_if_h3d_external_matches_vs_version OFF )
 
 if( MSVC )
   set( H3D_EXTERNAL_BASE_DIR_NAME "" )
@@ -39,18 +39,18 @@ if( MSVC )
   endif()
 
   if( CMAKE_CL_64 )
-    SET( LIB "lib64" )
+    set( LIB "lib64" )
   else( CMAKE_CL_64 )
-    SET( LIB "lib32" )
+    set( LIB "lib32" )
   endif( CMAKE_CL_64 )
 endif()
 
 function( check_if_valid_H3D_Win_External arg1 arg2 )
   set( ${arg1} ON PARENT_SCOPE )
-  if( CHECK_IF_H3D_EXTERNAL_MATCHES_VS_VERSION )
+  if( check_if_h3d_external_matches_vs_version )
     set( ${arg1} OFF PARENT_SCOPE )
     if( EXISTS ${arg2}/include/ACKNOWLEDGEMENTS )
-      FILE( STRINGS ${arg2}/include/ACKNOWLEDGEMENTS the_first_line LIMIT_COUNT 1 REGEX "[-][-][-][-] Compiled for ${H3D_EXTERNAL_BASE_DIR_NAME} [-][-][-][-]" ) # Check if first line contains the correct vsx string.
+      file( STRINGS ${arg2}/include/ACKNOWLEDGEMENTS the_first_line LIMIT_COUNT 1 REGEX "[-][-][-][-] Compiled for ${H3D_EXTERNAL_BASE_DIR_NAME} [-][-][-][-]" ) # Check if first line contains the correct vsx string.
       if( the_first_line )
         set( ${arg1} ON PARENT_SCOPE )
       endif()
@@ -63,7 +63,7 @@ endfunction()
 # arg3 Should contain FindXX.cmake module path or empty,
 # or basically additional base paths External is expected to possibly exists
 # like this relative to this path ../../../External
-function( get_external_search_paths_h3d arg1 arg2 arg3 )
+function( getExternalSearchPathsH3D arg1 arg2 arg3 )
   if( WIN32 )
     set( h3d_external_base_dirs $ENV{H3D_EXTERNAL_ROOT}
                                 $ENV{H3D_ROOT}/../External

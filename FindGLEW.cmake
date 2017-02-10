@@ -6,71 +6,71 @@
 #  GLEW_FOUND        - True if GLEW found.
 
 include( H3DExternalSearchPath )
-GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
-IF( CMAKE_CL_64 )
-  SET( LIB "lib64" )
-ELSE( CMAKE_CL_64 )
-  SET( LIB "lib32" )
-ENDIF( CMAKE_CL_64 )
+if( CMAKE_CL_64 )
+  set( LIB "lib64" )
+else( CMAKE_CL_64 )
+  set( LIB "lib32" )
+endif( CMAKE_CL_64 )
 
 # Look for the header file.
-FIND_PATH(GLEW_INCLUDE_DIR NAMES GL/glew.h
+find_path(GLEW_INCLUDE_DIR NAMES GL/glew.h
                            PATHS ${module_include_search_paths}
                                  ../../../support/H3D/External/include
                                  ${module_file_path}/../../../../support/H3D/External/include
                            DOC "Path in which the file GL/glew.h is located." )
-MARK_AS_ADVANCED(GLEW_INCLUDE_DIR)
+mark_as_advanced(GLEW_INCLUDE_DIR)
 
 # Look for the library.
-FIND_LIBRARY(GLEW_LIBRARY NAMES GLEW glew32
+find_library(GLEW_LIBRARY NAMES GLEW glew32
                                 PATHS ${module_lib_search_paths}
                                       ../../../support/H3D/External/${LIB}
                                       ${module_file_path}/../../../../support/H3D/External/${LIB}
                                 DOC "Path to glew32 library." )
-MARK_AS_ADVANCED(GLEW_LIBRARY)
+mark_as_advanced(GLEW_LIBRARY)
 
-IF( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND PREFER_STATIC_LIBRARIES )
   set( module_include_search_paths "")
   set( module_lib_search_paths "")
-  get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
-  FIND_LIBRARY( GLEW_STATIC_LIBRARY NAMES glew32s
+  getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
+  find_library( GLEW_STATIC_LIBRARY NAMES glew32s
                                          PATHS ${module_lib_search_paths}
                                          ../../../support/H3D/External/${LIB}/static
                                          ${module_file_path}/../../../../support/H3D/External/${LIB}/static
                                     DOC "Path to glew32 static library." )
-  MARK_AS_ADVANCED(GLEW_STATIC_LIBRARY)
-ENDIF( WIN32 AND PREFER_STATIC_LIBRARIES )
+  mark_as_advanced(GLEW_STATIC_LIBRARY)
+endif( WIN32 AND PREFER_STATIC_LIBRARIES )
 
-IF( GLEW_LIBRARY OR GLEW_STATIC_LIBRARY )
-  SET( GLEW_LIBRARIES_FOUND 1 )
-ENDIF( GLEW_LIBRARY OR GLEW_STATIC_LIBRARY )
+if( GLEW_LIBRARY OR GLEW_STATIC_LIBRARY )
+  set( GLEW_LIBRARIES_FOUND 1 )
+endif( GLEW_LIBRARY OR GLEW_STATIC_LIBRARY )
 
 # Copy the results to the output variables.
-IF(GLEW_INCLUDE_DIR AND GLEW_LIBRARIES_FOUND)
-  SET(GLEW_FOUND 1)
-  IF( WIN32 AND PREFER_STATIC_LIBRARIES AND GLEW_STATIC_LIBRARY )
-    SET(GLEW_LIBRARIES ${GLEW_STATIC_LIBRARY})
-    SET( GLEW_STATIC 1 )
-  ELSE( WIN32 AND PREFER_STATIC_LIBRARIES AND GLEW_STATIC_LIBRARY )
-    SET(GLEW_LIBRARIES ${GLEW_LIBRARY})
-  ENDIF( WIN32 AND PREFER_STATIC_LIBRARIES AND GLEW_STATIC_LIBRARY )
-  SET(GLEW_INCLUDE_DIR ${GLEW_INCLUDE_DIR})
-  SET(GLEW_INCLUDE_DIRS ${GLEW_INCLUDE_DIR})
-ELSE(GLEW_INCLUDE_DIR AND GLEW_LIBRARIES_FOUND)
-  SET(GLEW_FOUND 0)
-  SET(GLEW_LIBRARIES)
-  SET(GLEW_INCLUDE_DIR)
-ENDIF(GLEW_INCLUDE_DIR AND GLEW_LIBRARIES_FOUND)
+if(GLEW_INCLUDE_DIR AND GLEW_LIBRARIES_FOUND)
+  set(GLEW_FOUND 1)
+  if( WIN32 AND PREFER_STATIC_LIBRARIES AND GLEW_STATIC_LIBRARY )
+    set(GLEW_LIBRARIES ${GLEW_STATIC_LIBRARY})
+    set( GLEW_STATIC 1 )
+  else( WIN32 AND PREFER_STATIC_LIBRARIES AND GLEW_STATIC_LIBRARY )
+    set(GLEW_LIBRARIES ${GLEW_LIBRARY})
+  endif( WIN32 AND PREFER_STATIC_LIBRARIES AND GLEW_STATIC_LIBRARY )
+  set(GLEW_INCLUDE_DIR ${GLEW_INCLUDE_DIR})
+  set(GLEW_INCLUDE_DIRS ${GLEW_INCLUDE_DIR})
+else(GLEW_INCLUDE_DIR AND GLEW_LIBRARIES_FOUND)
+  set(GLEW_FOUND 0)
+  set(GLEW_LIBRARIES)
+  set(GLEW_INCLUDE_DIR)
+endif(GLEW_INCLUDE_DIR AND GLEW_LIBRARIES_FOUND)
 
 # Report the results.
-IF(NOT GLEW_FOUND)
-  SET(GLEW_DIR_MESSAGE
+if(NOT GLEW_FOUND)
+  set(GLEW_DIR_MESSAGE
     "GLEW was not found. Make sure GLEW_LIBRARY and GLEW_INCLUDE_DIR are set to where you have your glew header and lib files. If you do not have the library you will not be able to use nodes that use OpenGL extensions.")
-  IF(GLEW_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "${GLEW_DIR_MESSAGE}")
-  ELSEIF(NOT GLEW_FIND_QUIETLY)
-    MESSAGE(STATUS "${GLEW_DIR_MESSAGE}")
-  ENDIF(GLEW_FIND_REQUIRED)
-ENDIF(NOT GLEW_FOUND)
+  if(GLEW_FIND_REQUIRED)
+      message(FATAL_ERROR "${GLEW_DIR_MESSAGE}")
+  elseif(NOT GLEW_FIND_QUIETLY)
+    message(STATUS "${GLEW_DIR_MESSAGE}")
+  endif(GLEW_FIND_REQUIRED)
+endif(NOT GLEW_FOUND)

@@ -6,83 +6,83 @@
 #  VORBIS_FOUND        - True if VORBIS found.
 
 include( H3DExternalSearchPath )
-GET_FILENAME_COMPONENT( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
 # Look for the header file.
-FIND_PATH(VORBIS_INCLUDE_DIR NAMES vorbis/vorbisfile.h
+find_path(VORBIS_INCLUDE_DIR NAMES vorbis/vorbisfile.h
                              PATHS ${module_include_search_paths}
                              DOC "Path in which the file vorbis/vorbisfile.h is located." )
-MARK_AS_ADVANCED(VORBIS_INCLUDE_DIR)
+mark_as_advanced(VORBIS_INCLUDE_DIR)
 
-FIND_PATH(VORBIS_OGG_INCLUDE_DIR NAMES ogg/ogg.h
+find_path(VORBIS_OGG_INCLUDE_DIR NAMES ogg/ogg.h
                           PATHS ${module_include_search_paths}
                           DOC "Path in which the file ogg/ogg.h is located." )
-MARK_AS_ADVANCED(VORBIS_OGG_INCLUDE_DIR)
+mark_as_advanced(VORBIS_OGG_INCLUDE_DIR)
 
 # Look for the library.
-FIND_LIBRARY(VORBIS_VORBISFILE_LIBRARY NAMES libvorbisfile vorbisfile
+find_library(VORBIS_VORBISFILE_LIBRARY NAMES libvorbisfile vorbisfile
                             PATHS ${module_lib_search_paths}
                             DOC "Path to vorbisfile library." )
-MARK_AS_ADVANCED(VORBIS_VORBISFILE_LIBRARY)
+mark_as_advanced(VORBIS_VORBISFILE_LIBRARY)
 
-FIND_LIBRARY(VORBIS_LIBRARY NAMES libvorbis vorbis
+find_library(VORBIS_LIBRARY NAMES libvorbis vorbis
                             PATHS ${module_lib_search_paths}
                             DOC "Path to vorbis library." )
-MARK_AS_ADVANCED(VORBIS_LIBRARY)
+mark_as_advanced(VORBIS_LIBRARY)
 
-FIND_LIBRARY(VORBIS_OGG_LIBRARY NAMES libogg ogg 
+find_library(VORBIS_OGG_LIBRARY NAMES libogg ogg 
                          PATHS PATHS ${module_lib_search_paths}
                          DOC "Path to ogg library." )
-MARK_AS_ADVANCED(VORBIS_OGG_LIBRARY)
+mark_as_advanced(VORBIS_OGG_LIBRARY)
 
-IF( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND PREFER_STATIC_LIBRARIES )
   set( module_include_search_paths "" )
   set( module_lib_search_paths "" )
-  get_external_search_paths_h3d( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
-  FIND_LIBRARY( VORBIS_VORBISFILE_STATIC_LIBRARY NAMES libvorbisfile_static vorbisfile_static
+  getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
+  find_library( VORBIS_VORBISFILE_STATIC_LIBRARY NAMES libvorbisfile_static vorbisfile_static
                                          PATHS PATHS ${module_lib_search_paths}
                                          DOC "Path to vorbisfile static library." )
-  MARK_AS_ADVANCED(VORBIS_VORBISFILE_STATIC_LIBRARY)
+  mark_as_advanced(VORBIS_VORBISFILE_STATIC_LIBRARY)
   
-  FIND_LIBRARY( VORBIS_OGG_STATIC_LIBRARY NAMES libogg_static ogg_static
+  find_library( VORBIS_OGG_STATIC_LIBRARY NAMES libogg_static ogg_static
                                          PATHS PATHS ${module_lib_search_paths}
                                          DOC "Path to ogg static library." )
-  MARK_AS_ADVANCED(VORBIS_OGG_STATIC_LIBRARY)
-ENDIF( WIN32 AND PREFER_STATIC_LIBRARIES )
+  mark_as_advanced(VORBIS_OGG_STATIC_LIBRARY)
+endif( WIN32 AND PREFER_STATIC_LIBRARIES )
 
-IF( VORBIS_LIBRARY AND VORBIS_OGG_LIBRARY AND VORBIS_VORBISFILE_LIBRARY )
-  SET( VORBIS_LIBRARIES_FOUND 1 )
-ENDIF( VORBIS_LIBRARY AND VORBIS_OGG_LIBRARY AND VORBIS_VORBISFILE_LIBRARY )
+if( VORBIS_LIBRARY AND VORBIS_OGG_LIBRARY AND VORBIS_VORBISFILE_LIBRARY )
+  set( VORBIS_LIBRARIES_FOUND 1 )
+endif( VORBIS_LIBRARY AND VORBIS_OGG_LIBRARY AND VORBIS_VORBISFILE_LIBRARY )
 
-IF( PREFER_STATIC_LIBRARIES AND VORBIS_VORBISFILE_STATIC_LIBRARY AND VORBIS_OGG_STATIC_LIBRARY )
-  SET( VORBIS_LIBRARIES_FOUND 1 )
-  SET( VORBIS_STATIC_LIBRARIES_FOUND 1 )
-ENDIF( PREFER_STATIC_LIBRARIES AND VORBIS_VORBISFILE_STATIC_LIBRARY AND VORBIS_OGG_STATIC_LIBRARY )
+if( PREFER_STATIC_LIBRARIES AND VORBIS_VORBISFILE_STATIC_LIBRARY AND VORBIS_OGG_STATIC_LIBRARY )
+  set( VORBIS_LIBRARIES_FOUND 1 )
+  set( VORBIS_STATIC_LIBRARIES_FOUND 1 )
+endif( PREFER_STATIC_LIBRARIES AND VORBIS_VORBISFILE_STATIC_LIBRARY AND VORBIS_OGG_STATIC_LIBRARY )
 
 # Copy the results to the output variables.
-IF(VORBIS_INCLUDE_DIR AND VORBIS_OGG_INCLUDE_DIR AND VORBIS_LIBRARIES_FOUND)
-  SET(VORBIS_FOUND 1)
-  IF( VORBIS_STATIC_LIBRARIES_FOUND )
-    SET(VORBIS_LIBRARIES ${VORBIS_VORBISFILE_STATIC_LIBRARY} ${VORBIS_OGG_STATIC_LIBRARY} )
-  ELSE( VORBIS_STATIC_LIBRARIES_FOUND )
-    SET(VORBIS_LIBRARIES ${VORBIS_VORBISFILE_LIBRARY} ${VORBIS_LIBRARY} ${VORBIS_OGG_LIBRARY} )
-  ENDIF( VORBIS_STATIC_LIBRARIES_FOUND )
-  SET(VORBIS_INCLUDE_DIR ${VORBIS_INCLUDE_DIR} ${VORBIS_OGG_INCLUDE_DIR})
-ELSE(VORBIS_INCLUDE_DIR AND VORBIS_OGG_INCLUDE_DIR AND VORBIS_LIBRARIES_FOUND)
-  SET(VORBIS_FOUND 0)
-  SET(VORBIS_LIBRARIES)
-  SET(VORBIS_INCLUDE_DIR)
-ENDIF(VORBIS_INCLUDE_DIR AND VORBIS_OGG_INCLUDE_DIR AND VORBIS_LIBRARIES_FOUND)
+if(VORBIS_INCLUDE_DIR AND VORBIS_OGG_INCLUDE_DIR AND VORBIS_LIBRARIES_FOUND)
+  set(VORBIS_FOUND 1)
+  if( VORBIS_STATIC_LIBRARIES_FOUND )
+    set(VORBIS_LIBRARIES ${VORBIS_VORBISFILE_STATIC_LIBRARY} ${VORBIS_OGG_STATIC_LIBRARY} )
+  else( VORBIS_STATIC_LIBRARIES_FOUND )
+    set(VORBIS_LIBRARIES ${VORBIS_VORBISFILE_LIBRARY} ${VORBIS_LIBRARY} ${VORBIS_OGG_LIBRARY} )
+  endif( VORBIS_STATIC_LIBRARIES_FOUND )
+  set(VORBIS_INCLUDE_DIR ${VORBIS_INCLUDE_DIR} ${VORBIS_OGG_INCLUDE_DIR})
+else(VORBIS_INCLUDE_DIR AND VORBIS_OGG_INCLUDE_DIR AND VORBIS_LIBRARIES_FOUND)
+  set(VORBIS_FOUND 0)
+  set(VORBIS_LIBRARIES)
+  set(VORBIS_INCLUDE_DIR)
+endif(VORBIS_INCLUDE_DIR AND VORBIS_OGG_INCLUDE_DIR AND VORBIS_LIBRARIES_FOUND)
 
 # Report the results.
-IF(NOT VORBIS_FOUND)
-  SET(VORBIS_DIR_MESSAGE
+if(NOT VORBIS_FOUND)
+  set(VORBIS_DIR_MESSAGE
     "VORBIS was not found. Make sure cmake cache variables with prefix VORBIS are set
      to the locations of include and lib files for vorbis and ogg. If you do not have the library you will not be able to use ogg files as sound.")
-  IF(Vorbis_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "${VORBIS_DIR_MESSAGE}")
-  ELSEIF(NOT Vorbis_FIND_QUIETLY)
-    MESSAGE(STATUS "${VORBIS_DIR_MESSAGE}")
-  ENDIF(Vorbis_FIND_REQUIRED)
-ENDIF(NOT VORBIS_FOUND)
+  if(Vorbis_FIND_REQUIRED)
+    message(FATAL_ERROR "${VORBIS_DIR_MESSAGE}")
+  elseif(NOT Vorbis_FIND_QUIETLY)
+    message(STATUS "${VORBIS_DIR_MESSAGE}")
+  endif(Vorbis_FIND_REQUIRED)
+endif(NOT VORBIS_FOUND)
