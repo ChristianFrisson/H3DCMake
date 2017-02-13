@@ -64,6 +64,9 @@ endfunction()
 # or basically additional base paths External is expected to possibly exists
 # like this relative to this path ../../../External
 function( getExternalSearchPathsH3D arg1 arg2 arg3 )
+  if( DEFINED CHECK_IF_H3D_EXTERNAL_MATCHES_VS_VERSION )
+    message( AUTHOR_WARNING "The upper case variable CHECK_IF_H3D_EXTERNAL_MATCHES_VS_VERSION probably defined in ${CMAKE_PARENT_LIST_FILE} is deprecated and no longer used. Please correct your code.")
+  endif()
   if( WIN32 )
     set( h3d_external_base_dirs $ENV{H3D_EXTERNAL_ROOT}
                                 $ENV{H3D_ROOT}/../External
