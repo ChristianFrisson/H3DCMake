@@ -14,33 +14,33 @@ find_path( V8_INCLUDE_DIR NAMES v8.h
            PATHS /usr/local/include
                  ${module_include_search_paths}
            DOC "Path in which the file v8.h is located." )
-mark_as_advanced(V8_INCLUDE_DIR)
+mark_as_advanced( V8_INCLUDE_DIR )
 
 # Look for the library.
 # Does this work on UNIX systems? (LINUX)
 find_library( V8_LIBRARY NAMES v8
               PATHS ${module_lib_search_paths}
               DOC "Path to v8 library." )
-mark_as_advanced(V8_LIBRARY)
+mark_as_advanced( V8_LIBRARY )
 
 # Copy the results to the output variables.
-if(V8_INCLUDE_DIR AND V8_LIBRARY)
-  set(V8_FOUND 1)
-  set(V8_LIBRARIES ${V8_LIBRARY})
-  set(V8_INCLUDE_DIR ${V8_INCLUDE_DIR})
-else(V8_INCLUDE_DIR AND V8_LIBRARY)
-  set(V8_FOUND 0)
-  set(V8_LIBRARIES)
-  set(V8_INCLUDE_DIR)
-endif(V8_INCLUDE_DIR AND V8_LIBRARY)
+if( V8_INCLUDE_DIR AND V8_LIBRARY )
+  set( V8_FOUND 1 )
+  set( V8_LIBRARIES ${V8_LIBRARY} )
+  set( V8_INCLUDE_DIR ${V8_INCLUDE_DIR} )
+else()
+  set( V8_FOUND 0 )
+  set( V8_LIBRARIES )
+  set( V8_INCLUDE_DIR )
+endif()
 
 # Report the results.
-if(NOT V8_FOUND)
-  set(V8_DIR_MESSAGE
-    "V8 was not found. Make sure V8_LIBRARY and V8_INCLUDE_DIR are set.")
-  if(V8_FIND_REQUIRED)
-    message(FATAL_ERROR "${V8_DIR_MESSAGE}")
-  elseif(NOT V8_FIND_QUIETLY)
-    message(STATUS "${V8_DIR_MESSAGE}")
-  endif(V8_FIND_REQUIRED)
-endif(NOT V8_FOUND)
+if( NOT V8_FOUND )
+  set( V8_DIR_MESSAGE
+       "V8 was not found. Make sure V8_LIBRARY and V8_INCLUDE_DIR are set." )
+  if( V8_FIND_REQUIRED )
+    message( FATAL_ERROR "${V8_DIR_MESSAGE}" )
+  elseif( NOT V8_FIND_QUIETLY )
+    message( STATUS "${V8_DIR_MESSAGE}" )
+  endif()
+endif()

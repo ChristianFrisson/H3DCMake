@@ -62,19 +62,19 @@ if( WIN32 )
   find_library( OpenEXR_DEBUG_LIBRARY_EX NAMES Iex_d
                 PATHS ${OpenEXRLibrarySearchPath}
                 DOC "Path to Iex library." )
-  mark_as_advanced(OpenEXR_DEBUG_LIBRARY_IMF OpenEXR_DEBUG_LIBRARY_THREAD OpenEXR_DEBUG_LIBRARY_MATH OpenEXR_DEBUG_LIBRARY_HALF OpenEXR_DEBUG_LIBRARY_EX )
+  mark_as_advanced( OpenEXR_DEBUG_LIBRARY_IMF OpenEXR_DEBUG_LIBRARY_THREAD OpenEXR_DEBUG_LIBRARY_MATH OpenEXR_DEBUG_LIBRARY_HALF OpenEXR_DEBUG_LIBRARY_EX )
 endif()
 
-if(ZLIB_FOUND AND OpenEXR_INCLUDE_DIR AND OpenEXR_LIBRARY_IMF AND OpenEXR_LIBRARY_THREAD AND OpenEXR_LIBRARY_MATH AND OpenEXR_LIBRARY_HALF AND OpenEXR_LIBRARY_EX)
-  set(OpenEXR_FOUND 1)
+if( ZLIB_FOUND AND OpenEXR_INCLUDE_DIR AND OpenEXR_LIBRARY_IMF AND OpenEXR_LIBRARY_THREAD AND OpenEXR_LIBRARY_MATH AND OpenEXR_LIBRARY_HALF AND OpenEXR_LIBRARY_EX )
+  set( OpenEXR_FOUND 1 )
   if( OpenEXR_DEBUG_LIBRARY_IMF AND OpenEXR_DEBUG_LIBRARY_THREAD AND OpenEXR_DEBUG_LIBRARY_MATH AND OpenEXR_DEBUG_LIBRARY_HALF AND OpenEXR_DEBUG_LIBRARY_EX )
-    set(OpenEXR_LIBRARIES optimized ${OpenEXR_LIBRARY_IMF} debug ${OpenEXR_DEBUG_LIBRARY_IMF}
-                          optimized ${OpenEXR_LIBRARY_THREAD} debug ${OpenEXR_DEBUG_LIBRARY_THREAD}
-                          optimized ${OpenEXR_LIBRARY_MATH} debug ${OpenEXR_DEBUG_LIBRARY_MATH}
-                          optimized ${OpenEXR_LIBRARY_HALF} debug ${OpenEXR_DEBUG_LIBRARY_HALF}
-                          optimized ${OpenEXR_LIBRARY_EX} debug ${OpenEXR_DEBUG_LIBRARY_EX})
+    set( OpenEXR_LIBRARIES optimized ${OpenEXR_LIBRARY_IMF} debug ${OpenEXR_DEBUG_LIBRARY_IMF}
+                           optimized ${OpenEXR_LIBRARY_THREAD} debug ${OpenEXR_DEBUG_LIBRARY_THREAD}
+                           optimized ${OpenEXR_LIBRARY_MATH} debug ${OpenEXR_DEBUG_LIBRARY_MATH}
+                           optimized ${OpenEXR_LIBRARY_HALF} debug ${OpenEXR_DEBUG_LIBRARY_HALF}
+                           optimized ${OpenEXR_LIBRARY_EX} debug ${OpenEXR_DEBUG_LIBRARY_EX})
   else()
-    set(OpenEXR_LIBRARIES ${OpenEXR_LIBRARY_IMF} ${OpenEXR_LIBRARY_THREAD} ${OpenEXR_LIBRARY_MATH} ${OpenEXR_LIBRARY_HALF} ${OpenEXR_LIBRARY_EX})
+    set( OpenEXR_LIBRARIES ${OpenEXR_LIBRARY_IMF} ${OpenEXR_LIBRARY_THREAD} ${OpenEXR_LIBRARY_MATH} ${OpenEXR_LIBRARY_HALF} ${OpenEXR_LIBRARY_EX} )
   endif()
   if( WIN32 )
     set( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} )
@@ -82,14 +82,14 @@ if(ZLIB_FOUND AND OpenEXR_INCLUDE_DIR AND OpenEXR_LIBRARY_IMF AND OpenEXR_LIBRAR
     set( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR ${OpenEXR_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} ) # The linux OpenEXR headers seems to not have "OpenEXR" in its include paths.
   endif()
   set( OpenEXR_LIBRARIES ${OpenEXR_LIBRARIES} ${ZLIB_LIBRARIES} )
-  if (WIN32)
+  if( WIN32 )
     ADD_DEFINITIONS(-DOPENEXR_DLL)
   endif()
 endif()
 
 # Report the results.
-if(NOT OpenEXR_FOUND)
-  message(STATUS "OpenEXR was not found. Handling OpenEXR images will not be supported. OpenEXR also requires zlib.")
+if( NOT OpenEXR_FOUND )
+  message( STATUS "OpenEXR was not found. Handling OpenEXR images will not be supported. OpenEXR also requires zlib." )
 endif()
 
-mark_as_advanced(OpenEXR_INCLUDE_DIR OpenEXR_LIBRARY_IMF OpenEXR_LIBRARY_THREAD OpenEXR_LIBRARY_MATH OpenEXR_LIBRARY_HALF OpenEXR_LIBRARY_EX )
+mark_as_advanced( OpenEXR_INCLUDE_DIR OpenEXR_LIBRARY_IMF OpenEXR_LIBRARY_THREAD OpenEXR_LIBRARY_MATH OpenEXR_LIBRARY_HALF OpenEXR_LIBRARY_EX )

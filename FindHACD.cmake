@@ -12,11 +12,11 @@ getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths $
 
 if( CMAKE_CL_64 )
   set( LIB "64" )
-else( CMAKE_CL_64 )
+else()
   set( LIB "32" )
-endif( CMAKE_CL_64 )
+endif()
 
-set(HACD_INSTALL_DIR "" CACHE PATH "Path to external HACD installation" )
+set( HACD_INSTALL_DIR "" CACHE PATH "Path to external HACD installation" )
 
 # Look for the header file.
 find_path( HACD_INCLUDE_DIR NAMES hacdHACD.h
@@ -24,10 +24,10 @@ find_path( HACD_INCLUDE_DIR NAMES hacdHACD.h
                  ${HACD_INSTALL_DIR}/build/win${LIB}/output/include
                  ${module_include_search_paths} )
 
-mark_as_advanced(HACD_INCLUDE_DIR)
+mark_as_advanced( HACD_INCLUDE_DIR )
 
 # Look for the library.
-if(WIN32)
+if( WIN32 )
 
   find_library( HACD_LIB NAMES HACD_LIB
                 PATHS ${HACD_INSTALL_DIR}/build/win${LIB}/output/bin
@@ -37,49 +37,47 @@ if(WIN32)
                 PATHS ${HACD_INSTALL_DIR}/build/win${LIB}/output/bin
                       ${module_lib_search_paths} )
    
-   mark_as_advanced(HACD_DEBUG_LIB)
+   mark_as_advanced( HACD_DEBUG_LIB )
                       
-else(WIN32)
+else()
   find_library( HACD_LIB NAMES HACD_LIB )  
-endif(WIN32)
+endif()
 
-mark_as_advanced(HACD_LIB)
+mark_as_advanced( HACD_LIB )
 
 # Copy the results to the output variables.
-if ( HACD_INCLUDE_DIR AND 
-     HACD_LIB )
-  set(HACD_FOUND 1)
+if( HACD_INCLUDE_DIR AND HACD_LIB )
+  set( HACD_FOUND 1 )
   
   if( WIN32 )
     
-    set(HACD_LIBRARIES "" )
+    set( HACD_LIBRARIES "" )
     
     if( HACD_DEBUG_LIB )
-      set(HACD_LIBRARIES ${HACD_LIBRARIES} optimized ${HACD_LIB} debug ${HACD_DEBUG_LIB} )
-    else( HACD_DEBUG_LIB )
-      set(HACD_LIBRARIES ${HACD_LIB})
-    endif( HACD_DEBUG_LIB )
+      set( HACD_LIBRARIES ${HACD_LIBRARIES} optimized ${HACD_LIB} debug ${HACD_DEBUG_LIB} )
+    else()
+      set( HACD_LIBRARIES ${HACD_LIB} )
+    endif()
     
-  else( WIN32 )
-    set(HACD_LIBRARIES ${HACD_LIB})
-  endif( WIN32 )
+  else()
+    set( HACD_LIBRARIES ${HACD_LIB} )
+  endif()
   
   
-  set(HACD_INCLUDE_DIR ${HACD_INCLUDE_DIR} )
+  set( HACD_INCLUDE_DIR ${HACD_INCLUDE_DIR} )
 else()
-  set(HACD_FOUND 0)
-  set(HACD_LIBRARIES)
-  set(HACD_INCLUDE_DIR)
+  set( HACD_FOUND 0 )
+  set( HACD_LIBRARIES )
+  set( HACD_INCLUDE_DIR )
 endif()
 
 # Report the results.
-if(NOT HACD_FOUND)
-  set(HACD_DIR_MESSAGE
-    "HACD was not found. Set HACD_INSTALL_DIR to the root directory of the "
-    "installation containing the 'build' folders.")
-  if(HACD_FIND_REQUIRED)
-    message(FATAL_ERROR "${HACD_DIR_MESSAGE}")
-  elseif(NOT HACD_FIND_QUIETLY)
-    message(STATUS "${HACD_DIR_MESSAGE}")
-  endif(HACD_FIND_REQUIRED)
-endif(NOT HACD_FOUND)
+if( NOT HACD_FOUND )
+  set( HACD_DIR_MESSAGE
+       "HACD was not found. Set HACD_INSTALL_DIR to the root directory of the installation containing the 'build' folders." )
+  if( HACD_FIND_REQUIRED )
+    message( FATAL_ERROR "${HACD_DIR_MESSAGE}" )
+  elseif( NOT HACD_FIND_QUIETLY )
+    message( STATUS "${HACD_DIR_MESSAGE}" )
+  endif()
+endif()

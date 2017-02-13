@@ -13,40 +13,40 @@ find_path( NVIDIACG_INCLUDE_DIR NAMES cg.h cgGL.h
            PATHS /usr/local/include
                  ${module_include_search_paths}
            DOC "Path in which the file cg.h and cgGL.h are located." )
-mark_as_advanced(NVIDIACG_INCLUDE_DIR)
+mark_as_advanced( NVIDIACG_INCLUDE_DIR )
 
 # Look for the library cg.
 # Does this work on UNIX systems? (LINUX)
 find_library( NVIDIACG_LIBRARY NAMES cg Cg
               PATHS ${module_lib_search_paths}
               DOC "Path to cg library." )
-mark_as_advanced(NVIDIACG_LIBRARY)
+mark_as_advanced( NVIDIACG_LIBRARY )
 
 # Look for the library cg.
 # Does this work on UNIX systems? (LINUX)
 find_library( NVIDIACG_CGGL_LIBRARY NAMES cgGL CgGL
               PATHS ${module_lib_search_paths}
               DOC "Path to cgGL library." )
-mark_as_advanced(NVIDIACG_CGGL_LIBRARY)
+mark_as_advanced( NVIDIACG_CGGL_LIBRARY )
 
 # Copy the results to the output variables.
-if(NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY)
-  set(NVIDIACG_FOUND 1)
-  set(NVIDIACG_LIBRARIES ${NVIDIACG_LIBRARY} ${NVIDIACG_CGGL_LIBRARY})
-  set(NVIDIACG_INCLUDE_DIR ${NVIDIACG_INCLUDE_DIR})
-else(NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY)
-  set(NVIDIACG_FOUND 0)
-  set(NVIDIACG_LIBRARIES)
-  set(NVIDIACG_INCLUDE_DIR)
-endif(NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY)
+if( NVIDIACG_INCLUDE_DIR AND NVIDIACG_LIBRARY AND NVIDIACG_CGGL_LIBRARY )
+  set( NVIDIACG_FOUND 1 )
+  set( NVIDIACG_LIBRARIES ${NVIDIACG_LIBRARY} ${NVIDIACG_CGGL_LIBRARY} )
+  set( NVIDIACG_INCLUDE_DIR ${NVIDIACG_INCLUDE_DIR} )
+else()
+  set( NVIDIACG_FOUND 0 )
+  set( NVIDIACG_LIBRARIES )
+  set( NVIDIACG_INCLUDE_DIR )
+endif()
 
 # Report the results.
-if(NOT NVIDIACG_FOUND)
-  set(NVIDIACG_DIR_MESSAGE
-    "NVIDIAs CG Toolkit was not found. Make sure NVIDIACG_LIBRARY and NVIDIACG_INCLUDE_DIR are set.")
-  if(NvidiaCG_FIND_REQUIRED)
-    message(FATAL_ERROR "${NVIDIACG_DIR_MESSAGE}")
-  elseif(NOT NvidiaCG_FIND_QUIETLY)
-    message(STATUS "${NVIDIACG_DIR_MESSAGE}")
-  endif(NvidiaCG_FIND_REQUIRED)
-endif(NOT NVIDIACG_FOUND)
+if( NOT NVIDIACG_FOUND )
+  set( NVIDIACG_DIR_MESSAGE
+       "NVIDIAs CG Toolkit was not found. Make sure NVIDIACG_LIBRARY and NVIDIACG_INCLUDE_DIR are set." )
+  if( NvidiaCG_FIND_REQUIRED )
+    message( FATAL_ERROR "${NVIDIACG_DIR_MESSAGE}" )
+  elseif( NOT NvidiaCG_FIND_QUIETLY )
+    message( STATUS "${NVIDIACG_DIR_MESSAGE}" )
+  endif()
+endif()

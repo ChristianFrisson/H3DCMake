@@ -5,14 +5,14 @@
 #  H3DPhysics_LIBRARIES    - List of libraries when using H3DPhysics.
 #  H3DPhysics_FOUND        - True if H3DPhysics found.
 
-get_filename_component(module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
 # Look for the header file.
 find_path( H3DPhysics_INCLUDE_DIR NAMES H3D/H3DPhysics/H3DPhysics.h H3D/H3DPhysics/H3DPhysics.cmake
            PATHS $ENV{H3D_ROOT}/../H3DPhysics/include
                  ../../../H3DPhysics/include
                  ${module_file_path}/../../../H3DPhysics/include )
-mark_as_advanced(H3DPhysics_INCLUDE_DIR)
+mark_as_advanced( H3DPhysics_INCLUDE_DIR )
 
 # Look for the library.
 if( MSVC )
@@ -21,21 +21,21 @@ if( MSVC )
   while( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
     math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
     math( EXPR TEMP_MSVC_VERSION "${TEMP_MSVC_VERSION} + 100" )
-  endwhile( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
+  endwhile()
   set( H3DPhysics_NAME "H3DPhysics_vc${H3D_MSVC_VERSION}" )
-elseif(UNIX)
+elseif( UNIX )
   set( H3DPhysics_NAME h3dphysics )
 else()
   set( H3DPhysics_NAME H3DPhysics )
-endif( MSVC )
+endif()
 
 set( DEFAULT_LIB_INSTALL "lib" )
 if( WIN32 )
   set( DEFAULT_LIB_INSTALL "lib32" )
   if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
     set( DEFAULT_LIB_INSTALL "lib64" )
-  endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-endif( WIN32 )
+  endif()
+endif()
 
 find_library( H3DPhysics_LIBRARY NAMES ${H3DPhysics_NAME}
               PATHS $ENV{H3D_ROOT}/../H3DPhysics/${DEFAULT_LIB_INSTALL}
@@ -46,48 +46,48 @@ find_library( H3DPhysics_DEBUG_LIBRARY NAMES ${H3DPhysics_NAME}_d
               PATHS $ENV{H3D_ROOT}/../H3DPhysics/${DEFAULT_LIB_INSTALL}
                     ../../../${DEFAULT_LIB_INSTALL}
                     $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL} )
-mark_as_advanced(H3DPhysics_LIBRARY)
-mark_as_advanced(H3DPhysics_DEBUG_LIBRARY)
+mark_as_advanced( H3DPhysics_LIBRARY )
+mark_as_advanced( H3DPhysics_DEBUG_LIBRARY )
 
-if(H3DPhysics_LIBRARY OR H3DPhysics_DEBUG_LIBRARY)
+if( H3DPhysics_LIBRARY OR H3DPhysics_DEBUG_LIBRARY )
   set( HAVE_H3DPhysics_LIBRARY 1 )
-else(H3DPhysics_LIBRARY OR H3DPhysics_DEBUG_LIBRARY)
+else()
   set( HAVE_H3DPhysics_LIBRARY 0 )
-endif(H3DPhysics_LIBRARY OR H3DPhysics_DEBUG_LIBRARY)
+endif()
 
 # Copy the results to the output variables.
-if(H3DPhysics_INCLUDE_DIR AND HAVE_H3DPhysics_LIBRARY)
+if( H3DPhysics_INCLUDE_DIR AND HAVE_H3DPhysics_LIBRARY )
 
-  set(H3DPhysics_FOUND 1)
-  if(H3DPhysics_LIBRARY)
-    set(H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} optimized ${H3DPhysics_LIBRARY} )
-  else(H3DPhysics_LIBRARY)
-    set(H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} optimized ${H3DPhysics_NAME} )
+  set( H3DPhysics_FOUND 1 )
+  if( H3DPhysics_LIBRARY )
+    set( H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} optimized ${H3DPhysics_LIBRARY} )
+  else()
+    set( H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} optimized ${H3DPhysics_NAME} )
     message( STATUS "H3DPhysics release libraries not found. Release build might not work." )
-  endif(H3DPhysics_LIBRARY)
+  endif()
 
-  if(H3DPhysics_DEBUG_LIBRARY)
-    set(H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} debug ${H3DPhysics_DEBUG_LIBRARY} )
-  else(H3DPhysics_DEBUG_LIBRARY)
-    set(H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} debug ${H3DPhysics_NAME}_d )
+  if( H3DPhysics_DEBUG_LIBRARY )
+    set( H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} debug ${H3DPhysics_DEBUG_LIBRARY} )
+  else()
+    set( H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} debug ${H3DPhysics_NAME}_d )
     message( STATUS "H3DPhysics debug libraries not found. Debug build might not work." )
-  endif(H3DPhysics_DEBUG_LIBRARY)
+  endif()
   
-  set(H3DPhysics_INCLUDE_DIR ${H3DPhysics_INCLUDE_DIR} )
-  set(H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} )
-else(H3DPhysics_INCLUDE_DIR AND HAVE_H3DPhysics_LIBRARY)
-  set(H3DPhysics_FOUND 0)
-  set(H3DPhysics_LIBRARIES)
-  set(H3DPhysics_INCLUDE_DIR)
-endif(H3DPhysics_INCLUDE_DIR AND HAVE_H3DPhysics_LIBRARY)
+  set( H3DPhysics_INCLUDE_DIR ${H3DPhysics_INCLUDE_DIR} )
+  set( H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} )
+else()
+  set( H3DPhysics_FOUND 0 )
+  set( H3DPhysics_LIBRARIES )
+  set( H3DPhysics_INCLUDE_DIR )
+endif()
 
 # Report the results.
-if(NOT H3DPhysics_FOUND)
-  set(H3DPhysics_DIR_MESSAGE
-    "H3DPhysics was not found. Make sure H3DPhysics_LIBRARY ( and/or H3DPhysics_DEBUG_LIBRARY ) and H3DPhysics_INCLUDE_DIR are set.")
-  if(H3DPhysics_FIND_REQUIRED)
-    message(FATAL_ERROR "${H3DPhysics_DIR_MESSAGE}")
-  elseif(NOT H3DPhysics_FIND_QUIETLY)
-    message(STATUS "${H3DPhysics_DIR_MESSAGE}")
-  endif(H3DPhysics_FIND_REQUIRED)
-endif(NOT H3DPhysics_FOUND)
+if( NOT H3DPhysics_FOUND )
+  set( H3DPhysics_DIR_MESSAGE
+       "H3DPhysics was not found. Make sure H3DPhysics_LIBRARY ( and/or H3DPhysics_DEBUG_LIBRARY ) and H3DPhysics_INCLUDE_DIR are set." )
+  if( H3DPhysics_FIND_REQUIRED )
+    message( FATAL_ERROR "${H3DPhysics_DIR_MESSAGE}" )
+  elseif( NOT H3DPhysics_FIND_QUIETLY )
+    message( STATUS "${H3DPhysics_DIR_MESSAGE}" )
+  endif()
+endif()

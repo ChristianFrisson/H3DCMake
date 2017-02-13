@@ -19,38 +19,38 @@ find_path( SPIDERMONKEY_INCLUDE_DIR NAMES jsapi.h
                  /usr/include/js
                  ${module_include_search_paths}
            DOC "Path in which the file jsapi.h is located." )
-mark_as_advanced(SPIDERMONKEY_INCLUDE_DIR)
+mark_as_advanced( SPIDERMONKEY_INCLUDE_DIR )
 
 # Look for the library.
 # Does this work on UNIX systems? (LINUX)
-if(WIN32)
+if( WIN32 )
   find_library( SPIDERMONKEY_LIBRARY NAMES js32
                 PATHS ${module_lib_search_paths}
                 DOC "Path to js32 library." )
-else(WIN32)
+else()
   find_library( SPIDERMONKEY_LIBRARY NAMES mozjs js
                                      DOC "Path to mozjs library." )
-endif(WIN32)
-mark_as_advanced(SPIDERMONKEY_LIBRARY)
+endif()
+mark_as_advanced( SPIDERMONKEY_LIBRARY )
 
 # Copy the results to the output variables.
-if(SPIDERMONKEY_INCLUDE_DIR AND SPIDERMONKEY_LIBRARY)
-  set(SPIDERMONKEY_FOUND 1)
-  set(SPIDERMONKEY_LIBRARIES ${SPIDERMONKEY_LIBRARY})
-  set(SPIDERMONKEY_INCLUDE_DIR ${SPIDERMONKEY_INCLUDE_DIR})
-else(SPIDERMONKEY_INCLUDE_DIR AND SPIDERMONKEY_LIBRARY)
-  set(SPIDERMONKEY_FOUND 0)
-  set(SPIDERMONKEY_LIBRARIES)
-  set(SPIDERMONKEY_INCLUDE_DIR)
-endif(SPIDERMONKEY_INCLUDE_DIR AND SPIDERMONKEY_LIBRARY)
+if( SPIDERMONKEY_INCLUDE_DIR AND SPIDERMONKEY_LIBRARY )
+  set( SPIDERMONKEY_FOUND 1 )
+  set( SPIDERMONKEY_LIBRARIES ${SPIDERMONKEY_LIBRARY} )
+  set( SPIDERMONKEY_INCLUDE_DIR ${SPIDERMONKEY_INCLUDE_DIR} )
+else()
+  set( SPIDERMONKEY_FOUND 0 )
+  set( SPIDERMONKEY_LIBRARIES )
+  set( SPIDERMONKEY_INCLUDE_DIR )
+endif()
 
 # Report the results.
-if(NOT SPIDERMONKEY_FOUND)
-  set(SPIDERMONKEY_DIR_MESSAGE
-    "SPIDERMONKEY was not found. Make sure SPIDERMONKEY_LIBRARY and SPIDERMONKEY_INCLUDE_DIR are set.")
-  if(Spidermonkey_FIND_REQUIRED)
-    message(FATAL_ERROR "${SPIDERMONKEY_DIR_MESSAGE}")
-  elseif(NOT Spidermonkey_FIND_QUIETLY)
-    message(STATUS "${SPIDERMONKEY_DIR_MESSAGE}")
-  endif(Spidermonkey_FIND_REQUIRED)
-endif(NOT SPIDERMONKEY_FOUND)
+if( NOT SPIDERMONKEY_FOUND )
+  set( SPIDERMONKEY_DIR_MESSAGE
+       "SPIDERMONKEY was not found. Make sure SPIDERMONKEY_LIBRARY and SPIDERMONKEY_INCLUDE_DIR are set." )
+  if( Spidermonkey_FIND_REQUIRED )
+    message( FATAL_ERROR "${SPIDERMONKEY_DIR_MESSAGE}" )
+  elseif( NOT Spidermonkey_FIND_QUIETLY )
+    message( STATUS "${SPIDERMONKEY_DIR_MESSAGE}" )
+  endif()
+endif()

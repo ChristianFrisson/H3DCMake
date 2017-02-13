@@ -14,7 +14,7 @@
 # 
 
 set( DCMTK_DIR "" CACHE PATH "Set this to the root of the installed dcmtk files to find include files and libraries." )
-mark_as_advanced(DCMTK_DIR)
+mark_as_advanced( DCMTK_DIR )
 
 include( H3DExternalSearchPath )
 set( MSVC_BEFORE_VS2010 OFF )
@@ -36,16 +36,16 @@ if( MSVC_BEFORE_VS2010 )
   while( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
     math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
     math( EXPR TEMP_MSVC_VERSION "${TEMP_MSVC_VERSION} + 100" )
-  endwhile( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
+  endwhile()
   set( DCMTK_LIBRARY_POSTFIX "_vc${H3D_MSVC_VERSION}" )
 endif()
 
 if( NOT WIN32 )
   set( DCMTK_HAVE_CONFIG_H "NO" CACHE BOOL "On some systems the compile flag -DHAVE_CONFIG_H needs to be defined because of DCMTK. If DCMTK headers are causing problem turn this flag on." )
   if( DCMTK_HAVE_CONFIG_H )
-    set(CMAKE_CXX_FLAGS "-DHAVE_CONFIG_H")
-  endif( DCMTK_HAVE_CONFIG_H )
-endif( NOT WIN32 )
+    set( CMAKE_CXX_FLAGS "-DHAVE_CONFIG_H" )
+  endif()
+endif()
 
 
 find_path( DCMTK_config_INCLUDE_DIR NAMES dcmtk/config/osconfig.h
@@ -55,7 +55,7 @@ find_path( DCMTK_config_INCLUDE_DIR NAMES dcmtk/config/osconfig.h
                  ${module_file_path}/../../dcmtk/include
                  /usr/local/dicom/include
            DOC "Path in which the file dcmtk/config/osconfig.h is located." )
-mark_as_advanced(DCMTK_config_INCLUDE_DIR)
+mark_as_advanced( DCMTK_config_INCLUDE_DIR )
 
 set( DCMTK_IS_VERSION360 FALSE )
 if( EXISTS ${DCMTK_config_INCLUDE_DIR}/dcmtk/config/osconfig.h )
@@ -63,10 +63,10 @@ if( EXISTS ${DCMTK_config_INCLUDE_DIR}/dcmtk/config/osconfig.h )
   list( LENGTH list_of_defines list_of_defines_length )
   if( list_of_defines_length )
     set( DCMTK_IS_VERSION360 TRUE )
-  endif( list_of_defines_length )
+  endif()
 endif()
 
-set( DCMTK_lib_names_internal dcmjpeg ofstd oflog dcmimage dcmdata dcmimgle  )
+set( DCMTK_lib_names_internal dcmjpeg ofstd oflog dcmimage dcmdata dcmimgle )
 if( DCMTK_lib_names )
   set( DCMTK_lib_names_internal ${DCMTK_lib_names} )
 endif()
@@ -85,7 +85,7 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                  ${module_file_path}/../../dcmtk/include
                  /usr/local/dicom/include
            DOC "Path to dcmtk/${dcmtk_lib_name} is located." )
-  mark_as_advanced(DCMTK_${dcmtk_lib_name}_INCLUDE_DIR)
+  mark_as_advanced( DCMTK_${dcmtk_lib_name}_INCLUDE_DIR )
 
   find_library( DCMTK_${dcmtk_lib_name}_LIBRARY "${dcmtk_lib_name}${DCMTK_LIBRARY_POSTFIX}"
                 PATHS ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc
@@ -98,7 +98,7 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                       ${module_file_path}/../../dcmtk/lib
                       /usr/local/dicom/lib
                 DOC "Path to ${dcmtk_lib_name}${DCMTK_LIBRARY_POSTFIX} library." )
-  mark_as_advanced(DCMTK_${dcmtk_lib_name}_LIBRARY)
+  mark_as_advanced( DCMTK_${dcmtk_lib_name}_LIBRARY )
   
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
     # Visual Studio versions later than 2008 needs debug versions to compile in debug
@@ -113,9 +113,9 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                         ${module_file_path}/../../dcmtk/lib
                         /usr/local/dicom/lib
                   DOC "Path to ${dcmtk_lib_name}${DCMTK_LIBRARY_POSTFIX}_d library." )
-    mark_as_advanced(DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY)
+    mark_as_advanced( DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY )
   endif()
-endforeach( dcmtk_lib_name )
+endforeach()
 
 foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
   find_library( DCMTK_${dcmtk_lib_ijg_name}_LIBRARY ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX}
@@ -129,7 +129,7 @@ foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
                     ${module_file_path}/../../dcmtk/lib
                     /usr/local/dicom/lib
               DOC "Path to ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX} library." )
-  mark_as_advanced(DCMTK_${dcmtk_lib_ijg_name}_LIBRARY)
+  mark_as_advanced( DCMTK_${dcmtk_lib_ijg_name}_LIBRARY )
   
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
     find_library( DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX}_d
@@ -143,9 +143,9 @@ foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
                         ${module_file_path}/../../dcmtk/lib
                         /usr/local/dicom/lib
                   DOC "Path to ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX}_d library." )
-    mark_as_advanced(DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY)
+    mark_as_advanced( DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY )
   endif()
-endforeach( dcmtk_lib_ijg_name )
+endforeach()
 
 set( HAVE_INCLUDE_DIRS ON )
 set( HAVE_RELEASE_LIBS ON )
@@ -162,7 +162,7 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
   if( NOT DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY )
     set( HAVE_DEBUG_LIBS OFF )
   endif()
-endforeach( dcmtk_lib_name )
+endforeach()
 
 foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
   if( NOT DCMTK_${dcmtk_lib_ijg_name}_LIBRARY )
@@ -171,16 +171,16 @@ foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
   if( NOT DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY )
     set( HAVE_DEBUG_LIBS OFF )
   endif()
-endforeach( dcmtk_lib_ijg_name )
+endforeach()
 
 set( HAVE_TIFF_OR_NO_TIFF_NEEDED 1 )
 if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS )
   set( DCMTK_Config_file_name "dummy" )
   if( WIN32 )
     set( DCMTK_Config_file_name "cfwin32" )
-  else( WIN32 )
+  else()
     set( DCMTK_Config_file_name "cfunix" )
-  endif( WIN32 )
+  endif()
   
   set( DCMTK_Config_file ${DCMTK_config_INCLUDE_DIR}/dcmtk/config/${DCMTK_Config_file_name}.h )
   if( NOT EXISTS ${DCMTK_Config_file} )
@@ -197,10 +197,10 @@ if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS )
     if( list_of_defines_length )
       # Dicom is compiled with tiff support. Find libtiff as well.
       find_package( TIFF )
-      if(NOT TIFF_FOUND)
+      if( NOT TIFF_FOUND )
         set( HAVE_TIFF_OR_NO_TIFF_NEEDED 0 )
-      endif(NOT TIFF_FOUND)
-    endif( list_of_defines_length )
+      endif()
+    endif()
   endif()
 endif()
 
@@ -211,17 +211,17 @@ if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS AND HAVE_TIFF_OR_NO_TIFF_NEEDED )
   
   foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
     set( DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIR} ${DCMTK_${dcmtk_lib_name}_INCLUDE_DIR} )
-  endforeach( dcmtk_lib_name )
+  endforeach()
 
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
     # MSVC after version 10(2010) needs debug libraries since it cannot compile with
     # the release versions
     foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
       set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} optimized ${DCMTK_${dcmtk_lib_name}_LIBRARY} debug ${DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY} )
-    endforeach( dcmtk_lib_name )
+    endforeach()
     foreach( DCMTK_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
       set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} optimized ${DCMTK_${DCMTK_lib_ijg_name}_LIBRARY} debug ${DCMTK_${DCMTK_lib_ijg_name}_DEBUG_LIBRARY} )
-    endforeach( DCMTK_lib_ijg_name )
+    endforeach()
   else()
     
     if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
@@ -230,38 +230,38 @@ if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS AND HAVE_TIFF_OR_NO_TIFF_NEEDED )
 
     foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
       set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} ${DCMTK_${dcmtk_lib_name}_LIBRARY} )
-    endforeach( dcmtk_lib_name )
+    endforeach()
     foreach( DCMTK_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
       set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} ${DCMTK_${DCMTK_lib_ijg_name}_LIBRARY} )
-    endforeach( DCMTK_lib_ijg_name )
+    endforeach()
   endif()
 
   if( WIN32 )
     set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} netapi32 ws2_32 )
-  endif( WIN32 )
+  endif()
   
   if( TIFF_FOUND )
     set( DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIR} ${TIFF_INCLUDE_DIR} )
     set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} ${TIFF_LIBRARIES} )
-  endif( TIFF_FOUND )
+  endif()
 
-endif( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS AND HAVE_TIFF_OR_NO_TIFF_NEEDED )
+endif()
 
 # Report the results.
-if(NOT DCMTK_FOUND)
+if( NOT DCMTK_FOUND )
   set( DCMTK_DIR_MESSAGE
-       "DCMTK was not found. Make sure all cmake variables with prefix DCMTK_ set, see each one for description.")
+       "DCMTK was not found. Make sure all cmake variables with prefix DCMTK_ set, see each one for description." )
   if( NOT HAVE_TIFF_OR_NO_TIFF_NEEDED )
     set( DCMTK_DIR_MESSAGE "${DCMTK_DIR_MESSAGE} Also make sure that TIFF is found." )
-  endif( NOT HAVE_TIFF_OR_NO_TIFF_NEEDED )
-  if(DCMTK_FIND_REQUIRED)
+  endif()
+  if( DCMTK_FIND_REQUIRED )
     set( DCMTK_DIR_MESSAGE
-       "${DCMTK_DIR_MESSAGE} You need the Dicom Toolkit libraries and headers to compile.")
-    message(FATAL_ERROR "${DCMTK_DIR_MESSAGE}")
-  elseif(NOT DCMTK_FIND_QUIETLY)
+       "${DCMTK_DIR_MESSAGE} You need the Dicom Toolkit libraries and headers to compile." )
+    message( FATAL_ERROR "${DCMTK_DIR_MESSAGE}" )
+  elseif( NOT DCMTK_FIND_QUIETLY )
     set( DCMTK_DIR_MESSAGE
-       "${DCMTK_DIR_MESSAGE} If you do not have the Dicom Toolkit libraries and headers you will not be able to load dicom images.")
-    message(STATUS "${DCMTK_DIR_MESSAGE}")
-  endif(DCMTK_FIND_REQUIRED)
-endif(NOT DCMTK_FOUND)
+       "${DCMTK_DIR_MESSAGE} If you do not have the Dicom Toolkit libraries and headers you will not be able to load dicom images." )
+    message( STATUS "${DCMTK_DIR_MESSAGE}" )
+  endif()
+endif()
 
