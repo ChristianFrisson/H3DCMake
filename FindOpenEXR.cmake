@@ -1,17 +1,37 @@
 # - Find OpenEXR
 # Finds OpenEXR libraries from ILM for handling HRD / float image formats
 #
-#  OpenEXR_INCLUDE_DIR -  where to find OpenEXR headers
+#  OpenEXR_INCLUDE_DIRS -  where to find OpenEXR headers
 #  OpenEXR_LIBRARIES    - List of libraries when using OpenEXR.
 #  OpenEXR_FOUND        - True if OpenEXR found.
 
+include( H3DExternalSearchPath )
+set( open_exr_partial_var_names IMF THREAD MATH HALF EX )
+set( open_exr_var_names )
+set( open_exr_var_names_debug )
+set( open_exr_old_var_names )
+set( open_exr_old_var_names_debug )
+foreach( _var_name ${open_exr_partial_var_names} )
+  list( APPEND open_exr_old_var_names OpenEXR_LIBRARY_${_var_name} )
+  list( APPEND open_exr_old_var_names_debug OpenEXR_DEBUG_LIBRARY_${_var_name} )
+endforeach()
 
-#OpenEXR requires zlib.
-find_package(H3DZLIB)
+set( open_exr_lib_names IlmImf IlmThread Imath Half Iex )
+set( doc_strings )
+set( doc_strings_debug )
+foreach( _lib_name ${open_exr_lib_names} )
+  list( APPEND open_exr_var_names OpenEXR_${_lib_name}_LIBRARY_RELEASE )
+  list( APPEND open_exr_var_names_debug OpenEXR_${_lib_name}_LIBRARY_DEBUG )
+  list( APPEND doc_strings "Path to ${_lib_name} library." )
+  list( APPEND doc_strings_debug "Path to ${_lib_name}_d library." )
+endforeach()
+
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${open_exr_var_names} ${open_exr_var_names_debug}
+                                              OLD_VARIABLE_NAMES ${open_exr_old_var_names} ${open_exr_old_var_names_debug}
+                                              DOC_STRINGS ${doc_strings} ${doc_strings_debug} )
 
 set( OpenEXRIncludeSearchPath "" )
 set( OpenEXRLibrarySearchPath "" )
-include( H3DExternalSearchPath )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 set( check_if_h3d_external_matches_vs_version ON )
 getExternalSearchPathsH3D( OpenEXRIncludeSearchPath OpenEXRLibrarySearchPath ${module_file_path} )
@@ -21,75 +41,54 @@ find_path( OpenEXR_INCLUDE_DIR NAMES OpenEXR/Iex.h
            PATHS ${OpenEXRIncludeSearchPath}
            DOC "Path in which the file OpenEXR/Iex.h is located." )
 
-# Look for the library.
-find_library( OpenEXR_LIBRARY_IMF NAMES IlmImf 
-              PATHS ${OpenEXRLibrarySearchPath}
-              DOC "Path to IlmImf library." )
+set( i 0 )
+foreach( _var_name ${open_exr_var_names} )
+  list( GET doc_strings ${i} _doc_string )
+  list( GET open_exr_lib_names ${i} _lib_name )
+  # Look for the library.
+  find_library( ${_var_name} NAMES ${_lib_name}
+                PATHS ${OpenEXRLibrarySearchPath}
+                DOC ${_doc_string} )
+  math( EXPR i "${i} + 1")
+  mark_as_advanced( ${_var_name} )
+endforeach()
 
-find_library( OpenEXR_LIBRARY_THREAD NAMES IlmThread 
-              PATHS ${OpenEXRLibrarySearchPath}
-              DOC "Path to IlmThread library." )
-
-find_library( OpenEXR_LIBRARY_MATH NAMES Imath 
-              PATHS ${OpenEXRLibrarySearchPath}
-              DOC "Path to Imath library." )
-
-find_library( OpenEXR_LIBRARY_HALF NAMES Half 
-              PATHS ${OpenEXRLibrarySearchPath}
-              DOC "Path to Half library." )
-
-find_library( OpenEXR_LIBRARY_EX NAMES Iex 
-              PATHS ${OpenEXRLibrarySearchPath}
-              DOC "Path to Iex library." )
-
+# OpenEXR requires zlib.
+find_package(H3DZLIB)
+set( openexr_required_lib_vars ${open_exr_var_names} )
 if( WIN32 )
-  find_library( OpenEXR_DEBUG_LIBRARY_IMF NAMES IlmImf_d 
-                PATHS ${OpenEXRLibrarySearchPath}
-                DOC "Path to IlmImf library." )
-
-  find_library( OpenEXR_DEBUG_LIBRARY_THREAD NAMES IlmThread_d
-                PATHS ${OpenEXRLibrarySearchPath}
-                DOC "Path to IlmThread library." )
-
-  find_library( OpenEXR_DEBUG_LIBRARY_MATH NAMES Imath_d
-                PATHS ${OpenEXRLibrarySearchPath}
-                DOC "Path to Imath library." )
-
-  find_library( OpenEXR_DEBUG_LIBRARY_HALF NAMES Half_d
-                PATHS ${OpenEXRLibrarySearchPath}
-                DOC "Path to Half library." )
-
-  find_library( OpenEXR_DEBUG_LIBRARY_EX NAMES Iex_d
-                PATHS ${OpenEXRLibrarySearchPath}
-                DOC "Path to Iex library." )
-  mark_as_advanced( OpenEXR_DEBUG_LIBRARY_IMF OpenEXR_DEBUG_LIBRARY_THREAD OpenEXR_DEBUG_LIBRARY_MATH OpenEXR_DEBUG_LIBRARY_HALF OpenEXR_DEBUG_LIBRARY_EX )
+  set( i 0 )
+  foreach( _var_name ${open_exr_var_names_debug} )
+    list( GET doc_strings_debug ${i} _doc_string )
+    list( GET open_exr_lib_names ${i} _lib_name )
+    # Look for the library.
+    find_library( ${_var_name} NAMES ${_lib_name}_d
+                  PATHS ${OpenEXRLibrarySearchPath}
+                  DOC ${_doc_string} )
+    math( EXPR i "${i} + 1")
+    mark_as_advanced( ${_var_name} )
+  endforeach()
+  
+  set( openexr_required_lib_vars ${openexr_required_lib_vars} ${open_exr_var_names_debug} )
 endif()
 
-if( ZLIB_FOUND AND OpenEXR_INCLUDE_DIR AND OpenEXR_LIBRARY_IMF AND OpenEXR_LIBRARY_THREAD AND OpenEXR_LIBRARY_MATH AND OpenEXR_LIBRARY_HALF AND OpenEXR_LIBRARY_EX )
-  set( OpenEXR_FOUND 1 )
-  if( OpenEXR_DEBUG_LIBRARY_IMF AND OpenEXR_DEBUG_LIBRARY_THREAD AND OpenEXR_DEBUG_LIBRARY_MATH AND OpenEXR_DEBUG_LIBRARY_HALF AND OpenEXR_DEBUG_LIBRARY_EX )
-    set( OpenEXR_LIBRARIES optimized ${OpenEXR_LIBRARY_IMF} debug ${OpenEXR_DEBUG_LIBRARY_IMF}
-                           optimized ${OpenEXR_LIBRARY_THREAD} debug ${OpenEXR_DEBUG_LIBRARY_THREAD}
-                           optimized ${OpenEXR_LIBRARY_MATH} debug ${OpenEXR_DEBUG_LIBRARY_MATH}
-                           optimized ${OpenEXR_LIBRARY_HALF} debug ${OpenEXR_DEBUG_LIBRARY_HALF}
-                           optimized ${OpenEXR_LIBRARY_EX} debug ${OpenEXR_DEBUG_LIBRARY_EX})
-  else()
-    set( OpenEXR_LIBRARIES ${OpenEXR_LIBRARY_IMF} ${OpenEXR_LIBRARY_THREAD} ${OpenEXR_LIBRARY_MATH} ${OpenEXR_LIBRARY_HALF} ${OpenEXR_LIBRARY_EX} )
-  endif()
-  if( WIN32 )
-    set( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} )
-  else()
-    set( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR ${OpenEXR_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} ) # The linux OpenEXR headers seems to not have "OpenEXR" in its include paths.
-  endif()
-  set( OpenEXR_LIBRARIES ${OpenEXR_LIBRARIES} ${ZLIB_LIBRARIES} )
-  if( WIN32 )
-    ADD_DEFINITIONS(-DOPENEXR_DLL)
-  endif()
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set OpenEXR_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( OpenEXR DEFAULT_MSG
+                                   ZLIB_FOUND OpenEXR_INCLUDE_DIR ${openexr_required_lib_vars} )
 
-# Report the results.
-if( NOT OpenEXR_FOUND )
-  message( STATUS "OpenEXR was not found. Handling OpenEXR images will not be supported. OpenEXR also requires zlib." )
-endif()
+set( OpenEXR_LIBRARIES )
+foreach( _lib_var ${openexr_required_lib_vars} )
+  set( OpenEXR_LIBRARIES ${OpenEXR_LIBRARIES} ${${_lib_var}} )
+endforeach()
+set( OpenEXR_LIBRARIES ${OpenEXR_LIBRARIES} ${ZLIB_LIBRARIES} )
+set( OpenEXR_INCLUDE_DIRS ${OpenEXR_INCLUDE_DIR}/OpenEXR ${OpenEXR_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} )
 
-mark_as_advanced( OpenEXR_INCLUDE_DIR OpenEXR_LIBRARY_IMF OpenEXR_LIBRARY_THREAD OpenEXR_LIBRARY_MATH OpenEXR_LIBRARY_HALF OpenEXR_LIBRARY_EX )
+# Backwards compatibility values set here.
+set( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIRS} )
+set( OpenEXR_FOUND ${OPENEXR_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
+
+if( OpenEXR_FOUND AND WIN32 )
+  ADD_DEFINITIONS(-DOPENEXR_DLL)
+endif()

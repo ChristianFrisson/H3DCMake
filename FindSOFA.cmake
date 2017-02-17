@@ -1,7 +1,7 @@
 # - Find SOFA
 # Find the native SOFA headers and libraries.
 #
-#  SOFA_INCLUDE_DIR -  where to find ode.h, etc.
+#  SOFA_INCLUDE_DIRS - Where to find sofa.h, etc.
 #  SOFA_LIBRARIES    - List of libraries when using SOFA.
 #  SOFA_FOUND        - True if SOFA found.
 

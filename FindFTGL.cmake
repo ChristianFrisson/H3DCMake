@@ -1,7 +1,7 @@
 # - Find FTGL
 # Find the native FTGL headers and libraries.
 #
-#  FTGL_INCLUDE_DIR -  where to find FTGL.h, etc.
+#  FTGL_INCLUDE_DIRS - Where to find FTGL.h, etc.
 #  FTGL_LIBRARIES    - List of libraries when using FTGL.
 #  FTGL_FOUND        - True if FTGL found.
 #  FTGL_INCLUDE_IS_UPPER - True if the include file to use is FTGL.h.
@@ -41,75 +41,59 @@ find_library( FTGL_LIBRARY NAMES ftgl ftgl_dynamic_213rc5 ftgl_dynamic_MTD
 mark_as_advanced( FTGL_LIBRARY )
 
 if( WIN32 AND PREFER_STATIC_LIBRARIES )
-  set( FTGL_STATIC_LIBRARY_NAME ftgl_static_MTD )
+  set( ftgl_static_library_name ftgl_static_MTD )
   if( MSVC80 )
-    set( FTGL_STATIC_LIBRARY_NAME ftgl_static_MTD_vc8 )
+    set( ftgl_static_library_name ftgl_static_MTD_vc8 )
   elseif( MSVC90 )
-    set( FTGL_STATIC_LIBRARY_NAME ftgl_static_MTD_vc9 )
+    set( ftgl_static_library_name ftgl_static_MTD_vc9 )
   endif()
+  
+  handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FTGL_STATIC_LIBRARY_RELEASE FTGL_STATIC_LIBRARY_DEBUG
+                                                OLD_VARIABLE_NAMES FTGL_STATIC_LIBRARY FTGL_STATIC_DEBUG_LIBRARY
+                                                DOC_STRINGS "Path to ftgl static library."
+                                                            "Path to ftgl static debug library." )
   
   set( module_include_search_paths "" )
   set( module_lib_search_paths "" )
   getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
   
-  find_library( FTGL_STATIC_LIBRARY NAMES ${FTGL_STATIC_LIBRARY_NAME}
+  find_library( FTGL_STATIC_LIBRARY_RELEASE NAMES ${ftgl_static_library_name}
                                          PATHS ${module_lib_search_paths}
                                     DOC "Path to ftgl static library." )
-  mark_as_advanced( FTGL_STATIC_LIBRARY )
+  mark_as_advanced( FTGL_STATIC_LIBRARY_RELEASE )
   
-  find_library( FTGL_STATIC_DEBUG_LIBRARY NAMES ${FTGL_STATIC_LIBRARY_NAME}_d
+  find_library( FTGL_STATIC_LIBRARY_DEBUG NAMES ${ftgl_static_library_name}_d
                                                 PATHS ${module_lib_search_paths}
                                           DOC "Path to ftgl static debug library." )
-  mark_as_advanced( FTGL_STATIC_DEBUG_LIBRARY )
-  
-  if( FTGL_STATIC_LIBRARY OR FTGL_STATIC_DEBUG_LIBRARY )
-    set( FTGL_STATIC_LIBRARIES_FOUND 1 )
-  endif()
+  mark_as_advanced( FTGL_STATIC_LIBRARY_DEBUG )
 endif()
 
-if( FTGL_LIBRARY OR FTGL_STATIC_LIBRARIES_FOUND )
-  set( FTGL_LIBRARIES_FOUND 1 )
-endif()
+include( FindPackageHandleStandardArgs )
+include( SelectLibraryConfigurations )
+set( ftgl_static_lib 0 )
 
-# Copy the results to the output variables.
-if( FTGL_INCLUDE_DIR AND FTGL_LIBRARIES_FOUND )
-  set( FTGL_FOUND 1 )
-  
-  if( WIN32 AND PREFER_STATIC_LIBRARIES AND FTGL_STATIC_LIBRARIES_FOUND )
-    if( FTGL_STATIC_LIBRARY )
-      set( FTGL_LIBRARIES optimized ${FTGL_STATIC_LIBRARY} )
-    else()
-      set( FTGL_LIBRARIES optimized ${FTGL_STATIC_LIBRARY_NAME} )
-      message( STATUS "FTGL static release libraries not found. Release build might not work." )
+# handle the QUIETLY and REQUIRED arguments and set FTGL_FOUND to TRUE
+# if all listed variables are TRUE
+if( WIN32 AND PREFER_STATIC_LIBRARIES )
+  select_library_configurations( FTGL_STATIC )
+  find_package_handle_standard_args( FTGL DEFAULT_MSG
+                                     FTGL_STATIC_LIBRARY FTGL_INCLUDE_DIR )
+  set( FTGL_LIBRARIES ${FTGL_STATIC_LIBRARIES} )
+  set( ftgl_static_lib ${FTGL_FOUND} ) # FTGL_FOUND is set by find_package_handle_standard_args and should be up to date here.
+  if( FTGL_FOUND AND MSVC )
+    if( NOT FTGL_STATIC_LIBRARY_RELEASE )
+      message( WARNING "FTGL static release library not found. Release build might not work properly. To get rid of this warning set FTGL_STATIC_LIBRARY_RELEASE." )
     endif()
-
-    if( FTGL_STATIC_DEBUG_LIBRARY )
-      set( FTGL_LIBRARIES ${FTGL_LIBRARIES} debug ${FTGL_STATIC_DEBUG_LIBRARY} )
-    else()
-      set( FTGL_LIBRARIES ${FTGL_LIBRARIES} debug ${FTGL_STATIC_LIBRARY_NAME}_d )
-      message( STATUS "FTGL static debug libraries not found. Debug build might not work." )
+    if( NOT FTGL_STATIC_LIBRARY_DEBUG )
+      message( WARNING "FTGL static debug library not found. Debug build might not work properly. To get rid of this warning set FTGL_STATIC_LIBRARY_DEBUG." )
     endif()
-    
-    set( FTGL_LIBRARY_STATIC 1 )
-  else()
-    set( FTGL_LIBRARIES ${FTGL_LIBRARY} )
-  endif()
-
-  set( FTGL_INCLUDE_DIR ${FTGL_INCLUDE_DIR} )
-else()
-  set( FTGL_FOUND 0 )
-  set( FTGL_LIBRARIES )
-  set( FTGL_INCLUDE_DIR )
-endif()
-
-# Report the results.
-if( NOT FTGL_FOUND )
-  set( FTGL_DIR_MESSAGE
-       "FTGL was not found. Make sure FTGL_LIBRARY and FTGL_INCLUDE_DIR are set to the directories containing the include and lib files for FTGL. If you do not have the library you will not be able to use the Text node." )
-  if( FTGL_FIND_REQUIRED )
-      message( FATAL_ERROR "${FTGL_DIR_MESSAGE}" )
-  elseif( NOT FTGL_FIND_QUIETLY )
-    message( STATUS "${FTGL_DIR_MESSAGE}" )
-  else()
   endif()
 endif()
+
+if( NOT ftgl_static_lib ) # This goes a bit against the standard, the reason is that if static libraries are desired the normal ones are only fallback.
+  find_package_handle_standard_args( FTGL DEFAULT_MSG
+                                     FTGL_LIBRARY FTGL_INCLUDE_DIR )
+  set( FTGL_LIBRARIES ${FTGL_LIBRARY} )
+endif()
+
+set( FTGL_INCLUDE_DIRS ${FTGL_INCLUDE_DIR} )

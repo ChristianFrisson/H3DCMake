@@ -1,46 +1,42 @@
-# - Find AUDIOFILE
-# Find the native AUDIOFILE headers and libraries.
+# - Find Audiofile
+# Find the native Audiofile headers and libraries.
 #
-#  AUDIOFILE_INCLUDE_DIR -  where to find AUDIOFILE.h, etc.
-#  AUDIOFILE_LIBRARIES    - List of libraries when using AUDIOFILE.
-#  AUDIOFILE_FOUND        - True if AUDIOFILE found.
+#  Audiofile_INCLUDE_DIRS -  where to find audiofile.h, etc.
+#  Audiofile_LIBRARIES    - List of libraries when using Audiofile.
+#  Audiofile_FOUND        - True if Audiofile found.
 
 include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES Audiofile_INCLUDE_DIR Audiofile_LIBRARY
+                                              DOC_STRINGS "Path in which the file audiofile.h is located."
+                                                          "Path to audiofile library." )
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "libaudiofile" )
 
 # Look for the header file.
-find_path( AUDIOFILE_INCLUDE_DIR NAMES audiofile.h
+find_path( Audiofile_INCLUDE_DIR NAMES audiofile.h
            PATHS /usr/local/include
                  ${module_include_search_paths}
            DOC "Path in which the file audiofile.h is located." )
-mark_as_advanced( AUDIOFILE_INCLUDE_DIR )
+mark_as_advanced( Audiofile_INCLUDE_DIR )
 
 # Look for the library.
 # Does this work on UNIX systems? (LINUX)
-find_library( AUDIOFILE_LIBRARY NAMES audiofile
+find_library( Audiofile_LIBRARY NAMES audiofile
               PATHS ${module_lib_search_paths}
               DOC "Path to audiofile library." )
-mark_as_advanced( AUDIOFILE_LIBRARY )
+mark_as_advanced( Audiofile_LIBRARY )
 
-# Copy the results to the output variables.
-if( AUDIOFILE_INCLUDE_DIR AND AUDIOFILE_LIBRARY )
-  set( AUDIOFILE_FOUND 1 )
-  set( AUDIOFILE_LIBRARIES ${AUDIOFILE_LIBRARY} )
-  set( AUDIOFILE_INCLUDE_DIR ${AUDIOFILE_INCLUDE_DIR} )
-else()
-  set( AUDIOFILE_FOUND 0 )
-  set( AUDIOFILE_LIBRARIES )
-  set( AUDIOFILE_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set Audiofile_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( Audiofile DEFAULT_MSG
+                                   Audiofile_LIBRARY Audiofile_INCLUDE_DIR )
 
-# Report the results.
-if( NOT AUDIOFILE_FOUND )
-  set( AUDIOFILE_DIR_MESSAGE
-       "AUDIOFILE was not found. Make sure AUDIOFILE_LIBRARY and AUDIOFILE_INCLUDE_DIR are set." )
-  if( Audiofile_FIND_REQUIRED )
-    message( FATAL_ERROR "${AUDIOFILE_DIR_MESSAGE}" )
-  elseif( NOT Audiofile_FIND_QUIETLY )
-    message( STATUS "${AUDIOFILE_DIR_MESSAGE}" )
-  endif()
-endif()
+set( Audiofile_LIBRARIES ${Audiofile_LIBRARY} )
+set( Audiofile_INCLUDE_DIRS ${Audiofile_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( AUDIOFILE_INCLUDE_DIR ${Audiofile_INCLUDE_DIRS} )
+set( AUDIOFILE_LIBRARIES ${Audiofile_LIBRARIES} )
+set( Audiofile_FOUND ${AUDIOFILE_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

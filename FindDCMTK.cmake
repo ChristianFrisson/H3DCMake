@@ -1,6 +1,6 @@
 # - find DCMTK libraries
 #
-#  DCMTK_INCLUDE_DIR   - Directories to include to use DCMTK
+#  DCMTK_INCLUDE_DIRS   - Directories to include to use DCMTK
 #  DCMTK_LIBRARIES     - Files to link against to use DCMTK
 #  DCMTK_FOUND         - If false, don't try to use DCMTK
 #  DCMTK_DIR           - (optional) Source directory for DCMTK
@@ -204,13 +204,14 @@ if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS )
   endif()
 endif()
 
+set( DCMTK_INCLUDE_DIRS "" )
+set( DCMTK_LIBRARIES "" )
+set( DCMTK_FOUND "NO" )
 if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS AND HAVE_TIFF_OR_NO_TIFF_NEEDED )
   set( DCMTK_FOUND "YES" )
-  set( DCMTK_INCLUDE_DIR "" )
-  set( DCMTK_LIBRARIES "" )
   
   foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
-    set( DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIR} ${DCMTK_${dcmtk_lib_name}_INCLUDE_DIR} )
+    set( DCMTK_INCLUDE_DIRS ${DCMTK_INCLUDE_DIRS} ${DCMTK_${dcmtk_lib_name}_INCLUDE_DIR} )
   endforeach()
 
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
@@ -241,7 +242,7 @@ if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS AND HAVE_TIFF_OR_NO_TIFF_NEEDED )
   endif()
   
   if( TIFF_FOUND )
-    set( DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIR} ${TIFF_INCLUDE_DIR} )
+    set( DCMTK_INCLUDE_DIRS ${DCMTK_INCLUDE_DIRS} ${TIFF_INCLUDE_DIR} )
     set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} ${TIFF_LIBRARIES} )
   endif()
 
@@ -265,3 +266,5 @@ if( NOT DCMTK_FOUND )
   endif()
 endif()
 
+# Backwards compatibility values set here.
+set( DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIRS} )

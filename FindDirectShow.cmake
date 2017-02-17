@@ -1,83 +1,79 @@
 # - Find DirectShow, windows only
 #
-#  DIRECTSHOW_INCLUDE_DIR -  where to find streams.h.
-#  DIRECTSHOW_LIBRARIES    - List of libraries when using DirectShow.
-#  DIRECTSHOW_FOUND        - True if DirectShow is found.
+#  DirectShow_INCLUDE_DIRS - Where to find streams.h.
+#  DirectShow_LIBRARIES    - List of libraries when using DirectShow.
+#  DirectShow_FOUND        - True if DirectShow is found.
 
 include( testIfVCExpress )
 testIfVCExpress()
 
 include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES DirectShow_INCLUDE_DIR_STREAMS_H DirectShow_INCLUDE_DIR_DDRAW_H DirectShow_INCLUDE_DIR_INTSAFE_H DirectShow_LIBRARY
+                                              DOC_STRINGS "Path in which the file streams.h is located."
+                                                          "Path in which the file ddraw.h is located."
+                                                          "Path in which the file intsafe.h is located."
+                                                          "Path to strmbase library." )
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "DirectShow/BaseClasses" "static" )
 
 if( CMake_HAVE_MFC AND NOT MSVC14 )
   # Look for the header file.
-  set( DIRECTSHOW_EXTRA_DIR )
+  set( directshow_extra_dir )
   if( MSVC70 OR MSVC71 )
-    set( DIRECTSHOW_EXTRA_DIR $ENV{VS71COMNTOOLS}../../Vc7/PlatformSDK/Include )
+    set( directshow_extra_dir $ENV{VS71COMNTOOLS}../../Vc7/PlatformSDK/Include )
   elseif( MSVC80 )
-    set( DIRECTSHOW_EXTRA_DIR $ENV{VS80COMNTOOLS}../../VC/PlatformSDK/Include )
+    set( directshow_extra_dir $ENV{VS80COMNTOOLS}../../VC/PlatformSDK/Include )
   elseif( MSVC90 )
-    set( DIRECTSHOW_EXTRA_DIR $ENV{VS90COMNTOOLS}../../VC/PlatformSDK/Include )
+    set( directshow_extra_dir $ENV{VS90COMNTOOLS}../../VC/PlatformSDK/Include )
   elseif( MSVC10 )
-    set( DIRECTSHOW_EXTRA_DIR $ENV{VS100COMNTOOLS}../../VC/PlatformSDK/Include )
+    set( directshow_extra_dir $ENV{VS100COMNTOOLS}../../VC/PlatformSDK/Include )
   endif()
 
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
-  find_path( DIRECTSHOW_INCLUDE_DIR_STREAMS_H NAMES streams.h
+  find_path( DirectShow_INCLUDE_DIR_STREAMS_H NAMES streams.h
              PATHS ${module_include_search_paths}
              DOC "Path in which the file streams.h is located." )
-  mark_as_advanced( DIRECTSHOW_INCLUDE_DIR_STREAMS_H )
+  mark_as_advanced( DirectShow_INCLUDE_DIR_STREAMS_H )
 
-  find_path( DIRECTSHOW_INCLUDE_DIR_DDRAW_H NAMES ddraw.h
+  find_path( DirectShow_INCLUDE_DIR_DDRAW_H NAMES ddraw.h
              PATHS $ENV{DXSDK_DIR}/include
-                   ${DIRECTSHOW_EXTRA_DIR}
+                   ${directshow_extra_dir}
                    "C:/Program Files (x86)/Microsoft SDKs/Windows/v7.0A/Include"
                    "C:/Program Files/Microsoft SDKs/Windows/v7.0A/Include"
                    "C:/Program Files (x86)/Microsoft SDKs/Windows/v7.0/Include"
                    "C:/Program Files/Microsoft SDKs/Windows/v7.0/Include"
-
              DOC "Path in which the file ddraw.h is located." )
-  mark_as_advanced( DIRECTSHOW_INCLUDE_DIR_DDRAW_H )
+  mark_as_advanced( DirectShow_INCLUDE_DIR_DDRAW_H )
 
-  find_path( DIRECTSHOW_INCLUDE_DIR_INTSAFE_H NAMES intsafe.h
+  find_path( DirectShow_INCLUDE_DIR_INTSAFE_H NAMES intsafe.h
              PATHS $ENV{DXSDK_DIR}/include
-                   ${DIRECTSHOW_EXTRA_DIR}
+                   ${directshow_extra_dir}
                    "C:/Program Files (x86)/Microsoft SDKs/Windows/v7.0A/Include"
                    "C:/Program Files/Microsoft SDKs/Windows/v7.0A/Include"
                    "C:/Program Files (x86)/Microsoft SDKs/Windows/v7.0/Include"
                    "C:/Program Files/Microsoft SDKs/Windows/v7.0/Include"
-   
               DOC "Path in which the file intsafe.h is located." )
-  mark_as_advanced( DIRECTSHOW_INCLUDE_DIR_INTSAFE_H )
+  mark_as_advanced( DirectShow_INCLUDE_DIR_INTSAFE_H )
 
-  find_library( DIRECTSHOW_LIBRARY NAMES strmbase
+  find_library( DirectShow_LIBRARY NAMES strmbase
                 PATHS ${module_lib_search_paths}
                 DOC "Path to strmbase library." )
-  mark_as_advanced( DIRECTSHOW_LIBRARY )
-
-  # Copy the results to the output variables.
-  if( DIRECTSHOW_INCLUDE_DIR_STREAMS_H AND DIRECTSHOW_INCLUDE_DIR_INTSAFE_H AND DIRECTSHOW_INCLUDE_DIR_DDRAW_H AND DIRECTSHOW_LIBRARY )
-    set( DIRECTSHOW_FOUND 1 )
-    set( DIRECTSHOW_LIBRARIES ${DIRECTSHOW_LIBRARY} )
-    set( DIRECTSHOW_INCLUDE_DIR ${DIRECTSHOW_INCLUDE_DIR_STREAMS_H} ${DIRECTSHOW_INCLUDE_DIR_DDRAW_H} )
-  else()
-    set( DIRECTSHOW_FOUND 0 )
-    set( DIRECTSHOW_LIBRARIES )
-    set( DIRECTSHOW_INCLUDE_DIR )
-  endif()
+  mark_as_advanced( DirectShow_LIBRARY )
 
 endif()
 
-# Report the results.
-if( NOT DIRECTSHOW_FOUND )
-  set( DIRECTSHOW_DIR_MESSAGE
-       "Directshow was not found. Set DIRECTSHOW_INCLUDE_DIR_STREAMS_H, DIRECTSHOW_INCLUDE_DIR_INTSAFE_H, DIRECTSHOW_INCLUDE_DIR_DDRAW_H and DIRECTSHOW_LIBRARY to enable Directshow (DSHOW) support." )
-  if( DirectShow_FIND_REQUIRED )
-    message( FATAL_ERROR "${DIRECTSHOW_DIR_MESSAGE}" )
-  elseif( NOT DirectShow_FIND_QUIETLY )
-    message( STATUS "${DIRECTSHOW_DIR_MESSAGE}" )
-  endif()
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set DirectShow_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( DirectShow DEFAULT_MSG
+                                   DirectShow_LIBRARY DirectShow_INCLUDE_DIR_STREAMS_H DirectShow_INCLUDE_DIR_DDRAW_H DirectShow_INCLUDE_DIR_INTSAFE_H )
+
+set( DirectShow_LIBRARIES ${DirectShow_LIBRARY} )
+set( DirectShow_INCLUDE_DIRS ${DirectShow_INCLUDE_DIR_STREAMS_H} ${DirectShow_INCLUDE_DIR_DDRAW_H} )
+
+# Backwards compatibility values set here.
+set( DIRECTSHOW_INCLUDE_DIR ${DirectShow_INCLUDE_DIRS} )
+set( DIRECTSHOW_LIBRARIES ${DirectShow_LIBRARIES} )
+set( DirectShow_FOUND ${DIRECTSHOW_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

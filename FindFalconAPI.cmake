@@ -1,9 +1,16 @@
 # - Find FalconAPI
-# Find the native FALCONAPI headers and libraries.
+# Find the native FalconAPI headers and libraries.
 #
-#  FALCONAPI_INCLUDE_DIR -  where to find hdl.h, etc.
-#  FALCONAPI_LIBRARIES    - List of libraries when using FalconAPI.
-#  FALCONAPI_FOUND        - True if FalconAPI found.
+#  FalconAPI_INCLUDE_DIRS -  where to find hdl.h, etc.
+#  FalconAPI_LIBRARIES    - List of libraries when using FalconAPI.
+#  FalconAPI_FOUND        - True if FalconAPI found.
+
+include( H3DExternalSearchPath )
+
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FalconAPI_INCLUDE_DIR FalconAPI_hdl_LIBRARY
+                                              OLD_VARIABLE_NAMES FALCONAPI_INCLUDE_DIR FALCONAPI_HDL_LIBRARY
+                                              DOC_STRINGS "Path in which the file hdl/hdl.h is located. File is part of HDAL SDK. Needed to support the Novint Falcon Haptics device."
+                                                          "Path to hdl library. Library is part of HDAL SDK. Needed to support the Novint Falcon Haptics device." )
 
 set( program_files_path "" )
 if( CMAKE_CL_64 )
@@ -12,15 +19,15 @@ else()
   set( program_files_path "$ENV{ProgramFiles}" )
 endif()
 
-set( FALCON_INCLUDE_SEARCH_PATH "" )
-set( FALCON_LIB_SEARCH_PATH "" )
+set( falcon_include_search_path "" )
+set( falcon_lib_search_path "" )
 if( WIN32 )
   if( NOT CMAKE_CL_64 )
-    set( FALCON_INCLUDE_SEARCH_PATH $ENV{NOVINT_FALCON_SUPPORT}/include
+    set( falcon_include_search_path $ENV{NOVINT_FALCON_SUPPORT}/include
                                     ${program_files_path}/Novint/Falcon/HDAL/include
                                     ${program_files_path}/Novint/HDAL_SDK_2.1.3/include
                                     $ENV{NOVINT_DEVICE_SUPPORT}/include )
-    set( FALCON_LIB_SEARCH_PATH $ENV{NOVINT_FALCON_SUPPORT}/lib
+    set( falcon_lib_search_path $ENV{NOVINT_FALCON_SUPPORT}/lib
                                 ${program_files_path}/Novint/Falcon/HDAL/lib
                                 ${program_files_path}/Novint/HDAL_SDK_2.1.3/lib
                                 $ENV{NOVINT_DEVICE_SUPPORT}/lib )
@@ -28,39 +35,32 @@ if( WIN32 )
 endif()
 
 # Look for the header file.
-find_path( FALCONAPI_INCLUDE_DIR NAMES hdl/hdl.h 
-                                 PATHS ${FALCON_INCLUDE_SEARCH_PATH}
-                                 DOC "Path in which the file hdl/hdl.h is located. File is part of HDAL SDK." )
+find_path( FalconAPI_INCLUDE_DIR NAMES hdl/hdl.h 
+                                 PATHS ${falcon_include_search_path}
+                                 DOC "Path in which the file hdl/hdl.h is located. File is part of HDAL SDK. Needed to support the Novint Falcon Haptics device." )
 
-mark_as_advanced( FALCONAPI_INCLUDE_DIR )
+mark_as_advanced( FalconAPI_INCLUDE_DIR )
 
 # Look for the library.
-find_library( FALCONAPI_HDL_LIBRARY NAMES hdl 
-                                    PATHS ${FALCON_LIB_SEARCH_PATH}
-                                    DOC "Path to hdl library. Library is part of HDAL SDK." )
-mark_as_advanced( FALCONAPI_HDL_LIBRARY )
+find_library( FalconAPI_hdl_LIBRARY NAMES hdl 
+                                    PATHS ${falcon_lib_search_path}
+                                    DOC "Path to hdl library. Library is part of HDAL SDK. Needed to support the Novint Falcon Haptics device." )
+mark_as_advanced( FalconAPI_hdl_LIBRARY )
 
-# Copy the results to the output variables.
-if( FALCONAPI_INCLUDE_DIR AND FALCONAPI_HDL_LIBRARY )
-  set( FALCONAPI_FOUND 1 )
-  set( FALCONAPI_LIBRARIES ${FALCONAPI_HDL_LIBRARY} )
-  set( FALCONAPI_INCLUDE_DIR ${FALCONAPI_INCLUDE_DIR} )
-else()
-  set( FALCONAPI_FOUND 0 )
-  set( FALCONAPI_LIBRARIES )
-  set( FALCONAPI_INCLUDE_DIR )
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set FalconAPI_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( FalconAPI DEFAULT_MSG
+                                   FalconAPI_hdl_LIBRARY FalconAPI_INCLUDE_DIR )
+
+set( FalconAPI_LIBRARIES ${FalconAPI_hdl_LIBRARY} )
+set( FalconAPI_INCLUDE_DIRS ${FalconAPI_INCLUDE_DIR} )
+
+if( CMAKE_CL_64 AND ( NOT FalconAPI_FIND_QUITELY ) AND ( NOT FalconAPI_FOUND ) )
+  set( FalconAPI_DIR_MESSAGE "${FalconAPI_DIR_MESSAGE} NOVINT HAS NOT RELEASED A 64 BIT VERSION OF HDAL SDK YET." )
 endif()
 
-# Report the results.
-if( NOT FALCONAPI_FOUND )
-  set( FALCONAPI_DIR_MESSAGE
-       "The Novint Falcon API(HDAL SDK) was not found. Make sure to set FALCONAPI_HDL_LIBRARY and FALCONAPI_INCLUDE_DIR. If you do not have it you will not be able to use the Novint Falcon Haptics device." )
-  if( CMAKE_CL_64 )
-    set( FALCONAPI_DIR_MESSAGE "${FALCONAPI_DIR_MESSAGE} NOVINT HAS NOT RELEASED A 64 BIT VERSION OF HDAL SDK YET." )
-  endif()
-  if( FalconAPI_FIND_REQUIRED )
-    message( FATAL_ERROR "${FALCONAPI_DIR_MESSAGE}" )
-  elseif( NOT FalconAPI_FIND_QUIETLY )
-    message( STATUS "${FALCONAPI_DIR_MESSAGE}" )
-  endif()
-endif()
+# Backwards compatibility values set here.
+set( FALCONAPI_INCLUDE_DIR ${FalconAPI_INCLUDE_DIRS} )
+set( FALCONAPI_LIBRARIES ${FalconAPI_LIBRARIES} )
+set( FalconAPI_FOUND ${FALCONAPI_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

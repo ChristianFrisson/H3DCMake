@@ -1,44 +1,40 @@
 # - Find SimballMedical
 # Find the native SimballMedical headers and libraries.
 #
-#  SIMBALLMEDICAL_INCLUDE_DIR -  where to find SimballMedicalHID.h, etc.
-#  SIMBALLMEDICAL_LIBRARIES    - List of libraries when using SimballMedical.
-#  SIMBALLMEDICAL_FOUND        - True if SimballMedical found.
+#  SimballMedical_INCLUDE_DIRS - Where to find SimballMedicalHID.h, etc.
+#  SimballMedical_LIBRARIES    - List of libraries when using SimballMedical.
+#  SimballMedical_FOUND        - True if SimballMedical found.
 
 include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SimballMedical_INCLUDE_DIR SimballMedical_LIBRARY
+                                              DOC_STRINGS "Path in which the file Simball/SimballMedicalHID.h is located. Needed to support Simball device."
+                                                          "Path to SimballMedicalHID library. Needed to support Simball device." )
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
 # Look for the header file.
-find_path( SIMBALLMEDICAL_INCLUDE_DIR NAMES Simball/SimballMedicalHID.h
+find_path( SimballMedical_INCLUDE_DIR NAMES Simball/SimballMedicalHID.h
                                       PATHS ${module_include_search_paths}
-                                      DOC "Path in which the file Simball/SimballMedicalHID.h is located." )
-mark_as_advanced( SIMBALLMEDICAL_INCLUDE_DIR )
+                                      DOC "Path in which the file Simball/SimballMedicalHID.h is located. Needed to support Simball device." )
+mark_as_advanced( SimballMedical_INCLUDE_DIR )
 
 # Look for the library.
-find_library( SIMBALLMEDICAL_LIBRARY NAMES SimballMedicalHID 
+find_library( SimballMedical_LIBRARY NAMES SimballMedicalHID 
                         PATHS ${module_lib_search_paths}
-                        DOC "Path to SimballMedicalHID library." )
-mark_as_advanced( SIMBALLMEDICAL_LIBRARY )
+                        DOC "Path to SimballMedicalHID library. Needed to support Simball device." )
+mark_as_advanced( SimballMedical_LIBRARY )
 
-# Copy the results to the output variables.
-if( SIMBALLMEDICAL_INCLUDE_DIR AND SIMBALLMEDICAL_LIBRARY )
-  set( SIMBALLMEDICAL_FOUND 1 )
-  set( SIMBALLMEDICAL_LIBRARIES ${SIMBALLMEDICAL_LIBRARY} )
-  set( SIMBALLMEDICAL_INCLUDE_DIR ${SIMBALLMEDICAL_INCLUDE_DIR} )
-else()
-  set( SIMBALLMEDICAL_FOUND 0 )
-  set( SIMBALLMEDICAL_LIBRARIES )
-  set( SIMBALLMEDICAL_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set SimballMedical_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( SimballMedical DEFAULT_MSG
+                                   SimballMedical_LIBRARY SimballMedical_INCLUDE_DIR )
 
-# Report the results.
-if( NOT SIMBALLMEDICAL_FOUND )
-  set( SIMBALLMEDICAL_DIR_MESSAGE
-       "The SimballMedical API was not found. Make sure to set SIMBALLMEDICAL_LIBRARY and SIMBALLMEDICAL_INCLUDE_DIR. If you do not have the SimballMedicalHID library you will not be able to use the Simball device." )
-  if( SimballMedical_FIND_REQUIRED )
-    message( FATAL_ERROR "${SIMBALLMEDICAL_DIR_MESSAGE}" )
-  elseif( NOT SimballMedical_FIND_QUIETLY )
-    message( STATUS "${SIMBALLMEDICAL_DIR_MESSAGE}" )
-  endif()
-endif()
+set( SimballMedical_LIBRARIES ${SimballMedical_LIBRARY} )
+set( SimballMedical_INCLUDE_DIRS ${SimballMedical_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( SIMBALLMEDICAL_INCLUDE_DIR ${SimballMedical_INCLUDE_DIRS} )
+set( SIMBALLMEDICAL_LIBRARIES ${SimballMedical_LIBRARIES} )
+set( SimballMedical_FOUND ${SIMBALLMEDICAL_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

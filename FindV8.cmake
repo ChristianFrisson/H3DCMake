@@ -1,7 +1,7 @@
 # - Find V8
 # Find the native V8 headers and libraries.
 #
-#  V8_INCLUDE_DIR -  where to find V8.h, etc.
+#  V8_INCLUDE_DIRS - Where to find V8.h, etc.
 #  V8_LIBRARIES    - List of libraries when using V8.
 #  V8_FOUND        - True if V8 found.
 
@@ -23,24 +23,14 @@ find_library( V8_LIBRARY NAMES v8
               DOC "Path to v8 library." )
 mark_as_advanced( V8_LIBRARY )
 
-# Copy the results to the output variables.
-if( V8_INCLUDE_DIR AND V8_LIBRARY )
-  set( V8_FOUND 1 )
-  set( V8_LIBRARIES ${V8_LIBRARY} )
-  set( V8_INCLUDE_DIR ${V8_INCLUDE_DIR} )
-else()
-  set( V8_FOUND 0 )
-  set( V8_LIBRARIES )
-  set( V8_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set V8_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( V8 DEFAULT_MSG
+                                   V8_LIBRARY V8_INCLUDE_DIR )
 
-# Report the results.
-if( NOT V8_FOUND )
-  set( V8_DIR_MESSAGE
-       "V8 was not found. Make sure V8_LIBRARY and V8_INCLUDE_DIR are set." )
-  if( V8_FIND_REQUIRED )
-    message( FATAL_ERROR "${V8_DIR_MESSAGE}" )
-  elseif( NOT V8_FIND_QUIETLY )
-    message( STATUS "${V8_DIR_MESSAGE}" )
-  endif()
-endif()
+set( V8_LIBRARIES ${V8_LIBRARY} )
+set( V8_INCLUDE_DIRS ${V8_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( V8_INCLUDE_DIR ${V8_INCLUDE_DIRS} )

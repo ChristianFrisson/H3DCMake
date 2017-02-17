@@ -1,6 +1,6 @@
 # - Find 3dxware (www.3dconnexion.com)
 #
-#  3DXWARE_INCLUDE_DIR -  where to find si.h, siapp.h for Windows and xdrvlib.h, Xlib.h, Xutil.h, Xos.h, Xatom.h and keysym.h for LINUX.
+#  3DXWARE_INCLUDE_DIRS - Where to find si.h, siapp.h for Windows and xdrvlib.h, Xlib.h, Xutil.h, Xos.h, Xatom.h and keysym.h for LINUX.
 #  3DXWARE_LIBRARIES    - List of libraries when using 3dxware.
 #  3DXWARE_FOUND        - True if 3dxware is found.
 
@@ -29,25 +29,20 @@ find_library( 3DXWARE_SPWMATH_LIBRARY NAMES spwmath
               DOC "Path to spwmath library." )
 mark_as_advanced( 3DXWARE_SPWMATH_LIBRARY )
 
-# Copy the results to the output variables.
-if( 3DXWARE_INCLUDE_DIR AND 3DXWARE_SIAPP_LIBRARY AND 3DXWARE_SPWMATH_LIBRARY )
-  set( 3DXWARE_FOUND 1 )
-  set( 3DXWARE_LIBRARIES ${3DXWARE_SIAPP_LIBRARY} ${3DXWARE_SPWMATH_LIBRARY} )
-  set( 3DXWARE_INCLUDE_DIR ${3DXWARE_INCLUDE_DIR} )
-else()
-  set( 3DXWARE_FOUND 0 )
-  set( 3DXWARE_LIBRARIES )
-  set( 3DXWARE_INCLUDE_DIR )
-endif()
-
-# Report the results.
-if( NOT 3DXWARE_FOUND )
-  set( 3DXWARE_DIR_MESSAGE
-       "3dxware (www.3dconnexion) was not found. Make sure 3DXWARE_SIAPP_LIBRARY, 3DXWARE_SPWMATH_LIBRARY and 3DXWARE_INCLUDE_DIR are set." )
-  if( 3DXWARE_FIND_REQUIRED )
-    message( FATAL_ERROR "${3DXWARE_DIR_MESSAGE}" )
-  elseif( NOT ${3DXWARE_FIND_QUIETLY} )
-    message( STATUS "${3DXWARE_DIR_MESSAGE}" )
+if( COMMAND cmake_policy )
+  # For some reason the CMake macro find_package_handle_standard_args seems to interpret
+  # 3DXWARE_FIND_REQUIRED as something that should be affected by policy CMP0012
+  # So that policy have to be set before including FindPackageHandleStandardArgs.
+  if( POLICY CMP0012 )
+    cmake_policy( SET CMP0012 NEW )
   endif()
 endif()
 
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set 3DXWARE_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( 3DXWARE DEFAULT_MSG
+                                   3DXWARE_SIAPP_LIBRARY 3DXWARE_SPWMATH_LIBRARY 3DXWARE_INCLUDE_DIR )
+
+set( 3DXWARE_LIBRARIES ${3DXWARE_SIAPP_LIBRARY} ${3DXWARE_SPWMATH_LIBRARY} )
+set( 3DXWARE_INCLUDE_DIRS ${3DXWARE_INCLUDE_DIR} )

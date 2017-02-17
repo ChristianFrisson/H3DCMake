@@ -1,9 +1,15 @@
 # - Find OpenHaptics
-# Find the native OPENHAPTICS headers and libraries.
+# Find the native OpenHaptics headers and libraries.
 #
-#  OPENHAPTICS_INCLUDE_DIR -  where to find OpenHaptics.h, etc.
-#  OPENHAPTICS_LIBRARIES    - List of libraries when using OpenHaptics.
-#  OPENHAPTICS_FOUND        - True if OpenHaptics found.
+#  OpenHaptics_INCLUDE_DIRS - Where to find OpenHaptics.h, etc.
+#  OpenHaptics_LIBRARIES    - List of libraries when using OpenHaptics.
+#  OpenHaptics_FOUND        - True if OpenHaptics found.
+
+include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES OpenHaptics_INCLUDE_DIR OpenHaptics_HL_LIBRARY OpenHaptics_HD_LIBRARY
+                                              DOC_STRINGS "Path in which the files HL/hl.h, HD/hd.h and HDU/hdu.h are located. Comes with OpenHaptics installation, needed for PhantomDevice to work."
+                                                          "Path to hl library. Comes with OpenHaptics installation, needed for PhantomDevice to work."
+                                                          "Path to hd library. Comes with OpenHaptics installation, needed for PhantomDevice to work." )
 
 set( program_files_path "" )
 if( CMAKE_CL_64 )
@@ -15,14 +21,14 @@ else()
 endif()
 
 # Look for the header file.
-find_path( OPENHAPTICS_INCLUDE_DIR NAMES HL/hl.h HD/hd.h HDU/hdu.h
+find_path( OpenHaptics_INCLUDE_DIR NAMES HL/hl.h HD/hd.h HDU/hdu.h
                                    PATHS $ENV{3DTOUCH_BASE}/include
                                          $ENV{OH_SDK_BASE}/include
                                          "${program_files_path}/SensAble/3DTouch/include"
-                                   DOC "Path in which the files HL/hl.h, HD/hd.h and HDU/hdu.h are located." )
-mark_as_advanced( OPENHAPTICS_INCLUDE_DIR )
+                                   DOC "Path in which the files HL/hl.h, HD/hd.h and HDU/hdu.h are located. Comes with OpenHaptics installation, needed for PhantomDevice to work." )
+mark_as_advanced( OpenHaptics_INCLUDE_DIR )
 
-set( OPENHAPTICS_LIBRARY_DIRECTORIES $ENV{3DTOUCH_BASE}/lib        # OpenHaptics 2.0
+set( openhaptics_library_directories $ENV{3DTOUCH_BASE}/lib        # OpenHaptics 2.0
                               $ENV{3DTOUCH_BASE}/lib/${LIB}  # OpenHaptics 3.0
                               $ENV{OH_SDK_BASE}/lib        # OpenHaptics 2.0
                               $ENV{OH_SDK_BASE}/lib/${LIB}  # OpenHaptics 3.0
@@ -34,18 +40,18 @@ set( OPENHAPTICS_LIBRARY_DIRECTORIES $ENV{3DTOUCH_BASE}/lib        # OpenHaptics
 
 # TODO: Add conditional checking for x64 system
 # Look for the library.
-find_library( OPENHAPTICS_HL_LIBRARY NAMES HL
-                        PATHS ${OPENHAPTICS_LIBRARY_DIRECTORIES}
-                        DOC "Path to hl library." )
+find_library( OpenHaptics_HL_LIBRARY NAMES HL
+                        PATHS ${openhaptics_library_directories}
+                        DOC "Path to hl library. Comes with OpenHaptics installation, needed for PhantomDevice to work." )
 
-mark_as_advanced( OPENHAPTICS_HL_LIBRARY )
+mark_as_advanced( OpenHaptics_HL_LIBRARY )
 
-find_library( OPENHAPTICS_HD_LIBRARY NAMES HD
-                        PATHS ${OPENHAPTICS_LIBRARY_DIRECTORIES}
-                        DOC "Path to hd library." )
-mark_as_advanced( OPENHAPTICS_HD_LIBRARY )
+find_library( OpenHaptics_HD_LIBRARY NAMES HD
+                        PATHS ${openhaptics_library_directories}
+                        DOC "Path to hd library. Comes with OpenHaptics installation, needed for PhantomDevice to work." )
+mark_as_advanced( OpenHaptics_HD_LIBRARY )
 
-find_library( OPENHAPTICS_HDU_LIBRARY NAMES HDU
+find_library( OpenHaptics_HDU_LIBRARY NAMES HDU
                          PATHS  $ENV{3DTOUCH_BASE}/utilities/lib        # OpenHaptics 2.0
                                 $ENV{3DTOUCH_BASE}/utilities/lib/${LIB}/Release  # OpenHaptics 3.0
                                 $ENV{OH_SDK_BASE}/utilities/lib        # OpenHaptics 2.0
@@ -53,27 +59,19 @@ find_library( OPENHAPTICS_HDU_LIBRARY NAMES HDU
                                 "${program_files_path}/SensAble/3DTouch/utilities/lib"        # OpenHaptics 2.0
                                 "${program_files_path}/SensAble/3DTouch/utilities/lib/${LIB}/Release"  # OpenHaptics 3.0
                                 "/usr/lib64"
-                         DOC "Path to hdu library." )
-mark_as_advanced( OPENHAPTICS_HDU_LIBRARY )
+                         DOC "Path to hdu library. Comes with OpenHaptics installation, needed for PhantomDevice to work." )
+mark_as_advanced( OpenHaptics_HDU_LIBRARY )
 
-# Copy the results to the output variables.
-if( OPENHAPTICS_INCLUDE_DIR AND OPENHAPTICS_HD_LIBRARY AND OPENHAPTICS_HL_LIBRARY AND OPENHAPTICS_HDU_LIBRARY )
-  set( OPENHAPTICS_FOUND 1 )
-  set( OPENHAPTICS_LIBRARIES ${OPENHAPTICS_HD_LIBRARY} ${OPENHAPTICS_HL_LIBRARY} ${OPENHAPTICS_HDU_LIBRARY} )
-  set( OPENHAPTICS_INCLUDE_DIR ${OPENHAPTICS_INCLUDE_DIR} )
-else()
-  set( OPENHAPTICS_FOUND 0 )
-  set( OPENHAPTICS_LIBRARIES )
-  set( OPENHAPTICS_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set OpenHaptics_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( OpenHaptics DEFAULT_MSG
+                                   OpenHaptics_HL_LIBRARY OpenHaptics_HD_LIBRARY OpenHaptics_HDU_LIBRARY OpenHaptics_INCLUDE_DIR )
 
-# Report the results.
-if( NOT OPENHAPTICS_FOUND )
-  set( OPENHAPTICS_DIR_MESSAGE
-       "OPENHAPTICS [hapi] was not found. Make sure to set OPENHAPTICS_HL_LIBRARY, OPENHAPTICS_HD_LIBRARY, OPENHAPTICS_HDU_LIBRARY and OPENHAPTICS_INCLUDE_DIR. If you do not have it you will not be able to use haptics devices from SensAble Technologies such as the Phantom." )
-  if( OpenHaptics_FIND_REQUIRED )
-    message( FATAL_ERROR "${OPENHAPTICS_DIR_MESSAGE}" )
-  elseif( NOT OpenHaptics_FIND_QUIETLY )
-    message( STATUS "${OPENHAPTICS_DIR_MESSAGE}" )
-  endif()
-endif()
+set( OpenHaptics_LIBRARIES ${OpenHaptics_HL_LIBRARY} ${OpenHaptics_HD_LIBRARY} ${OpenHaptics_HDU_LIBRARY} )
+set( OpenHaptics_INCLUDE_DIRS ${OpenHaptics_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( OPENHAPTICS_INCLUDE_DIR ${OpenHaptics_INCLUDE_DIRS} )
+set( OPENHAPTICS_LIBRARIES ${OpenHaptics_LIBRARIES} )
+set( OpenHaptics_FOUND ${OPENHAPTICS_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

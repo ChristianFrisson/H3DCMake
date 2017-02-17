@@ -1,7 +1,7 @@
 # - Find pthread
 # Find the native PTHREAD headers and libraries.
 #
-#  PTHREAD_INCLUDE_DIR -  where to find pthread.h, etc.
+#  PTHREAD_INCLUDE_DIRS -  where to find pthread.h, etc.
 #  PTHREAD_LIBRARIES    - List of libraries when using pthread.
 #  PTHREAD_FOUND        - True if pthread found.
 
@@ -26,31 +26,14 @@ else()
 endif()
 mark_as_advanced( PTHREAD_LIBRARY )
 
-# Copy the results to the output variables.
-if( PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY )
-  set( PTHREAD_FOUND 1 )
-  set( PTHREAD_LIBRARIES ${PTHREAD_LIBRARY} )
-  if( NOT WIN32 AND UNIX )
-    set( PTHREAD_LIBRARIES ${PTHREAD_LIBRARIES} dl )
-  endif()
-  set( PTHREAD_INCLUDE_DIR ${PTHREAD_INCLUDE_DIR} )
-else()
-  set( PTHREAD_FOUND 0 )
-  set( PTHREAD_LIBRARIES )
-  set( PTHREAD_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set PTHREAD_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( PTHREAD DEFAULT_MSG
+                                   PTHREAD_LIBRARY PTHREAD_INCLUDE_DIR )
 
-# Report the results.
-if( NOT PTHREAD_FOUND )
-  set( PTHREAD_DIR_MESSAGE
-       "PTHREAD was not found. Make sure PTHREAD_LIBRARY and PTHREAD_INCLUDE_DIR are set." )
-  if( PTHREAD_FIND_REQUIRED )
-    set( PTHREAD_DIR_MESSAGE
-         "${PTHREAD_DIR_MESSAGE} Pthread is required to build." )
-    message( FATAL_ERROR "${PTHREAD_DIR_MESSAGE}" )
-  elseif( NOT PTHREAD_FIND_QUIETLY )
-    set( PTHREAD_DIR_MESSAGE
-         "${PTHREAD_DIR_MESSAGE} Threading support will be disabled without PTHREAD." )
-    message( STATUS "${PTHREAD_DIR_MESSAGE}" )
-  endif()
+set( PTHREAD_LIBRARIES ${PTHREAD_LIBRARY} )
+set( PTHREAD_INCLUDE_DIRS ${PTHREAD_INCLUDE_DIR} )
+if( PTHREAD_FOUND AND NOT WIN32 AND UNIX )
+  set( PTHREAD_LIBRARIES ${PTHREAD_LIBRARIES} dl )
 endif()

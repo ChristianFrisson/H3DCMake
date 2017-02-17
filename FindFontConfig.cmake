@@ -1,39 +1,36 @@
-# - Find FONTCONFIG
-# Find the native FONTCONFIG headers and libraries.
+# - Find FontConfig
+# Find the native FontConfig headers and libraries.
 #
-#  FONTCONFIG_INCLUDE_DIR -  where to find fontconfig.h, etc.
-#  FONTCONFIG_LIBRARIES    - List of libraries when using FONTCONFIG.
-#  FONTCONFIG_FOUND        - True if FONTCONFIG found.
+#  FontConfig_INCLUDE_DIRS - Where to find fontconfig.h, etc.
+#  FontConfig_LIBRARIES    - List of libraries when using FontConfig.
+#  FontConfig_FOUND        - True if FontConfig found.
 
+include( H3DExternalSearchPath )
+
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FontConfig_INCLUDE_DIR FontConfig_LIBRARY
+                                              DOC_STRINGS "Path in which the file fontconfig/fontconfig.h is located."
+                                                          "Path to fontconfig library." )
 
 # Look for the header file.
-find_path( FONTCONFIG_INCLUDE_DIR NAMES fontconfig/fontconfig.h
+find_path( FontConfig_INCLUDE_DIR NAMES fontconfig/fontconfig.h
                                   DOC "Path in which the file fontconfig/fontconfig.h is located." )
-mark_as_advanced( FONTCONFIG_INCLUDE_DIR )
+mark_as_advanced( FontConfig_INCLUDE_DIR )
 
 # Look for the library.
-find_library( FONTCONFIG_LIBRARY NAMES fontconfig
+find_library( FontConfig_LIBRARY NAMES fontconfig
                                  DOC "Path to fontconfig library." )
-mark_as_advanced( FONTCONFIG_LIBRARY )
+mark_as_advanced( FontConfig_LIBRARY )
 
-# Copy the results to the output variables.
-if( FONTCONFIG_INCLUDE_DIR AND FONTCONFIG_LIBRARY )
-  set( FONTCONFIG_FOUND 1 )
-  set( FONTCONFIG_LIBRARIES ${FONTCONFIG_LIBRARY} )
-  set( FONTCONFIG_INCLUDE_DIR ${FONTCONFIG_INCLUDE_DIR} )
-else()
-  set( FONTCONFIG_FOUND 0 )
-  set( FONTCONFIG_LIBRARIES )
-  set( FONTCONFIG_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set FontConfig_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( FontConfig DEFAULT_MSG
+                                   FontConfig_LIBRARY FontConfig_INCLUDE_DIR )
 
-# Report the results.
-if( NOT FONTCONFIG_FOUND )
-  set( FONTCONFIG_DIR_MESSAGE
-       "FONTCONFIG was not found. Make sure FONTCONFIG_LIBRARY and FONTCONFIG_INCLUDE_DIR are set." )
-  if( FontConfig_FIND_REQUIRED )
-    message( FATAL_ERROR "${FONTCONFIG_DIR_MESSAGE}" )
-  elseif( NOT FontConfig_FIND_QUIETLY )
-    message( STATUS "${FONTCONFIG_DIR_MESSAGE}" )
-  endif()
-endif()
+set( FontConfig_LIBRARIES ${FontConfig_LIBRARY} )
+set( FontConfig_INCLUDE_DIRS ${FontConfig_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( FONTCONFIG_INCLUDE_DIR ${FontConfig_INCLUDE_DIRS} )
+set( FONTCONFIG_LIBRARIES ${FontConfig_LIBRARIES} )
+set( FontConfig_FOUND ${FONTCONFIG_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

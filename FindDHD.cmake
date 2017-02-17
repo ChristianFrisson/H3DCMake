@@ -1,7 +1,7 @@
 # - Find DHD
 # Find the native DHD headers and libraries.
 #
-#  DHD_INCLUDE_DIR -  where to find DHD headers
+#  DHD_INCLUDE_DIRS -  where to find DHD headers
 #  DHD_LIBRARIES    - List of libraries when using DHD.
 #  DHD_FOUND        - True if DHD found.
 #  DHD_DRD_SUPPORT  - True if DRD header/library was actually found.
@@ -70,10 +70,10 @@ if( ( DHD_INCLUDE_DIR AND DHD_LIBRARY ) OR DHD_DRD_FOUND )
   set( DHD_FOUND 1 )
   if( DHD_DRD_FOUND )
     set( DHD_LIBRARIES ${DHD_DRD_LIBRARY} )
-    set( DHD_INCLUDE_DIR ${DHD_DRD_INCLUDE_DIR} )
+    set( DHD_INCLUDE_DIRS ${DHD_DRD_INCLUDE_DIR} )
   else()
     set( DHD_LIBRARIES ${DHD_LIBRARY} )
-    set( DHD_INCLUDE_DIR ${DHD_INCLUDE_DIR} )
+    set( DHD_INCLUDE_DIRS ${DHD_INCLUDE_DIR} )
   endif()
   if( APPLE )
     if( DHD_IOKIT_LIBRARY AND DHD_COREFOUNDATION_LIBRARY )
@@ -81,7 +81,7 @@ if( ( DHD_INCLUDE_DIR AND DHD_LIBRARY ) OR DHD_DRD_FOUND )
       else()
         set( DHD_FOUND 0 )
         set( DHD_LIBRARIES )
-        set( DHD_INCLUDE_DIR )
+        set( DHD_INCLUDE_DIRS )
       endif()
   else()
     if( UNIX )
@@ -90,14 +90,14 @@ if( ( DHD_INCLUDE_DIR AND DHD_LIBRARY ) OR DHD_DRD_FOUND )
       else()
         set( DHD_FOUND 0 )
         set( DHD_LIBRARIES )
-        set( DHD_INCLUDE_DIR )
+        set( DHD_INCLUDE_DIRS )
       endif()
     endif()
   endif()
 else()
   set( DHD_FOUND 0 )
   set( DHD_LIBRARIES )
-  set( DHD_INCLUDE_DIR )
+  set( DHD_INCLUDE_DIRS )
 endif()
 # Report the results.
 if( NOT DHD_FOUND )

@@ -1,11 +1,21 @@
-# - Find XERCES
-# Find the native XERCES headers and libraries.
+# - Find Xerces
+# Find the native Xerces headers and libraries.
 #
-#  XERCES_INCLUDE_DIR -  where to find XERCES.h, etc.
-#  XERCES_LIBRARIES    - List of libraries when using XERCES.
-#  XERCES_FOUND        - True if XERCES found.
+#  XERCES_INCLUDE_DIRS - Where to find Xerces headers.
+#  XERCES_LIBRARIES    - List of libraries when using Xerces.
+#  XERCES_FOUND        - True if Xerces found.
 
 include( H3DExternalSearchPath )
+set( XercesC_FIND_QUIETLY ${Xerces_FIND_QUIETLY} )
+set( XercesC_FIND_REQUIRED ${Xerces_FIND_REQUIRED} )
+checkCMakeInternalModule( XercesC REQUIRED_CMAKE_VERSION "3.1.0" ) # Will call CMakes internal find module for this feature.
+if( ( DEFINED XercesC_FOUND ) AND XercesC_FOUND )
+  set( XERCES_INCLUDE_DIRS ${XercesC_INCLUDE_DIRS})
+  set( XERCES_LIBRARIES ${XercesC_LIBRARIES})
+  set( XERCES_FOUND ${XercesC_FOUND})
+  return()
+endif()
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
@@ -79,11 +89,11 @@ if( XERCES_INCLUDE_DIR AND XERCES_LIBRARIES_FOUND )
     set( XERCES_LIBRARIES ${XERCES_LIBRARY} )
   endif()
 
-  set( XERCES_INCLUDE_DIR ${XERCES_INCLUDE_DIR} )
+  set( XERCES_INCLUDE_DIRS ${XERCES_INCLUDE_DIR} )
 else()
   set( XERCES_FOUND 0 )
   set( XERCES_LIBRARIES )
-  set( XERCES_INCLUDE_DIR )
+  set( XERCES_INCLUDE_DIRS )
 endif()
 
 # Report the results.
@@ -98,3 +108,6 @@ if( NOT XERCES_FOUND )
     message( STATUS "${XERCES_DIR_MESSAGE}" )
   endif()
 endif()
+
+# Backwards compatibility values set here.
+set( XERCES_INCLUDE_DIR ${XERCES_INCLUDE_DIRS} )

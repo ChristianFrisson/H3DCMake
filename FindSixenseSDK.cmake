@@ -1,11 +1,17 @@
-# - Find SIXENSE
-# Find the native SIXENSE headers and libraries.
+# - Find SixenseSDK
+# Find the native SixenseSDK headers and libraries.
 #
-#  SIXENSE_INCLUDE_DIR -  where to find SIXENSE.h, etc.
-#  SIXENSE_LIBRARIES    - List of libraries when using SIXENSE.
-#  SIXENSE_FOUND        - True if SIXENSE found.
+#  SixenseSDK_INCLUDE_DIRS - Where to find sixense.h, etc.
+#  SixenseSDK_LIBRARIES    - List of libraries when using SixenseSDK.
+#  SixenseSDK_FOUND        - True if SixenseSDK found.
 
 include( H3DExternalSearchPath )
+
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SixenseSDK_INCLUDE_DIR SixenseSDK_LIBRARY
+                                              OLD_VARIABLE_NAMES SIXENSE_INCLUDE_DIR SIXENSE_LIBRARY
+                                              DOC_STRINGS "Path in which the file sixense.h is located. Required to use the HydraSensor."
+                                                          "Path to sixense library. Required to use the HydraSensor." )
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
@@ -23,13 +29,13 @@ endif()
 set( SIXENSE_INSTALL_DIR "" CACHE PATH "Path to external Sixense SDK installation" )
 
 # Look for the header file.
-find_path( SIXENSE_INCLUDE_DIR NAMES sixense.h
+find_path( SixenseSDK_INCLUDE_DIR NAMES sixense.h
                                PATHS ${SIXENSE_INSTALL_DIR}/include
                                      ${module_include_search_paths}
          ${steam_path}/include
          $ENV{SIXENSE_SDK_PATH}/include 
-                           DOC "Path in which the file sixense.h is located." )
-mark_as_advanced( SIXENSE_INCLUDE_DIR )
+                           DOC "Path in which the file sixense.h is located. Required to use the HydraSensor." )
+mark_as_advanced( SixenseSDK_INCLUDE_DIR )
 
 set( VS_DIR "" )
 if( MSVC )
@@ -45,32 +51,25 @@ if( MSVC )
 endif()
 
 # Look for the library.
-find_library( SIXENSE_LIBRARY NAMES sixense sixense_${SDK_LIB}
+find_library( SixenseSDK_LIBRARY NAMES sixense sixense_${SDK_LIB}
                               PATHS ${SIXENSE_INSTALL_DIR}/lib/${SDK_LIB}/${VS_DIR}/release_dll
                                     ${module_lib_search_paths}
                                     ${steam_path}/lib/${SDK_LIB}/${VS_DIR}/release_dll
                                     $ENV{SIXENSE_SDK_PATH}/lib/${SDK_LIB}/${VS_DIR}/release_dll
-                              DOC "Path to sixense library." )
-mark_as_advanced( SIXENSE_LIBRARY )
+                              DOC "Path to sixense library. Required to use the HydraSensor." )
+mark_as_advanced( SixenseSDK_LIBRARY )
 
-# Copy the results to the output variables.
-if( SIXENSE_INCLUDE_DIR AND SIXENSE_LIBRARY )
-  set( SIXENSE_FOUND 1 )
-  set( SIXENSE_LIBRARIES ${SIXENSE_LIBRARY} )
-  set( SIXENSE_INCLUDE_DIR ${SIXENSE_INCLUDE_DIR} )
-else()
-  set( SIXENSE_FOUND 0 )
-  set( SIXENSE_LIBRARIES )
-  set( SIXENSE_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set SixenseSDK_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( SixenseSDK DEFAULT_MSG
+                                   SixenseSDK_LIBRARY SixenseSDK_INCLUDE_DIR )
 
-# Report the results.
-if( NOT SIXENSE_FOUND )
-  set( SIXENSE_DIR_MESSAGE
-       "SIXENSE was not found. Make sure SIXENSE_LIBRARY and SIXENSE_INCLUDE_DIR are set to where you have your sixense sdk header and lib files. If you do not have the library you will not be able to use the HydraSensor." )
-  if( SIXENSE_FIND_REQUIRED )
-      message( FATAL_ERROR "${SIXENSE_DIR_MESSAGE}" )
-  elseif( NOT SIXENSE_FIND_QUIETLY )
-    message( STATUS "${SIXENSE_DIR_MESSAGE}" )
-  endif()
-endif()
+set( SixenseSDK_LIBRARIES ${SixenseSDK_LIBRARY} )
+set( SixenseSDK_INCLUDE_DIRS ${SixenseSDK_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( SIXENSE_INCLUDE_DIR ${SixenseSDK_INCLUDE_DIRS} )
+set( SIXENSE_LIBRARIES ${SixenseSDK_LIBRARIES} )
+set( SixenseSDK_FOUND ${SIXENSESDK_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
+set( SIXENSE_FOUND ${SixenseSDK_FOUND} )

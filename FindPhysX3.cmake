@@ -1,7 +1,7 @@
 # - Find PHYSX3
 # Find the native PHYSX3 headers and libraries.
 #
-#  PHYSX3_INCLUDE_DIR -  where to find the include files of PHYSX3
+#  PHYSX3_INCLUDE_DIRS - Where to find the include files of PHYSX3
 #  PHYSX3_LIBRARIES    - List of libraries when using PHYSX3.
 #  PHYSX3_FOUND        - True if PHYSX3 found.
 #  PHYSX3_FLAGS        - Flags needed for physx to build 
@@ -131,11 +131,11 @@ if( PHYSX3_INCLUDE_DIR AND
      PHYSX3_LIBS_DEBUG_FOUND )
   set( PHYSX3_FOUND 1 )
   set( PHYSX3_LIBRARIES ${PHYSX3_LIBS_PATHS} ${PHYSX3_LIBS_DEBUG_PATHS} )
-  set( PHYSX3_INCLUDE_DIR ${PHYSX3_INCLUDE_DIR} )
+  set( PHYSX3_INCLUDE_DIRS ${PHYSX3_INCLUDE_DIR} )
 else()
   set( PHYSX3_FOUND 0 )
   set( PHYSX3_LIBRARIES )
-  set( PHYSX3_INCLUDE_DIR )
+  set( PHYSX3_INCLUDE_DIRS )
 endif()
 
 # Report the results.

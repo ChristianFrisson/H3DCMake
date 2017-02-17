@@ -1,49 +1,41 @@
-# - Find LIBOVR
-# Find the native LIBOVR headers and libraries.
+# - Find LibOVR
+# Find the native LibOVR headers and libraries.
 #
-#  LIBOVR_INCLUDE_DIR -  where to find OVR_CAPI_GL.h, etc.
-#  LIBOVR_LIBRARIES    - List of libraries when using LIBOVR.
-#  LIBOVR_FOUND        - True if LIBOVR found.
+#  LibOVR_INCLUDE_DIRS - Where to find OVR_CAPI_GL.h, etc.
+#  LibOVR_LIBRARIES    - List of libraries when using LibOVR.
+#  LibOVR_FOUND        - True if LibOVR found.
 
 include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES LibOVR_INCLUDE_DIR LibOVR_LIBRARY
+                                              DOC_STRINGS "Path in which the file OVR_CAPI_GL.h is located. Needed to support the OCULUS_RIFT stereo mode."
+                                                          "Path to LibOVR library. Needed to support the OCULUS_RIFT stereo mode." )
+                                                          
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "LibOVR" "static" )
 
 # Look for the header file.
-find_path( LIBOVR_INCLUDE_DIR NAMES OVR_CAPI_GL.h
+find_path( LibOVR_INCLUDE_DIR NAMES OVR_CAPI_GL.h
                               PATHS ${module_include_search_paths}
-                              DOC "Path in which the file OVR_CAPI_GL.h is located." )
+                              DOC "Path in which the file OVR_CAPI_GL.h is located. Needed to support the OCULUS_RIFT stereo mode." )
 
-mark_as_advanced( LIBOVR_INCLUDE_DIR )
+mark_as_advanced( LibOVR_INCLUDE_DIR )
 
 # Look for the library.
-find_library( LIBOVR_LIBRARY NAMES libovr
+find_library( LibOVR_LIBRARY NAMES libovr
                              PATHS ${module_lib_search_paths}
-                             DOC "Path to LibOVR library." )
-mark_as_advanced( LIBOVR_LIBRARY )
+                             DOC "Path to LibOVR library. Needed to support the OCULUS_RIFT stereo mode." )
+mark_as_advanced( LibOVR_LIBRARY )
 
-# Copy the results to the output variables.
-if( LIBOVR_INCLUDE_DIR AND LIBOVR_LIBRARY )
-  set( LIBOVR_FOUND 1 )
-  set( LIBOVR_LIBRARIES ${LIBOVR_LIBRARY} )
-  set( LIBOVR_INCLUDE_DIR ${LIBOVR_INCLUDE_DIR} )
-else()
-  set( LIBOVR_FOUND 0 )
-  set( LIBOVR_LIBRARIES )
-  set( LIBOVR_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set LibOVR_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( LibOVR DEFAULT_MSG
+                                   LibOVR_LIBRARY LibOVR_INCLUDE_DIR )
 
-# Report the results.
-if( NOT LIBOVR_FOUND )
-  set( LIBOVR_DIR_MESSAGE
-       "LibOVR was not found. Make sure LIBOVR_LIBRARY and LIBOVR_INCLUDE_DIR are set." )
-  if( LIBOVR_FIND_REQUIRED )
-    set( LIBOVR_DIR_MESSAGE
-         "${LIBOVR_DIR_MESSAGE} LibOVR is required to build." )
-    message( FATAL_ERROR "${LIBOVR_DIR_MESSAGE}" )
-  elseif( NOT LIBOVR_FIND_QUIETLY )
-    set( LIBOVR_DIR_MESSAGE
-         "${LIBOVR_DIR_MESSAGE} If you do not have it the OCULUS_RIFT stereo mode will not be supported." )
-    message( STATUS "${LIBOVR_DIR_MESSAGE}" )
-  endif()
-endif()
+set( LibOVR_LIBRARIES ${LibOVR_LIBRARY} )
+set( LibOVR_INCLUDE_DIRS ${LibOVR_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( LIBOVR_INCLUDE_DIR ${LibOVR_INCLUDE_DIRS} )
+set( LIBOVR_LIBRARIES ${LibOVR_LIBRARIES} )
+set( LibOVR_FOUND ${LIBOVR_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

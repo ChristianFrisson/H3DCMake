@@ -1,7 +1,7 @@
 # - Find vld(visual leak detector)
 # Find the visual leak detector headers and libraries.
 #
-#  VLD_INCLUDE_DIR -  where to find vld.h,vld_def.h, etc.
+#  VLD_INCLUDE_DIRS -  where to find vld.h,vld_def.h, etc.
 #  VLD_LIBRARIES    - List of libraries when using vld.
 #  VLD_FOUND        - True if vld found.
 
@@ -24,30 +24,11 @@ find_library( VLD_LIBRARY NAMES  vld
                           DOC "Path to vld library." )
 mark_as_advanced( VLD_LIBRARY )
 
-set( VLD_LIBRARIES_FOUND 0 )
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set VLD_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( VLD DEFAULT_MSG
+                                   VLD_LIBRARY VLD_INCLUDE_DIR )
 
-if( VLD_LIBRARY )
-  set( VLD_LIBRARIES_FOUND 1 )
-endif()
-
-# Copy the results to the output variables.
-if( VLD_INCLUDE_DIR AND VLD_LIBRARIES_FOUND )
-  set( VLD_FOUND 1 )
-  set( VLD_LIBRARIES ${VLD_LIBRARY} )
-  set( VLD_INCLUDE_DIR ${VLD_INCLUDE_DIR} )
-else()
-  set( VLD_FOUND 0 )
-  set( VLD_LIBRARIES )
-  set( VLD_INCLUDE_DIR )
-endif()
-
-# Report the results.
-if( NOT VLD_FOUND )
-  set( VLD_DIR_MESSAGE
-       "visual leak detector was not found. Make sure VLD_LIBRARY and VLD_INCLUDE_DIR are set to the directory of your visual leak detector lib and include files." )
-  if( VLD_FIND_REQUIRED )
-    message( FATAL_ERROR "${VLD_DIR_MESSAGE}" )
-  elseif( NOT VLD_FIND_QUIETLY )
-    message( STATUS "${VLD_DIR_MESSAGE}" )
-  endif()
-endif()
+set( VLD_LIBRARIES ${VLD_LIBRARY} )
+set( VLD_INCLUDE_DIRS ${VLD_INCLUDE_DIR} )

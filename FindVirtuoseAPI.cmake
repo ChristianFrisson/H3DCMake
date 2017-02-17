@@ -1,62 +1,55 @@
-# - Find VIRTUOSE
-# Find the native VIRTUOSE headers and libraries.
+# - Find VirtuoseAPI
+# Find the native VirtuoseAPI headers and libraries.
 #
-#  VIRTUOSE_INCLUDE_DIR -  where to find VIRTUOSE headers
-#  VIRTUOSE_LIBRARIES    - List of libraries when using VIRTUOSE.
-#  VIRTUOSE_FOUND        - True if VIRTUOSE found.
+#  VirtuoseAPI_INCLUDE_DIRS -  where to find VirtuoseAPI headers
+#  VirtuoseAPI_LIBRARIES    - List of libraries when using VirtuoseAPI.
+#  VirtuoseAPI_FOUND        - True if VirtuoseAPI found.
 
 include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES VirtuoseAPI_INCLUDE_DIR VirtuoseAPI_LIBRARY
+                                              OLD_VARIABLE_NAMES VIRTUOSE_INCLUDE_DIR VIRTUOSE_LIBRARY
+                                              DOC_STRINGS "Path in which the file VirtuoseAPI.h is located. Needed to support Haption haptics device such as the Virtuose series."
+                                                          "Path to virtuoseDLL.lib library. Needed to support Haption haptics device such as the Virtuose series." )
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
-set( VIRTUOSE_INCLUDE_SEARCH_PATHS "" )
-set( VIRTUOSE_LIB_SEARCH_PATHS "" )
+set( virtuoseapi_include_search_paths "" )
+set( virtuoseapi_lib_search_paths "" )
 if( NOT MSVC14 )
-  getExternalSearchPathsH3D( VIRTUOSE_INCLUDE_SEARCH_PATHS VIRTUOSE_LIB_SEARCH_PATHS ${module_file_path} )
+  getExternalSearchPathsH3D( virtuoseapi_include_search_paths virtuoseapi_lib_search_paths ${module_file_path} )
 endif()
 
 # Look for the header file.
-find_path( VIRTUOSE_INCLUDE_DIR NAMES VirtuoseAPI.h 
-                                PATHS ${VIRTUOSE_INCLUDE_SEARCH_PATHS}
-                                DOC "Path in which the file VirtuoseAPI.h is located." )
-mark_as_advanced( VIRTUOSE_INCLUDE_DIR )
+find_path( VirtuoseAPI_INCLUDE_DIR NAMES VirtuoseAPI.h 
+                                PATHS ${virtuoseapi_include_search_paths}
+                                DOC "Path in which the file VirtuoseAPI.h is located. Needed to support Haption haptics device such as the Virtuose series." )
+mark_as_advanced( VirtuoseAPI_INCLUDE_DIR )
 
 
 # Look for the library.
 if( WIN32 )
-  find_library( VIRTUOSE_LIBRARY NAMES virtuoseDLL
-                           PATHS ${VIRTUOSE_LIB_SEARCH_PATHS}
-                           DOC "Path to virtuoseDLL.lib library." )
+  find_library( VirtuoseAPI_LIBRARY NAMES virtuoseDLL
+                           PATHS ${virtuoseapi_lib_search_paths}
+                           DOC "Path to virtuoseDLL.lib library. Needed to support Haption haptics device such as the Virtuose series." )
 else()
-  find_library( VIRTUOSE_LIBRARY NAMES virtuose
-                           PATHS ${VIRTUOSE_LIB_SEARCH_PATHS}
-                           DOC "Path to dhd library." )
+  find_library( VirtuoseAPI_LIBRARY NAMES virtuose
+                           PATHS ${virtuoseapi_lib_search_paths}
+                           DOC "Path to virtuose library. Needed to support Haption haptics device such as the Virtuose series." )
 
 endif()
-mark_as_advanced( VIRTUOSE_LIBRARY )
+mark_as_advanced( VirtuoseAPI_LIBRARY )
 
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set VirtuoseAPI_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( VirtuoseAPI DEFAULT_MSG
+                                   VirtuoseAPI_LIBRARY VirtuoseAPI_INCLUDE_DIR )
 
-# Copy the results to the output variables.
-if( VIRTUOSE_INCLUDE_DIR AND VIRTUOSE_LIBRARY )
-  set( VIRTUOSE_FOUND 1 )
-  set( VIRTUOSE_LIBRARIES ${VIRTUOSE_LIBRARY} )
-  set( VIRTUOSE_INCLUDE_DIR ${VIRTUOSE_INCLUDE_DIR} )
-else()
-  set( VIRTUOSE_FOUND 0 )
-  set( VIRTUOSE_LIBRARIES )
-  set( VIRTUOSE_INCLUDE_DIR )
-endif()
+set( VirtuoseAPI_LIBRARIES ${VirtuoseAPI_LIBRARY} )
+set( VirtuoseAPI_INCLUDE_DIRS ${VirtuoseAPI_INCLUDE_DIR} )
 
-# Report the results.
-if( NOT VIRTUOSE_FOUND )
-  set( VIRTUOSE_DIR_MESSAGE
-       "VIRTUOSE was not found. Make sure to set VIRTUOSE_LIBRARY" )
-  set( VIRTUOSE_DIR_MESSAGE
-       "${VIRTUOSE_DIR_MESSAGE} and VIRTUOSE_INCLUDE_DIR. If you do
-       not have VirtuouseAPI library you will not be able to use the
-       Haption haptics device such as the Virtuose series." )
-  if( VIRTUOSE_FIND_REQUIRED )
-    message( FATAL_ERROR "${VIRTUOSE_DIR_MESSAGE}" )
-  elseif( NOT VIRTUOSE_FIND_QUIETLY )
-    message( STATUS "${VIRTUOSE_DIR_MESSAGE}" )
-  endif()
-endif()
+# Backwards compatibility values set here.
+set( VIRTUOSE_INCLUDE_DIR ${VirtuoseAPI_INCLUDE_DIRS} )
+set( VIRTUOSE_LIBRARIES ${VirtuoseAPI_LIBRARIES} )
+set( VirtuoseAPI_FOUND ${VIRTUOSEAPI_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
+set( VIRTUOSE_FOUND  ${VirtuoseAPI_FOUND} )

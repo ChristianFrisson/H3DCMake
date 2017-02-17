@@ -1,7 +1,7 @@
 # - Find ODE
 # Find the native ODE headers and libraries.
 #
-#  ODE_INCLUDE_DIR -  where to find ode.h, etc.
+#  ODE_INCLUDE_DIRS -  where to find ode.h, etc.
 #  ODE_LIBRARIES    - List of libraries when using ODE.
 #  ODE_FOUND        - True if ODE found.
 #  ODE_FLAGS        - Flags needed for ode to build 
@@ -60,24 +60,14 @@ endif()
 
 mark_as_advanced( ODE_LIBRARY )
 
-# Copy the results to the output variables.
-if( ODE_INCLUDE_DIR AND ODE_LIBRARY AND ( WIN32 OR ODE_CONFIG_EXECUTABLE ) )
-  set( ODE_FOUND 1 )
-  set( ODE_LIBRARIES ${ODE_LIBRARY} )
-  set( ODE_INCLUDE_DIR ${ODE_INCLUDE_DIR} )
-else()
-  set( ODE_FOUND 0 )
-  set( ODE_LIBRARIES )
-  set( ODE_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set ODE_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( ODE DEFAULT_MSG
+                                   ODE_LIBRARY ODE_INCLUDE_DIR )
 
-# Report the results.
-if( NOT ODE_FOUND )
-  set( ODE_DIR_MESSAGE
-       "ODE was not found. Make sure ODE_LIBRARY and ODE_INCLUDE_DIR are set." )
-  if( ODE_FIND_REQUIRED )
-    message( FATAL_ERROR "${ODE_DIR_MESSAGE}" )
-  elseif( NOT ODE_FIND_QUIETLY )
-    message( STATUS "${ODE_DIR_MESSAGE}" )
-  endif()
-endif()
+set( ODE_LIBRARIES ${ODE_LIBRARY} )
+set( ODE_INCLUDE_DIRS ${ODE_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( ODE_INCLUDE_DIR ${ODE_INCLUDE_DIRS} )

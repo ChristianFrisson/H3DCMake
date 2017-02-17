@@ -6,6 +6,11 @@
 #  FreeImage_FOUND        - True if FreeImage found.
 
 include( H3DExternalSearchPath )
+
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FreeImage_INCLUDE_DIR FreeImage_LIBRARY
+                                              DOC_STRINGS "Path in which the file FreeImage.h is located."
+                                                          "Path to freeimage library." )
+                                                          
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "FreeImage/Dist" "static" )
 
@@ -23,92 +28,63 @@ find_library( FreeImage_LIBRARY NAMES freeimage
 mark_as_advanced( FreeImage_LIBRARY )
 
 if( WIN32 AND PREFER_STATIC_LIBRARIES )
-  set( FreeImage_STATIC_LIBRARY_NAME FreeImage_vc7 )
+  set( freeimage_static_library_name FreeImage_vc7 )
   
   if( MSVC80 )
-    set( FreeImage_STATIC_LIBRARY_NAME FreeImage_vc8 )
+    set( freeimage_static_library_name FreeImage_vc8 )
   elseif( MSVC90 )
-    set( FreeImage_STATIC_LIBRARY_NAME FreeImage_vc9 )
+    set( freeimage_static_library_name FreeImage_vc9 )
   elseif( MSVC10 )
-    set( FreeImage_STATIC_LIBRARY_NAME FreeImage_vc10 )
+    set( freeimage_static_library_name FreeImage_vc10 )
   endif()
   
-  find_library( FreeImage_STATIC_LIBRARY NAMES ${FreeImage_STATIC_LIBRARY_NAME}
+  handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FreeImage_STATIC_LIBRARY_RELEASE FreeImage_STATIC_LIBRARY_DEBUG
+                                                OLD_VARIABLE_NAMES FREEIMAGE_STATIC_LIBRARY FREEIMAGE_STATIC_DEBUG_LIBRARY
+                                                DOC_STRINGS "Path to freeimage static release library (windows only). For this configuration it might be called ${freeimage_static_library_name}"
+                                                            "Path to freeimage static debug library (windows only). For this configuration it might be called ${freeimage_static_library_name}_d" )
+  
+  find_library( FreeImage_STATIC_LIBRARY_RELEASE NAMES ${freeimage_static_library_name}
                                          PATHS ${module_lib_search_paths}
-                                         DOC "Path to freeimage static release library (windows only). For this configuration it might be called ${FreeImage_STATIC_LIBRARY_NAME}" )
-  mark_as_advanced( FreeImage_STATIC_LIBRARY )
-  
-  if( FreeImage_STATIC_LIBRARY )
-    set( FreeImage_STATIC_LIBRARIES_FOUND 1 )
-  endif()
-  
-  find_library( FreeImage_STATIC_DEBUG_LIBRARY NAMES ${FreeImage_STATIC_LIBRARY_NAME}_d
+                                         DOC "Path to freeimage static release library (windows only). For this configuration it might be called ${freeimage_static_library_name}" )
+  mark_as_advanced( FreeImage_STATIC_LIBRARY_RELEASE )
+
+  find_library( FreeImage_STATIC_LIBRARY_DEBUG NAMES ${freeimage_static_library_name}_d
                                                PATHS ${module_lib_search_paths}
-                                               DOC "Path to freeimage static debug library (windows only). For this configuration it might be called ${FreeImage_STATIC_LIBRARY_NAME}_d" )
-  mark_as_advanced( FreeImage_STATIC_DEBUG_LIBRARY )
-    
-  if( FreeImage_STATIC_DEBUG_LIBRARY )
-    set( FreeImage_STATIC_LIBRARIES_FOUND 1 )
-  endif()
+                                               DOC "Path to freeimage static debug library (windows only). For this configuration it might be called ${freeimage_static_library_name}_d" )
+  mark_as_advanced( FreeImage_STATIC_LIBRARY_DEBUG )
 endif()
 
-if( FreeImage_LIBRARY OR FreeImage_STATIC_LIBRARIES_FOUND )
-  set( FreeImage_LIBRARIES_FOUND 1 )
-endif()
+include( FindPackageHandleStandardArgs )
+include( SelectLibraryConfigurations )
+set( freeimage_static_lib 0 )
 
-# Copy the results to the output variables.
-if( FreeImage_INCLUDE_DIR AND FreeImage_LIBRARIES_FOUND )
-  set( FreeImage_FOUND 1 )
-
-  if( WIN32 AND PREFER_STATIC_LIBRARIES AND FreeImage_STATIC_LIBRARIES_FOUND )
-    if( FreeImage_STATIC_LIBRARY )
-      set( FreeImage_LIBRARIES optimized ${FreeImage_STATIC_LIBRARY} )
-    else()
-      set( FreeImage_LIBRARIES optimized ${FreeImage_STATIC_LIBRARY_NAME} )
-      message( STATUS "FreeImage static release libraries not found. Release build might not work." )
+# handle the QUIETLY and REQUIRED arguments and set FreeImage_FOUND to TRUE
+# if all listed variables are TRUE
+if( WIN32 AND PREFER_STATIC_LIBRARIES )
+  select_library_configurations( FreeImage_STATIC )
+  find_package_handle_standard_args( FreeImage DEFAULT_MSG
+                                     FreeImage_STATIC_LIBRARY FreeImage_INCLUDE_DIR )
+  set( FreeImage_LIBRARIES ${FreeImage_STATIC_LIBRARIES} )
+  set( freeimage_static_lib ${FREEIMAGE_FOUND} ) # FREEIMAGE_FOUND is set by find_package_handle_standard_args and should be up to date here.
+  if( FREEIMAGE_FOUND AND MSVC )
+    if( NOT FreeImage_STATIC_LIBRARY_RELEASE )
+      message( WARNING "FreeImage static release library not found. Release build might not work properly. To get rid of this warning set FreeImage_STATIC_LIBRARY_RELEASE." )
     endif()
-
-    if( FreeImage_STATIC_DEBUG_LIBRARY )
-      set( FreeImage_LIBRARIES ${FreeImage_LIBRARIES} debug ${FreeImage_STATIC_DEBUG_LIBRARY} )
-    else()
-      set( FreeImage_LIBRARIES ${FreeImage_LIBRARIES} debug ${FreeImage_STATIC_LIBRARY_NAME}_d )
-      message( STATUS "FreeImage static debug libraries not found. Debug build might not work." )
+    if( NOT FreeImage_STATIC_LIBRARY_DEBUG )
+      message( WARNING "FreeImage static debug library not found. Debug build might not work properly. To get rid of this warning set FreeImage_STATIC_LIBRARY_DEBUG." )
     endif()
-
-    set( FreeImage_LIB 1 )
-  else()
-    set( FreeImage_LIBRARIES ${FreeImage_LIBRARY} )
-  endif()
-
-  set( FreeImage_INCLUDE_DIRS ${FreeImage_INCLUDE_DIR} )
-else()
-  set( FreeImage_FOUND 0 )
-  set( FreeImage_LIBRARIES )
-  set( FreeImage_INCLUDE_DIRS )
-endif()
-
-# Report the results.
-if( NOT FreeImage_FOUND )
-  set( FreeImage_DIR_MESSAGE
-       "FreeImage was not found. Make sure FreeImage_LIBRARY" )
-  if( WIN32 )
-  set( FreeImage_DIR_MESSAGE
-       "${FreeImage_DIR_MESSAGE} ( and/or FreeImage_STATIC_LIBRARY/FreeImage_STATIC_DEBUG_LIBRARY )" )
-  endif()
-  set( FreeImage_DIR_MESSAGE
-       "${FreeImage_DIR_MESSAGE} and FreeImage_INCLUDE_DIR are set." )
-  if( FreeImage_FIND_REQUIRED )
-    set( FreeImage_DIR_MESSAGE
-         "${FreeImage_DIR_MESSAGE} FreeImage is required to build." )
-    message( FATAL_ERROR "${FreeImage_DIR_MESSAGE}" )
-  elseif( NOT FreeImage_FIND_QUIETLY )
-    set( FreeImage_DIR_MESSAGE
-         "${FreeImage_DIR_MESSAGE} If you do not have it many image formats will not be available to use as textures." )
-    message( STATUS "${FreeImage_DIR_MESSAGE}" )
   endif()
 endif()
 
-# Handle backwards compatibility issues. Issues stemming from the fact that this module was incorrectly written before.
+if( NOT freeimage_static_lib ) # This goes a bit against the standard, the reason is that if static libraries are desired the normal ones are only fallback.
+  find_package_handle_standard_args( FreeImage DEFAULT_MSG
+                                     FreeImage_LIBRARY FreeImage_INCLUDE_DIR )
+  set( FreeImage_LIBRARIES ${FreeImage_LIBRARY} )
+endif()
+
+set( FreeImage_INCLUDE_DIRS ${FreeImage_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
 set( FREEIMAGE_INCLUDE_DIR ${FreeImage_INCLUDE_DIRS} )
 set( FREEIMAGE_LIBRARIES ${FreeImage_LIBRARIES} )
-set( FREEIMAGE_FOUND ${FreeImage_FOUND} )
+set( FreeImage_FOUND ${FREEIMAGE_FOUND} )  # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

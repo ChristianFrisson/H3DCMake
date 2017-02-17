@@ -1,59 +1,50 @@
-# - Find ENTACTAPI
-# Find the native ENTACTAPI headers and libraries.
+# - Find EntactAPI
+# Find the native EntactAPI headers and libraries.
 #
-#  ENTACTAPI_INCLUDE_DIR -  where to find ENTACTAPI headers
-#  ENTACTAPI_LIBRARIES    - List of libraries when using ENTACTAPI.
-#  ENTACTAPI_FOUND        - True if ENTACTAPI found.
+#  EntactAPI_INCLUDE_DIRS - Where to find EntactAPI headers
+#  EntactAPI_LIBRARIES    - List of libraries when using EntactAPI.
+#  EntactAPI_FOUND        - True if EntactAPI found.
 
-set( ENTACT_INCLUDE_SEARCH_PATHS "" )
-set( ENTACT_LIB_SEARCH_PATHS "" )
+include( H3DExternalSearchPath )
+
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES EntactAPI_INCLUDE_DIR EntactAPI_LIBRARY
+                                              DOC_STRINGS "Path in which the file EntactAPI.h is located. Needed to support Entact haptics device."
+                                                          "Path to EntactAPI.lib library. Needed to support Entact haptics device." )
+
+set( entact_include_search_paths "" )
+set( entact_lib_search_paths "" )
 if( CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_SYSTEM_VERSION VERSION_GREATER "5.9999" )
-  include( H3DExternalSearchPath )
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-  getExternalSearchPathsH3D( ENTACT_INCLUDE_SEARCH_PATHS ENTACT_LIB_SEARCH_PATHS ${module_file_path} )
+  getExternalSearchPathsH3D( entact_include_search_paths entact_lib_search_paths ${module_file_path} )
 endif()
 
 # Look for the header file.
-find_path( ENTACTAPI_INCLUDE_DIR NAMES EntactAPI.h 
-                                 PATHS ${ENTACT_INCLUDE_SEARCH_PATHS}
-                                 DOC "Path in which the file EntactAPI.h is located." )
-mark_as_advanced( ENTACTAPI_INCLUDE_DIR )
+find_path( EntactAPI_INCLUDE_DIR NAMES EntactAPI.h 
+                                 PATHS ${entact_include_search_paths}
+                                 DOC "Path in which the file EntactAPI.h is located. Needed to support Entact haptics device." )
+mark_as_advanced( EntactAPI_INCLUDE_DIR )
 
+set( entact_api_lib_name EntactAPI )
+if( NOT WIN32 )
+  set( entact_api_lib_name entact )
+endif()
 
 # Look for the library.
-if( WIN32 )
-  find_library( ENTACTAPI_LIBRARY NAMES EntactAPI 
-                                  PATHS ${ENTACT_LIB_SEARCH_PATHS}
-                                  DOC "Path to EntactAPI.lib library." )
-else()
-  find_library( ENTACTAPI_LIBRARY NAMES entact
-                                  PATHS ${ENTACT_LIB_SEARCH_PATHS}
-                                  DOC "Path to EntactAPI library." )
+find_library( EntactAPI_LIBRARY NAMES ${entact_api_lib_name} 
+                                PATHS ${entact_lib_search_paths}
+                                DOC "Path to EntactAPI.lib library. Needed to support Entact haptics device." )
+mark_as_advanced( EntactAPI_LIBRARY )
 
-endif()
-mark_as_advanced( ENTACTAPI_LIBRARY )
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set EntactAPI_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( EntactAPI DEFAULT_MSG
+                                   EntactAPI_LIBRARY EntactAPI_INCLUDE_DIR )
 
+set( EntactAPI_LIBRARIES ${EntactAPI_LIBRARY} )
+set( EntactAPI_INCLUDE_DIRS ${EntactAPI_INCLUDE_DIR} )
 
-# Copy the results to the output variables.
-if( ENTACTAPI_INCLUDE_DIR AND ENTACTAPI_LIBRARY )
-  set( ENTACTAPI_FOUND 1 )
-  set( ENTACTAPI_LIBRARIES ${ENTACTAPI_LIBRARY} )
-  set( ENTACTAPI_INCLUDE_DIR ${ENTACTAPI_INCLUDE_DIR} )
-else()
-  set( ENTACTAPI_FOUND 0 )
-  set( ENTACTAPI_LIBRARIES )
-  set( ENTACTAPI_INCLUDE_DIR )
-endif()
-
-# Report the results.
-if( NOT ENTACTAPI_FOUND )
-  set( ENTACTAPI_DIR_MESSAGE
-       "Entact API was not found. Make sure to set ENTACTAPI_LIBRARY" )
-  set( ENTACTAPI_DIR_MESSAGE
-       "${ENTACTAPI_DIR_MESSAGE} and ENTACTAPI_INCLUDE_DIR. If you do not have EntactAPI library you will not be able to use the Entact haptics device." )
-  if( ENTACTAPI_FIND_REQUIRED )
-    message( FATAL_ERROR "${ENTACTAPI_DIR_MESSAGE}" )
-  elseif( NOT ENTACTAPI_FIND_QUIETLY )
-    message( STATUS "${ENTACTAPI_DIR_MESSAGE}" )
-  endif()
-endif()
+# Backwards compatibility values set here.
+set( ENTACTAPI_INCLUDE_DIR ${EntactAPI_INCLUDE_DIRS} )
+set( ENTACTAPI_LIBRARIES ${EntactAPI_LIBRARIES} )
+set( EntactAPI_FOUND ${ENTACTAPI_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

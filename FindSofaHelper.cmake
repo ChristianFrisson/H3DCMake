@@ -3,9 +3,9 @@
 # This module can get sofahelper from two places
 # when SOFA_DELAY_FIND_LIBS is set, it depends on SOFA_INSTALL_DIR to locate library
 # when SOFA_DELAY_FIND_LIBS is not set, it search the h3d external folder to get the precompiled sofahelper library.
-#  SOFAHELPER_INCLUDE_DIR  -  where to find helper.h, AdvancedTimer.h etc.
-#  SOFAHELPER_LIBRARIES    - List of libraries when using sofa helper component.
-#  SOFAHELPER_FOUND        - True if sofa helper found.
+#  SofaHelper_INCLUDE_DIRS -  where to find helper.h, AdvancedTimer.h etc.
+#  SofaHelper_LIBRARIES    - List of libraries when using sofa helper component.
+#  SofaHelper_FOUND        - True if sofa helper found.
 #  SOFA_DELAY_FIND_LIBS    - If defined then rely on predefined SOFA_INSTALL_DIR to locate the sofahelper library
 #                            otherwise rely on predefined sofahelper library predefined in h3d external folder
 # 
@@ -14,8 +14,14 @@ include( H3DExternalSearchPath )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "sofahelper" "sofahelper/framework" )
 
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SofaHelper_INCLUDE_DIR SofaHelper_LIBRARY_RELEASE SofaHelper_LIBRARY_DEBUG
+                                              OLD_VARIABLE_NAMES SOFAHELPER_INCLUDE_DIR SOFAHELPER_LIBRARY SOFAHELPER_DEBUG_LIBRARY
+                                              DOC_STRINGS "Path in which the file AdvancedTimer.h is located."
+                                                          "Path to SofaHelper${SOFA_LIBRARY_POSTFIX} library."
+                                                          "Path to SofaHelper_d2${SOFA_LIBRARY_POSTFIX} library." )
+
 if( WIN32 )
-set( SOFA_LIBRARY_POSTFIX "" )
+  set( SOFA_LIBRARY_POSTFIX "" )
 endif()
 
 if( NOT SOFA_DELAY_FIND_LIBS )
@@ -44,75 +50,64 @@ else()
 endif()
 
 # Look for the header file.
-find_path( SOFAHELPER_INCLUDE_DIR NAMES   sofa/helper/AdvancedTimer.h
+find_path( SofaHelper_INCLUDE_DIR NAMES   sofa/helper/AdvancedTimer.h
                                   PATHS   ${SOFA_INSTALL_DIR}/framework
                                           ${module_include_search_paths}
                                   NO_DEFAULT_PATH 
                                   DOC     "Path in which the file AdvancedTimer.h is located." )
                                     
-mark_as_advanced( SOFAHELPER_INCLUDE_DIR )
+mark_as_advanced( SofaHelper_INCLUDE_DIR )
 
 # Look for the library.
 
 if( SOFA_DELAY_FIND_LIBS )
   # Assume it will be build before it is used by this project
   if( WIN32 )
-    set( SOFAHELPER_LIBRARY ${SOFA_INSTALL_DIR}/lib/SofaHelper${SOFA_LIBRARY_POSTFIX}.lib CACHE FILE "Sofa helper library" )
-    set( SOFAHELPER_DEBUG_LIBRARY ${SOFA_INSTALL_DIR}/lib/SofaHelper${SOFA_LIBRARY_POSTFIX}_d.lib CACHE FILE "Sofa helper debug library" )
+    set( SofaHelper_LIBRARY_RELEASE ${SOFA_INSTALL_DIR}/lib/SofaHelper${SOFA_LIBRARY_POSTFIX}.lib CACHE FILE "Sofa helper library" )
+    set( SofaHelper_LIBRARY_DEBUG ${SOFA_INSTALL_DIR}/lib/SofaHelper${SOFA_LIBRARY_POSTFIX}_d.lib CACHE FILE "Sofa helper debug library" )
   elseif( APPLE )
-    set( SOFAHELPER_LIBRARY ${SOFA_INSTALL_DIR}/lib/libSofaHelper${SOFA_LIBRARY_POSTFIX}.dylib CACHE FILE "Sofa helper library" )
-    set( SOFAHELPER_DEBUG_LIBRARY ${SOFA_INSTALL_DIR}/lib/libSofaHelper${SOFA_LIBRARY_POSTFIX}d.dylib CACHE FILE "Sofa helper debug library" )
+    set( SofaHelper_LIBRARY_RELEASE ${SOFA_INSTALL_DIR}/lib/libSofaHelper${SOFA_LIBRARY_POSTFIX}.dylib CACHE FILE "Sofa helper library" )
+    set( SofaHelper_LIBRARY_DEBUG ${SOFA_INSTALL_DIR}/lib/libSofaHelper${SOFA_LIBRARY_POSTFIX}d.dylib CACHE FILE "Sofa helper debug library" )
   elseif( UNIX )
-    set( SOFAHELPER_LIBRARY ${SOFA_INSTALL_DIR}/lib/libSofaHelper${SOFA_LIBRARY_POSTFIX}.so CACHE FILE "Sofa helper library" )
-    set( SOFAHELPER_DEBUG_LIBRARY ${SOFA_INSTALL_DIR}/lib/libSofaHelper${SOFA_LIBRARY_POSTFIX}d.so CACHE FILE "Sofa helper debug library" )
+    set( SofaHelper_LIBRARY_RELEASE ${SOFA_INSTALL_DIR}/lib/libSofaHelper${SOFA_LIBRARY_POSTFIX}.so CACHE FILE "Sofa helper library" )
+    set( SofaHelper_LIBRARY_DEBUG ${SOFA_INSTALL_DIR}/lib/libSofaHelper${SOFA_LIBRARY_POSTFIX}d.so CACHE FILE "Sofa helper debug library" )
   endif()
-  mark_as_advanced( SOFAHELPER_LIBRARY )
-  mark_as_advanced( SOFAHELPER_DEBUG_LIBRARY )
+  mark_as_advanced( SofaHelper_LIBRARY_RELEASE )
+  mark_as_advanced( SofaHelper_LIBRARY_DEBUG )
 else()
   # use precompiled lib to work
-find_library( SOFAHELPER_LIBRARY   NAMES   SofaHelper2${SOFA_LIBRARY_POSTFIX}
-                                   PATHS   ${SOFA_INSTALL_DIR}/lib
-                                           ${module_lib_search_paths}
-                                   DOC     "Path to SofaHelper${SOFA_LIBRARY_POSTFIX} library." )
-mark_as_advanced( SOFAHELPER_LIBRARY )
-find_library( SOFAHELPER_DEBUG_LIBRARY NAMES   SofaHelper_d2${SOFA_LIBRARY_POSTFIX}
-                                       PATHS   ${SOFA_INSTALL_DIR}/lib
-                                               ${module_lib_search_paths}
-                                       DOC     "Path to SofaHelper_d2${SOFA_LIBRARY_POSTFIX} library." )
+  find_library( SofaHelper_LIBRARY_RELEASE   NAMES   SofaHelper2${SOFA_LIBRARY_POSTFIX}
+                                     PATHS   ${SOFA_INSTALL_DIR}/lib
+                                             ${module_lib_search_paths}
+                                     DOC     "Path to SofaHelper${SOFA_LIBRARY_POSTFIX} library." )
+  mark_as_advanced( SofaHelper_LIBRARY_RELEASE )
+  find_library( SofaHelper_LIBRARY_DEBUG NAMES   SofaHelper_d2${SOFA_LIBRARY_POSTFIX}
+                                         PATHS   ${SOFA_INSTALL_DIR}/lib
+                                                 ${module_lib_search_paths}
+                                         DOC     "Path to SofaHelper_d2${SOFA_LIBRARY_POSTFIX} library." )
 
-mark_as_advanced( SOFAHELPER_DEBUG_LIBRARY )
+  mark_as_advanced( SofaHelper_LIBRARY_DEBUG )
 endif()
 
+include( SelectLibraryConfigurations )
+select_library_configurations( SofaHelper )
 
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set SofaHelper_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( SofaHelper DEFAULT_MSG
+                                   SofaHelper_LIBRARY SofaHelper_INCLUDE_DIR )
 
-# Copy the results to the output variables.
-if( SOFAHELPER_INCLUDE_DIR AND SOFAHELPER_LIBRARY )
-  set( SOFAHELPER_FOUND 1 )
-  set( SOFAHELPER_INCLUDE_DIR ${SOFAHELPER_INCLUDE_DIR} )
-  if( SOFAHELPER_DEBUG_LIBRARY )
-    set( SOFAHELPER_LIBRARIES 
-         optimized   ${SOFAHELPER_LIBRARY}
-         debug       ${SOFAHELPER_DEBUG_LIBRARY})
-  else()
-    message( STATUS "Sofa helper debug library is not found. Debug compilation might not work with sofa heler." )
-    set( SOFAHELPER_LIBRARIES ${SOFAHELPER_LIBRARY} )
+if( SofaHelper_FOUND AND MSVC )
+  if( NOT SofaHelper_LIBRARY_RELEASE )
+    message( WARNING "SofaHelper release library not found. Release build might not work properly. To get rid of this warning set SofaHelper_LIBRARY_RELEASE." )
   endif()
-else()
-  set( SOFAHELPER_FOUND 0 )
-  set( SOFAHELPER_LIBRARIES )
-  set( SOFAHELPER_INCLUDE_DIR )
-endif()
-
-# Report the results.
-if( NOT SOFAHELPER_FOUND )
-  set( SOFAHELPER_DIR_MESSAGE
-       "Sofa helper component not found. Make sure SOFAHELPER_LIBRARY and SOFAHELPER_INCLUDE_DIR are set . Currently, it is only supported on windows. " )
-  if( SOFAHELPER_FIND_REQUIRED )
-    set( SOFAHELPER_DIR_MESSAGE
-         "${SOFAHELPER_DIR_MESSAGE} Sofa helper component is required to build." )
-    message( FALTAL_ERROR "${SOFAHELPER_DIR_MESSAGE}" )
-  elseif( NOT SOFAHELPER_FIND_QUIETLY )
-    set( SOFAHELPER_DIR_MESSAGE
-         "${SOFAHELPER_DIR_MESSAGE} Timer profiling will be disabled without Sofa helper component" )
+  if( NOT SofaHelper_LIBRARY_DEBUG )
+    message( WARNING "SofaHelper debug library not found. Debug build might not work properly. To get rid of this warning set SofaHelper_LIBRARY_DEBUG." )
   endif()
 endif()
+
+# Backwards compatibility values set here.
+set( SOFAHELPER_INCLUDE_DIR ${SofaHelper_INCLUDE_DIRS} )
+set( SOFAHELPER_LIBRARIES ${SofaHelper_LIBRARIES} )
+set( SofaHelper_FOUND ${SOFAHELPER_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

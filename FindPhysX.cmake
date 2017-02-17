@@ -1,12 +1,15 @@
-# - Find PHYSX
-# Find the native PHYSX headers and libraries.
+# - Find PhysX
+# Find the native PhysX headers and libraries.
 #
-#  PHYSX_INCLUDE_DIR -  where to find the include files of PhysX
-#  PHYSX_LIBRARIES    - List of libraries when using PHYSX.
-#  PHYSX_FOUND        - True if PHYSX found.
-#  PHYSX_FLAGS        - Flags needed for ode to build 
+#  PhysX_INCLUDE_DIRS - Where to find the include files of PhysX
+#  PhysX_LIBRARIES    - List of libraries when using PhysX.
+#  PhysX_FOUND        - True if PhysX found.
+#  PhysX_FLAGS        - Flags needed for ode to build 
 
 include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES PhysX_PhysXLOADER_INCLUDE_DIR PhysX_PHYSICS_INCLUDE_DIR PhysX_FOUNDATION_INCLUDE_DIR PhysX_COOKING_INCLUDE_DIR PhysX_LIB_LOADER PhysX_LIB_CORE
+                                              OLD_VARIABLE_NAMES PHYSX_PHYSXLOADER_INCLUDE_DIR )
+                                                          
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "PhysX/Physics" "PhysX/Foundation" "PhysX/PhysXLoader" "PhysX/Cooking" )
 
@@ -16,89 +19,66 @@ else()
   set( LIB "32" )
 endif()
 
+set( module_include_search_paths "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
+                                 "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
+                                 "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
+                                 "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
+                                 ${module_include_search_paths} )
+
 # Look for the header file.
-find_path( PHYSX_PHYSICS_INCLUDE_DIR NAMES NxPhysics.h
+find_path( PhysX_PHYSICS_INCLUDE_DIR NAMES NxPhysics.h
            PATHS /usr/local/include
                  /usr/include/PhysX/v2.8.3/SDKs/Physics/include
-                 "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
-                 "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
-                 "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
-                 "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
                  ${module_include_search_paths} )
 
-mark_as_advanced( PHYSX_PHYSICS_INCLUDE_DIR )
+mark_as_advanced( PhysX_PHYSICS_INCLUDE_DIR )
 
-find_path( PHYSX_FOUNDATION_INCLUDE_DIR NAMES NxFoundation.h
+find_path( PhysX_FOUNDATION_INCLUDE_DIR NAMES NxFoundation.h
            PATHS /usr/local/include
                  /usr/include/PhysX/v2.8.3/SDKs/Foundation/include
-                 "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Foundation/include"
-                 "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Foundation/include"
-                 "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Foundation/include"
-                 "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Foundation/include"
                  ${module_include_search_paths} )
 
-mark_as_advanced( PHYSX_FOUNDATION_INCLUDE_DIR )
+mark_as_advanced( PhysX_FOUNDATION_INCLUDE_DIR )
 
-find_path( PHYSX_PHYSXLOADER_INCLUDE_DIR NAMES PhysXLoader.h
+find_path( PhysX_PhysXLOADER_INCLUDE_DIR NAMES PhysXLoader.h
            PATHS /usr/local/include
                  /usr/include/PhysX/v2.8.3/SDKs/PhysXLoader/include
-                 "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/PhysXLoader/include"
-                 "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/PhysXLoader/include"
-                 "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/PhysXLoader/include"
-                 "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/PhysXLoader/include"
                  ${module_include_search_paths} )
 
-mark_as_advanced( PHYSX_PHYSXLOADER_INCLUDE_DIR )
+mark_as_advanced( PhysX_PhysXLOADER_INCLUDE_DIR )
 
-find_path( PHYSX_COOKING_INCLUDE_DIR NAMES NxCooking.h
+find_path( PhysX_COOKING_INCLUDE_DIR NAMES NxCooking.h
            PATHS /usr/local/include
                  /usr/include/PhysX/${version_string}/SDKs/Cooking/include
-                 "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Cooking/include"
-                 "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Cooking/include"
-                 "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Cooking/include"
-                 "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Cooking/include"
                  ${module_include_search_paths} )
 
-mark_as_advanced( PHYSX_COOKING_INCLUDE_DIR )
+mark_as_advanced( PhysX_COOKING_INCLUDE_DIR )
+
+set( module_lib_search_paths "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
+                             "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
+                             "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
+                             "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
+                             ${module_lib_search_paths} )
 # Look for the library.
-find_library( PHYSX_LIB_LOADER NAMES PhysXLoader PhysXLoader${LIB}
-                PATHS ${module_lib_search_paths}
-                      "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
-                      "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
-                      "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
-                      "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}" )
+find_library( PhysX_LIB_LOADER NAMES PhysXLoader PhysXLoader${LIB}
+                PATHS ${module_lib_search_paths} )
 
-find_library( PHYSX_LIB_CORE NAMES PhysXCore PhysXCore${LIB}
-                PATHS ${module_lib_search_paths}
-                      "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
-                      "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
-                      "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
-                      "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}" )
+find_library( PhysX_LIB_CORE NAMES PhysXCore PhysXCore${LIB}
+                PATHS ${module_lib_search_paths} )
                       
-mark_as_advanced( PHYSX_LIB_LOADER )
-mark_as_advanced( PHYSX_LIB_CORE )
+mark_as_advanced( PhysX_LIB_LOADER )
+mark_as_advanced( PhysX_LIB_CORE )
 
-# Copy the results to the output variables.
-if( PHYSX_PHYSXLOADER_INCLUDE_DIR AND PHYSX_FOUNDATION_INCLUDE_DIR AND PHYSX_PHYSICS_INCLUDE_DIR AND PHYSX_COOKING_INCLUDE_DIR AND PHYSX_LIB_LOADER AND PHYSX_LIB_CORE )
-  set( PHYSX_FOUND 1 )
-  set( PHYSX_LIBRARIES ${PHYSX_LIB_LOADER} ${PHYSX_LIB_CORE} )
-  set( PHYSX_INCLUDE_DIR ${PHYSX_PHYSICS_INCLUDE_DIR} )
-  set( PHYSX_INCLUDE_DIR ${PHYSX_INCLUDE_DIR} ${PHYSX_PHYSXLOADER_INCLUDE_DIR} )
-  set( PHYSX_INCLUDE_DIR ${PHYSX_INCLUDE_DIR} ${PHYSX_FOUNDATION_INCLUDE_DIR} )
-  set( PHYSX_INCLUDE_DIR ${PHYSX_INCLUDE_DIR} ${PHYSX_COOKING_INCLUDE_DIR} )
-else()
-  set( PHYSX_FOUND 0 )
-  set( PHYSX_LIBRARIES )
-  set( PHYSX_INCLUDE_DIR )
-endif()
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set PhysX_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( PhysX DEFAULT_MSG
+                                   PhysX_PhysXLOADER_INCLUDE_DIR PhysX_PHYSICS_INCLUDE_DIR PhysX_FOUNDATION_INCLUDE_DIR PhysX_COOKING_INCLUDE_DIR PhysX_LIB_LOADER PhysX_LIB_CORE )
 
-# Report the results.
-if( NOT PHYSX_FOUND )
-  set( PHYSX_DIR_MESSAGE
-       "PHYSX was not found. Make sure PHYSX_LIBRARY and PHYSX_INCLUDE_DIR are set." )
-  if( PHYSX_FIND_REQUIRED )
-    message( FATAL_ERROR "${PHYSX_DIR_MESSAGE}" )
-  elseif( NOT PHYSX_FIND_QUIETLY )
-    message( STATUS "${PHYSX_DIR_MESSAGE}" )
-  endif()
-endif()
+set( PhysX_LIBRARIES ${PhysX_LIB_LOADER} ${PhysX_LIB_CORE} )
+set( PhysX_INCLUDE_DIRS ${PhysX_PhysXLOADER_INCLUDE_DIR} ${PhysX_PHYSICS_INCLUDE_DIR} ${PhysX_FOUNDATION_INCLUDE_DIR} ${PhysX_COOKING_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( PHYSX_INCLUDE_DIR ${PhysX_INCLUDE_DIRS} )
+set( PHYSX_LIBRARIES ${PhysX_LIBRARIES} )
+set( PhysX_FOUND ${PHYSX_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
