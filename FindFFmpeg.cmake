@@ -31,6 +31,8 @@ else()
                                               /usr/include/libavcodec
                                               /usr/local/include/ffmpeg
                                               /usr/include/ffmpeg
+                                              /usr/local/include/${CMAKE_LIBRARY_ARCHITECTURE}/libavcodec
+                                              /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/libavcodec
                                               ${module_include_search_paths}
                                         DOC "Path in which the file avcodec.h is located." )
   mark_as_advanced( FFMPEG_AVCODEC_INCLUDE_DIR )
@@ -40,7 +42,9 @@ else()
                                                      /usr/include/libavformat
                                                      /usr/local/include/ffmpeg
                                                      /usr/include/ffmpeg
-                                                     /usr/include/libavformat
+                                                     /usr/include/ffmpeg
+                                                     /usr/local/include/${CMAKE_LIBRARY_ARCHITECTURE}/libavformat
+                                                     /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/libavformat
                                                      ${module_include_search_paths}
                                                DOC "Path in which the file avformat.h is located." )
   mark_as_advanced( FFMPEG_AVFORMAT_INCLUDE_DIR )
@@ -51,6 +55,8 @@ else()
                                               /usr/local/include/ffmpeg
                                               /usr/include/ffmpeg
                                               /usr/include/libavformat
+                                              /usr/local/include/${CMAKE_LIBRARY_ARCHITECTURE}/libswscale
+                                              /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/libswscale
                                               ${module_include_search_paths}
                                         DOC "Path in which the file swscale.h is located." )
   mark_as_advanced( FFMPEG_SWSCALE_INCLUDE_DIR )
