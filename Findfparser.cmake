@@ -8,10 +8,9 @@ include( H3DExternalSearchPath )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "fparser" )
 
-handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES fparser_LIBRARY_RELEASE fparser_LIBRARY_DEBUG
-                                              OLD_VARIABLE_NAMES fparser_LIBRARY fparser_DEBUG_LIBRARY
-                                              DOC_STRINGS "Path to fparser library."
-                                                          "Path to fparser debug library." )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES fparser_LIBRARY_DEBUG
+                                              OLD_VARIABLE_NAMES fparser_DEBUG_LIBRARY
+                                              DOC_STRINGS "Path to fparser debug library." )
 
 # Look for the header file.
 find_path( fparser_INCLUDE_DIR NAMES fparser.hh
