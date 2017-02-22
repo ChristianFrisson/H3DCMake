@@ -54,7 +54,7 @@ foreach( _var_name ${open_exr_var_names} )
 endforeach()
 
 # OpenEXR requires zlib.
-find_package(H3DZLIB)
+find_package( ZLIB )
 set( openexr_required_lib_vars ${open_exr_var_names} )
 if( WIN32 )
   set( i 0 )
