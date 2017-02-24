@@ -97,6 +97,8 @@ include( FindPackageHandleStandardArgs )
 # if all listed variables are TRUE
 find_package_handle_standard_args( SofaHelper DEFAULT_MSG
                                    SofaHelper_LIBRARY SofaHelper_INCLUDE_DIR )
+set( SofaHelper_INCLUDE_DIRS ${SofaHelper_INCLUDE_DIR} )
+set( SofaHelper_LIBRARIES ${SofaHelper_LIBRARY} )
 
 if( SofaHelper_FOUND AND MSVC )
   if( NOT SofaHelper_LIBRARY_RELEASE )
