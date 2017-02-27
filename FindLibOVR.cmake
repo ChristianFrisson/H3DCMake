@@ -36,6 +36,6 @@ set( LibOVR_LIBRARIES ${LibOVR_LIBRARY} )
 set( LibOVR_INCLUDE_DIRS ${LibOVR_INCLUDE_DIR} )
 
 # Backwards compatibility values set here.
-set( LIBOVR_INCLUDE_DIR ${LibOVR_INCLUDE_DIRS} )
+set( LIBOVR_INCLUDE_DIRS ${LibOVR_INCLUDE_DIRS} )
 set( LIBOVR_LIBRARIES ${LibOVR_LIBRARIES} )
 set( LibOVR_FOUND ${LIBOVR_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
