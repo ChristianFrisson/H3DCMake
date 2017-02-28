@@ -6,15 +6,6 @@
 #  XERCES_FOUND        - True if Xerces found.
 
 include( H3DExternalSearchPath )
-set( XercesC_FIND_QUIETLY ${Xerces_FIND_QUIETLY} )
-set( XercesC_FIND_REQUIRED ${Xerces_FIND_REQUIRED} )
-checkCMakeInternalModule( XercesC REQUIRED_CMAKE_VERSION "3.1.0" ) # Will call CMakes internal find module for this feature.
-if( ( DEFINED XercesC_FOUND ) AND XercesC_FOUND )
-  set( XERCES_INCLUDE_DIRS ${XercesC_INCLUDE_DIRS})
-  set( XERCES_LIBRARIES ${XercesC_LIBRARIES})
-  set( XERCES_FOUND ${XercesC_FOUND})
-  return()
-endif()
 
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
@@ -22,13 +13,15 @@ getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths $
 # Look for the header file.
 find_path( XERCES_INCLUDE_DIR NAMES xercesc/sax2/Attributes.hpp
                               PATHS ${module_include_search_paths}
-                              DOC "Path in which the file xercesc/sax2/Attributes.hpp is located." )
+                              DOC "Path in which the file xercesc/sax2/Attributes.hpp is located."
+                              NO_SYSTEM_ENVIRONMENT_PATH )
 mark_as_advanced( XERCES_INCLUDE_DIR )
 
 # Look for the library.
 find_library( XERCES_LIBRARY NAMES  xerces-c_3 xerces-c xerces-c_2
                              PATHS ${module_lib_search_paths}
-                             DOC "Path to xerces library." )
+                             DOC "Path to xerces library."
+                             NO_SYSTEM_ENVIRONMENT_PATH )
 mark_as_advanced( XERCES_LIBRARY )
 
 set( XERCES_LIBRARIES_FOUND 0 )
@@ -46,12 +39,14 @@ if( WIN32 AND PREFER_STATIC_LIBRARIES )
   getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
   find_library( XERCES_STATIC_LIBRARY NAMES ${XERCES_STATIC_LIBRARY_NAME}
                                          PATHS ${module_lib_search_paths}
-                                         DOC "Path to xerces static library." )
+                                         DOC "Path to xerces static library."
+                                         NO_SYSTEM_ENVIRONMENT_PATH )
   mark_as_advanced( XERCES_STATIC_LIBRARY )
   
   find_library( XERCES_STATIC_DEBUG_LIBRARY NAMES ${XERCES_STATIC_LIBRARY_NAME}_d
                                             PATHS ${module_lib_search_paths}
-                                            DOC "Path to xerces static debug library." )
+                                            DOC "Path to xerces static debug library."
+                                            NO_SYSTEM_ENVIRONMENT_PATH )
   mark_as_advanced( XERCES_STATIC_DEBUG_LIBRARY )
   
   if( XERCES_STATIC_LIBRARY OR XERCES_STATIC_DEBUG_LIBRARY )
