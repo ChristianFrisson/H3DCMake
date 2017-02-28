@@ -90,5 +90,5 @@ set( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIRS} )
 set( OpenEXR_FOUND ${OPENEXR_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
 
 if( OpenEXR_FOUND AND WIN32 )
-  ADD_DEFINITIONS(-DOPENEXR_DLL)
+  add_definitions(-DOPENEXR_DLL)
 endif()

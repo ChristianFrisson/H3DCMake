@@ -15,7 +15,7 @@ mark_as_advanced( FREETYPE_CONFIG_EXECUTABLE )
 if( FREETYPE_CONFIG_EXECUTABLE )
 
   # run the freetype-config program to get cflags
-  EXECUTE_PROCESS(
+  execute_process(
         COMMAND sh "${FREETYPE_CONFIG_EXECUTABLE}" --cflags
         OUTPUT_VARIABLE FREETYPE_CFLAGS
         RESULT_VARIABLE RET
@@ -25,7 +25,7 @@ if( FREETYPE_CONFIG_EXECUTABLE )
     if( ${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 6 )
       string(STRIP "${FREETYPE_CFLAGS}" FREETYPE_CFLAGS)
     endif()
-    SEPARATE_ARGUMENTS(FREETYPE_CFLAGS)
+    separate_arguments(FREETYPE_CFLAGS)
 
     # parse definitions from cxxflags; drop -D* from CFLAGS
     string(REGEX REPLACE "-D[^;]+;" ""

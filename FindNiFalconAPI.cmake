@@ -90,7 +90,7 @@ if( NiFalconAPI_INCLUDE_DIR AND HAVE_NI_FALCON_COMM_LIBRARY AND NiFalconAPI_LIBR
 
   # comm libraries, preferred order usb, ftdi, ftd2xx
   if( NiFalconAPI_comm_usb_LIBRARY )
-     OPTION(NiFalconAPI_LIBUSB
+     option(NiFalconAPI_LIBUSB
            "Use libusb for communication with Falcon device"
            ON)
     set( HAVE_SET_OPTION 1 )
@@ -100,11 +100,11 @@ if( NiFalconAPI_INCLUDE_DIR AND HAVE_NI_FALCON_COMM_LIBRARY AND NiFalconAPI_LIBR
   # ftdi library 
   if( NiFalconAPI_comm_ftdi_LIBRARY )
     if( DEFINED HAVE_SET_OPTION )
-      OPTION(NiFalconAPI_LIBFTDI
+      option(NiFalconAPI_LIBFTDI
              "Use libftdi for communication with Falcon device"
              OFF)
     else()
-      OPTION(NiFalconAPI_LIBFTDI
+      option(NiFalconAPI_LIBFTDI
              "Use libftdi for communication with Falcon device"
              ON)
     endif()
@@ -116,11 +116,11 @@ if( NiFalconAPI_INCLUDE_DIR AND HAVE_NI_FALCON_COMM_LIBRARY AND NiFalconAPI_LIBR
   # ftd2xx library
   if( NiFalconAPI_comm_ftd2xx_LIBRARY )
     if( DEFINED HAVE_SET_OPTION )
-      OPTION(NiFalconAPI_LIBFTD2XX
+      option(NiFalconAPI_LIBFTD2XX
              "Use libftd2xx for communication with Falcon device"
            OFF )
     else()
-      OPTION(NiFalconAPI_LIBFTD2XX
+      option(NiFalconAPI_LIBFTD2XX
              "Use libftd2xx for communication with Falcon device"
            ON )
     endif()

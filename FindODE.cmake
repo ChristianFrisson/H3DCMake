@@ -45,7 +45,7 @@ else()
                      /opt/local/bin )
   message( STATUS ${ODE_CONFIG_EXECUTABLE} )
   if( ODE_CONFIG_EXECUTABLE )
-     EXECUTE_PROCESS(
+     execute_process(
         COMMAND sh "${ODE_CONFIG_EXECUTABLE}" --cflags
         OUTPUT_VARIABLE ODE_CFLAGS
         RESULT_VARIABLE RET

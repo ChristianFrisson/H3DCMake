@@ -63,7 +63,7 @@ endif()
 
 
 set( PHYSX3_LIB_TYPE "CHECKED" CACHE STRING "PhysX library type" )
-SET_PROPERTY( CACHE PHYSX3_LIB_TYPE PROPERTY STRINGS RELEASE CHECKED PROFILE )
+set_property( CACHE PHYSX3_LIB_TYPE PROPERTY STRINGS RELEASE CHECKED PROFILE )
 if( ${PHYSX3_LIB_TYPE} STREQUAL RELEASE )
   set( PHYSX3_LIB_TYPE_SUFFIX "" )
 else()
@@ -78,7 +78,7 @@ foreach( PHYSX3_LIB ${PHYSX3_LIBS})
   set( LIB_DEBUG_NAME PHYSX3_${_upper_lib_name}_DEBUG_LIBRARY )
   # unset libraries so that they are always looked for. This is because we want it to automatically
   # update if the PHYSX3_LIB_TYPE is changed.
-  UNSET( ${LIB_NAME} CACHE)
+  unset( ${LIB_NAME} CACHE)
 
   # FIND RELEASE LIBS
   find_library( ${LIB_NAME}
