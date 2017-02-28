@@ -7,35 +7,29 @@
 #  ZLIB_FOUND        - True if zlib found.
 
 include( H3DExternalSearchPath )
-checkCMakeInternalModule( ZLIB ) # Will call CMakes internal find module for this feature.
-if( ( DEFINED ZLIB_FOUND ) AND ZLIB_FOUND )
-  return()
-endif()
-
-include( H3DExternalSearchPath )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "zlib" )
 
 # Look for the header file.
 find_path( ZLIB_INCLUDE_DIR NAMES zlib.h
            PATHS ${module_include_search_paths}
-           DOC "Path in which the file zlib.h is located." )
+           DOC "Path in which the file zlib.h is located."
+           NO_SYSTEM_ENVIRONMENT_PATH )
 
 # Look for the library.
 find_library( ZLIB_LIBRARY NAMES zlib 
               PATHS ${module_lib_search_paths}
-              DOC "Path to zlib library." )
+              DOC "Path to zlib library."
+              NO_SYSTEM_ENVIRONMENT_PATH )
 
 mark_as_advanced( ZLIB_INCLUDE_DIR ZLIB_LIBRARY )
 
-include( FindPackageHandleStandardArgs )
-# handle the QUIETLY and REQUIRED arguments and set ZLIB_FOUND to TRUE
-# if all listed variables are TRUE
-find_package_handle_standard_args( ZLIB DEFAULT_MSG
-                                   ZLIB_LIBRARY ZLIB_INCLUDE_DIR )
+checkIfModuleFound( ZLIB
+                    REQUIRED_VARS ZLIB_INCLUDE_DIR ZLIB_LIBRARY )
 
 set( ZLIB_LIBRARIES ${ZLIB_LIBRARY} )
 set( ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR} )
 
-# Backwards compatibility values set here.
-set( ZLIB_INCLUDE_DIR ${ZLIB_INCLUDE_DIRS} )
+if( NOT ZLIB_FOUND )
+  checkCMakeInternalModule( ZLIB )  # Will call CMakes internal find module for this feature.
+endif()

@@ -15,9 +15,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${bullet_cache_
                                                                  BULLET_H3D_COLLISION_DEBUG_LIBRARY BULLET_H3D_DYNAMICS_DEBUG_LIBRARY BULLET_H3D_MATH_DEBUG_LIBRARY
                                                                  BULLET_H3D_SOFTBODY_DEBUG_LIBRARY BULLET_H3D_COLLISION_OBJECT_WRAPPER_H )
 
-checkCMakeInternalModule( Bullet ) # Will call CMakes internal find module for this feature. Do not return if found due to check further down.
-
-set( BULLET_INSTALL_DIR "$ENV{ProgramFiles}/bullet-2.80" CACHE PATH "Path to bullet installation" )
+set( BULLET_INSTALL_DIR "" CACHE PATH "Path to bullet installation" )
 mark_as_advanced( BULLET_INSTALL_DIR )
 
 set( BULLET_LIBRARY_SEARCH_PATHS "" )
@@ -47,38 +45,46 @@ if( WIN32 )
   find_library( BULLET_COLLISION_LIBRARY NAMES BulletCollision libBulletCollision libbulletcollision
                 PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
                       ${BULLET_INSTALL_DIR}/lib/release
-                      ${BULLET_INSTALL_DIR}/lib )
+                      ${BULLET_INSTALL_DIR}/lib
+                NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_COLLISION_LIBRARY_DEBUG NAMES BulletCollision_Debug
                 PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
-                      ${BULLET_INSTALL_DIR}/lib/release )
+                      ${BULLET_INSTALL_DIR}/lib/release
+                NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_DYNAMICS_LIBRARY NAMES BulletDynamics libBulletDynamics libbulletdynamics
                 PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
                       ${BULLET_INSTALL_DIR}/lib/release
-                      ${BULLET_INSTALL_DIR}/lib )
+                      ${BULLET_INSTALL_DIR}/lib
+                NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_DYNAMICS_LIBRARY_DEBUG NAMES BulletDynamics_Debug
                 PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
-                      ${BULLET_INSTALL_DIR}/lib/release )
+                      ${BULLET_INSTALL_DIR}/lib/release
+                NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_MATH_LIBRARY NAMES LinearMath libLinearMath libbulletmath
                 PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
                       ${BULLET_INSTALL_DIR}/lib/release
-                      ${BULLET_INSTALL_DIR}/lib )
+                      ${BULLET_INSTALL_DIR}/lib
+                NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_MATH_LIBRARY_DEBUG NAMES LinearMath_Debug
                 PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
-                      ${BULLET_INSTALL_DIR}/lib/release )
+                      ${BULLET_INSTALL_DIR}/lib/release
+                NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_SOFTBODY_LIBRARY NAMES BulletSoftBody libBulletSoftBody
                 PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
                       ${BULLET_INSTALL_DIR}/lib/release
-                      ${BULLET_INSTALL_DIR}/lib )
+                      ${BULLET_INSTALL_DIR}/lib
+                NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_SOFTBODY_LIBRARY_DEBUG NAMES BulletSoftBody_Debug
                 PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
-                      ${BULLET_INSTALL_DIR}/lib/release )
+                      ${BULLET_INSTALL_DIR}/lib/release
+                NO_SYSTEM_ENVIRONMENT_PATH )
 
   mark_as_advanced( BULLET_COLLISION_LIBRARY_DEBUG )
   mark_as_advanced( BULLET_DYNAMICS_LIBRARY_DEBUG )
@@ -96,11 +102,8 @@ mark_as_advanced( BULLET_DYNAMICS_LIBRARY )
 mark_as_advanced( BULLET_MATH_LIBRARY )
 mark_as_advanced( BULLET_SOFTBODY_LIBRARY )
 
-include( FindPackageHandleStandardArgs )
-# handle the QUIETLY and REQUIRED arguments and set BULLET_FOUND to TRUE
-# if all listed variables are TRUE
-find_package_handle_standard_args( BULLET DEFAULT_MSG
-                                   ${bullet_cache_var_names} ${bullet_cache_var_debug_names} BULLET_INCLUDE_DIR )
+checkIfModuleFound( BULLET
+                    REQUIRED_VARS BULLET_INCLUDE_DIR ${bullet_cache_var_names} ${bullet_cache_var_debug_names} )
 
 set( BULLET_INCLUDE_DIRS ${BULLET_INCLUDE_DIR} )
 set( BULLET_LIBRARIES )
@@ -112,9 +115,14 @@ foreach( bullet_cache_var_name ${bullet_cache_var_names} )
   endif()
 endforeach()
 
+if( NOT BULLET_FOUND )
+  checkCMakeInternalModule( Bullet OUTPUT_AS_UPPER_CASE )  # Will call CMakes internal find module for this feature.
+endif()
+
 if( BULLET_FOUND )
   find_path( BULLET_COLLISION_OBJECT_WRAPPER_H NAMES BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h
-             PATHS ${BULLET_INCLUDE_DIRS} )
+             PATHS ${BULLET_INCLUDE_DIRS}
+             NO_SYSTEM_PATH )
   mark_as_advanced( BULLET_COLLISION_OBJECT_WRAPPER_H )
 
   if( BULLET_COLLISION_OBJECT_WRAPPER_H )

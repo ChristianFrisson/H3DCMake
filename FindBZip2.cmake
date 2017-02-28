@@ -19,23 +19,23 @@ getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths $
 # Look for the header file.
 find_path( BZIP2_INCLUDE_DIR NAMES bzlib.h
            PATHS ${module_include_search_paths}
-           DOC "Path in which the file Bzip2.h is located." )
+           DOC "Path in which the file Bzip2.h is located."
+           NO_SYSTEM_ENVIRONMENT_PATH )
 
 # Look for the library.
 find_library( BZIP2_LIBRARY NAMES libbz2 bz2 bzip2 
               PATHS ${module_lib_search_paths}
-              DOC "Path to bzip2 library." )
+              DOC "Path to bzip2 library."
+              NO_SYSTEM_ENVIRONMENT_PATH )
 
 mark_as_advanced( BZIP2_INCLUDE_DIR BZIP2_LIBRARY )
 
-include( FindPackageHandleStandardArgs )
-# handle the QUIETLY and REQUIRED arguments and set BZIP2_FOUND to TRUE
-# if all listed variables are TRUE
-find_package_handle_standard_args( BZIP2 DEFAULT_MSG
-                                   BZIP2_LIBRARY BZIP2_INCLUDE_DIR )
+checkIfModuleFound( BZIP2
+                    REQUIRED_VARS BZIP2_INCLUDE_DIR BZIP2_LIBRARY )
 
 set( BZIP2_LIBRARIES ${BZIP2_LIBRARY} )
 set( BZIP2_INCLUDE_DIRS ${BZIP2_INCLUDE_DIR} )
 
-# Backwards compatibility values set here.
-set( BZIP2_INCLUDE_DIR ${BZIP2_INCLUDE_DIRS} )
+if( NOT BZIP2_FOUND )
+  checkCMakeInternalModule( BZIP2 )  # Will call CMakes internal find module for this feature.
+endif()

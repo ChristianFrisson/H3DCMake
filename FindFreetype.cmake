@@ -7,11 +7,6 @@
 
 include( H3DExternalSearchPath )
 
-checkCMakeInternalModule( Freetype ) # Will call CMakes internal find module for this feature.
-if( ( DEFINED FREETYPE_FOUND ) AND FREETYPE_FOUND )
-  return()
-endif()
-
 find_program(FREETYPE_CONFIG_EXECUTABLE freetype-config
       ONLY_CMAKE_FIND_ROOT_PATH
       DOC "Path to freetype_config executable. Used to find freetype, not used on a standard Windows installation of H3DAPI." )
@@ -58,24 +53,27 @@ if( NOT FREETYPE_INCLUDE_DIR_ft2build )
   # Look for the header file.
   find_path( FREETYPE_INCLUDE_DIR_ft2build NAMES freetype/freetype.h
                                            PATHS ${module_include_search_paths}
-                                           DOC "Path in which the file freetype/freetype.h is located." )
+                                           DOC "Path in which the file freetype/freetype.h is located."
+                                           NO_SYSTEM_ENVIRONMENT_PATH )
   mark_as_advanced( FREETYPE_INCLUDE_DIR_ft2build )
 endif()
 
 # Look for the library.
 find_library( FREETYPE_LIBRARY NAMES freetype freetype2311 freetype2312MT freetype2312 freetype235
                                PATHS ${module_lib_search_paths}
-                               DOC "Path to freetype library." )
+                               DOC "Path to freetype library."
+                               NO_SYSTEM_ENVIRONMENT_PATH )
 mark_as_advanced( FREETYPE_LIBRARY )
 
-include( FindPackageHandleStandardArgs )
-# handle the QUIETLY and REQUIRED arguments and set FREETYPE_FOUND to TRUE
-# if all listed variables are TRUE
-find_package_handle_standard_args( FREETYPE DEFAULT_MSG
-                                   FREETYPE_LIBRARY FREETYPE_INCLUDE_DIR_ft2build )
+checkIfModuleFound( FREETYPE
+                    REQUIRED_VARS FREETYPE_INCLUDE_DIR_ft2build FREETYPE_LIBRARY )
 
 set( FREETYPE_LIBRARIES ${FREETYPE_LIBRARY} )
 set( FREETYPE_INCLUDE_DIRS ${FREETYPE_INCLUDE_DIR_ft2build} )
+
+if( NOT FREETYPE_FOUND )
+  checkCMakeInternalModule( Freetype OUTPUT_AS_UPPER_CASE )  # Will call CMakes internal find module for this feature.
+endif()
 
 # Backwards compatibility values set here.
 set( FREETYPE_INCLUDE_DIR ${FREETYPE_INCLUDE_DIRS} )

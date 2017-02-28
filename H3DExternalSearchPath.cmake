@@ -126,14 +126,14 @@ function( get_external_search_paths_h3d arg1 arg2 arg3 )
   set( ${arg2} ${${arg2}} PARENT_SCOPE )
 endfunction()
 
-# arg1 Should contain the name of the module to check for.
+# module_name Should contain the name of the module to check for.
 # REQUIRED_CMAKE_VERSION - A one value argument which will contain a version string
 # which will be compared against the current CMake version. If the cmake version is
 # below the REQUIRED_CMAKE_VERSION then find_package will not be called because
 # the find module is expected to not exist.
-function( checkCMakeInternalModule arg1 )
+function( checkCMakeInternalModule module_name )
   set( options )
-  set( oneValueArgs REQUIRED_CMAKE_VERSION )
+  set( oneValueArgs REQUIRED_CMAKE_VERSION OUTPUT_AS_UPPER_CASE )
   set( multiValueArgs )
   include( CMakeParseArguments )
   cmake_parse_arguments( check_cmake_internal_module "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
@@ -150,26 +150,29 @@ function( checkCMakeInternalModule arg1 )
   # predefined paths.
   set( tmp_cmake_module_path ${CMAKE_MODULE_PATH} )
   set( CMAKE_MODULE_PATH "" )
-  set( find_quietly_old ${${arg1}_FIND_QUIETLY} )
-  set( find_required_old ${${arg1}_FIND_REQUIRED} )
-  if( WIN32 )
-    set( ${arg1}_FIND_QUIETLY 1 )
-    set( ${arg1}_FIND_REQUIRED 0 )
-    find_package( ${arg1} QUIET )
-  else()
-    set( quiet_required_args )
-    if( ${arg1}_FIND_QUIETLY )
-      set( quiet_required_args QUIET )
-    endif()
-    if( ${arg1}_FIND_REQUIRED )
-      set( quiet_required_args ${quiet_required_args} REQUIRED )
-    endif()
-    find_package( ${arg1} ${quiet_required_args} )
+  set( quiet_required_args )
+  if( ${module_name}_FIND_QUIETLY )
+    set( quiet_required_args QUIET )
   endif()
-  set( ${arg1}_FIND_QUIETLY ${find_quietly_old} )
-  set( ${arg1}_FIND_REQUIRED ${find_required_old} )
+  if( ${module_name}_FIND_REQUIRED )
+    set( quiet_required_args ${quiet_required_args} REQUIRED )
+  endif()
+  find_package( ${module_name} ${quiet_required_args} )
   # Set back to use previous value of CMAKE_MODULE_PATH.
   set( CMAKE_MODULE_PATH ${tmp_cmake_module_path} )
+
+  set( output_prefix ${module_name} )
+  if( DEFINED check_cmake_internal_module_OUTPUT_AS_UPPER_CASE )
+    string( TOUPPER ${output_prefix} output_prefix )
+  endif()
+  set( ${output_prefix}_FOUND ${${output_prefix}_FOUND} PARENT_SCOPE )
+  set( ${module_name}_FOUND ${${output_prefix}_FOUND} PARENT_SCOPE )
+  set( ${output_prefix}_LIBRARIES ${${output_prefix}_LIBRARIES} PARENT_SCOPE )
+  set( ${output_prefix}_INCLUDE_DIRS ${${output_prefix}_INCLUDE_DIRS} PARENT_SCOPE )
+  if( ${output_prefix}_FOUND AND NOT ${output_prefix}_INCLUDE_DIRS ) # Some of CMakes internal modules are giving incorrect output (_INCLUDE_DIRS not set)
+    set( ${output_prefix}_INCLUDE_DIRS ${${output_prefix}_INCLUDE_DIR} PARENT_SCOPE )
+  endif()
+  set( ${output_prefix}_USE_FILE ${${output_prefix}_USE_FILE} PARENT_SCOPE )
 endfunction()
 
 function( handleRenamingVariablesBackwardCompatibility )
@@ -210,4 +213,38 @@ function( handleRenamingVariablesBackwardCompatibility )
     endif()
     math( EXPR i "${i} + 1")
   endforeach()
+endfunction()
+
+# This function can be used to check the given variables and output a proper
+# message in the case of everything being ok as well as setting a
+# _module_name_FOUND variable to true or false
+# _module_name Should contain the name of the module to check for.
+# REQUIRED_VARS - A list of variables that must be set in order for this
+# function to set _module_name_FOUND to true.
+function( checkIfModuleFound _module_name )
+  set( options )
+  set( oneValueArgs )
+  set( multiValueArgs REQUIRED_VARS )
+  include( CMakeParseArguments )
+  cmake_parse_arguments( _check_if_module_found "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  if( _check_if_module_found_UNPARSED_ARGUMENTS )
+    message( FATAL_ERROR "Unknown keywords given to checkCMakeInternalModule(): \"${_check_if_module_found_UNPARSED_ARGUMENTS}\"" )
+  endif()
+
+  string( TOUPPER ${_module_name} _module_name_upper )
+  
+  set( ${_module_name}_FOUND FALSE PARENT_SCOPE )
+  set( ${_module_name_upper}_FOUND FALSE PARENT_SCOPE )
+  set( details )
+  foreach( _module_name ${_check_if_module_found_REQUIRED_VARS} )
+    set( details "${details}[${${_module_name}}]")
+    if( NOT ${_module_name} )
+      return()
+    endif()
+  endforeach()
+  set( ${_module_name}_FOUND TRUE PARENT_SCOPE )
+  set( ${_module_name_upper}_FOUND TRUE PARENT_SCOPE )
+  list( GET _check_if_module_found_REQUIRED_VARS 0 first_required_var )
+  include( FindPackageMessage )
+  find_package_message( ${_module_name} "Found ${_module_name}: ${${first_required_var}}" "${details}" )
 endfunction()

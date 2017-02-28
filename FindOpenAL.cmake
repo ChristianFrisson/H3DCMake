@@ -9,27 +9,27 @@
 # break that.
 
 include( H3DExternalSearchPath )
-checkCMakeInternalModule( OpenAL ) # Will call CMakes internal find module for this feature.
-if( ( DEFINED OPENAL_FOUND ) AND OPENAL_FOUND )
-  return()
-endif()
 
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 # Look for the header file.
 find_path( OPENAL_INCLUDE_DIR NAMES AL/al.h
            PATHS ${module_include_search_paths}
-           DOC "Path in which the file AL/al.h is located." )
+           DOC "Path in which the file AL/al.h is located."
+           NO_SYSTEM_ENVIRONMENT_PATH )
 
 # Look for the library.
 find_library( OPENAL_LIBRARY NAMES OpenAL32
               PATHS ${module_lib_search_paths}
-              DOC "Path to OpenAL32 library." )
+              DOC "Path to OpenAL32 library."
+              NO_SYSTEM_ENVIRONMENT_PATH )
 
-include( FindPackageHandleStandardArgs )
-# handle the QUIETLY and REQUIRED arguments and set OPENAL_FOUND to TRUE
-# if all listed variables are TRUE
-find_package_handle_standard_args( OpenAL DEFAULT_MSG
-                                   OPENAL_LIBRARY OPENAL_INCLUDE_DIR )
+checkIfModuleFound( OPENAL
+                    REQUIRED_VARS OPENAL_INCLUDE_DIR OPENAL_LIBRARY )
 
 set( OPENAL_LIBRARIES ${OPENAL_LIBRARY} )
+set( OPENAL_INCLUDE_DIRS ${OPENAL_INCLUDE_DIR} )
+
+if( NOT OPENAL_FOUND )
+  checkCMakeInternalModule( OPENAL )  # Will call CMakes internal find module for this feature.
+endif()

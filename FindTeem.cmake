@@ -9,7 +9,13 @@ if( NOT WIN32 )
 endif()
 
 include( H3DExternalSearchPath )
+set( Teem_FIND_QUIETLY_old ${Teem_FIND_QUIETLY} )
+set( Teem_FIND_REQUIRED_old ${Teem_FIND_REQUIRED} )
+set( Teem_FIND_QUIETLY TRUE )
+set( Teem_FIND_REQUIRED FALSE )
 checkCMakeInternalModule( Teem ) # Will call CMakes internal find module for this feature.
+set( Teem_FIND_QUIETLY_old ${Teem_FIND_QUIETLY} )
+set( Teem_FIND_REQUIRED_old ${Teem_FIND_REQUIRED} )
 
 if( Teem_FOUND AND Teem_USE_FILE )
   # We do not use Teem_USE_FILE simply because it uses link_directories which is
@@ -52,14 +58,16 @@ else()
   find_path( Teem_INCLUDE_DIR NAMES teem/nrrd.h
                               PATHS /usr/local/include
                                     ${module_include_search_paths}
-                              DOC "Path in which the file teem/nrrd.h is located." )
+                              DOC "Path in which the file teem/nrrd.h is located."
+                              NO_SYSTEM_ENVIRONMENT_PATH )
   mark_as_advanced( Teem_INCLUDE_DIR )
 
   # Look for the library.
   find_library( Teem_LIBRARY NAMES teem 
                              PATHS /usr/local/lib
                                    ${module_lib_search_paths}
-                             DOC "Path to teem library." )
+                             DOC "Path to teem library."
+                             NO_SYSTEM_ENVIRONMENT_PATH )
   mark_as_advanced( Teem_LIBRARY )
 
   set( teem_external_libraries )
