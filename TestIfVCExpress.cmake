@@ -5,15 +5,15 @@ macro( testIfVCExpress )
     if( CMake_HAVE_MFC MATCHES "^CMake_HAVE_MFC$" )
       set( CHECK_INCLUDE_FILE_VAR "afxwin.h" )
       configure_file( ${CMAKE_ROOT}/Modules/CheckIncludeFile.cxx.in
-        ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/CheckIncludeFile.cxx)
+        ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/CheckIncludeFile.cxx )
       message( STATUS "Looking for MFC" )
-      try_compile(CMake_HAVE_MFC
+      try_compile( CMake_HAVE_MFC
         ${CMAKE_BINARY_DIR}
         ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/CheckIncludeFile.cxx
         CMAKE_FLAGS
         -DCMAKE_MFC_FLAG:STRING=2
         -DCOMPILE_DEFINITIONS:STRING=-D_AFXDLL
-        OUTPUT_VARIABLE OUTPUT)
+        OUTPUT_VARIABLE OUTPUT )
       if( CMake_HAVE_MFC )
         message( STATUS "Looking for MFC - found" )
         set( CMake_HAVE_MFC 1 CACHE INTERNAL "Have MFC?" )

@@ -79,7 +79,7 @@ endif()
 if( H3DUTIL_INCLUDE_DIR AND HAVE_H3DUTIL_LIBRARY )
 
   #pthread is required for using the H3DUtil library
-  find_package(PTHREAD REQUIRED)
+  find_package( PTHREAD REQUIRED )
   if( PTHREAD_FOUND )
     set( H3DUTIL_INCLUDE_DIR ${H3DUTIL_INCLUDE_DIR} ${PTHREAD_INCLUDE_DIR} )
     set( H3DUTIL_LIBRARIES ${PTHREAD_LIBRARIES} )

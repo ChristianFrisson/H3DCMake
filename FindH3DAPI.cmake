@@ -81,7 +81,7 @@ endif()
 if( H3DAPI_INCLUDE_DIR AND HAVE_H3DAPI_LIBRARY )
   
   # OpenGL is required for using the H3DAPI library.
-  find_package(OpenGL REQUIRED)
+  find_package( OpenGL REQUIRED )
   if( OPENGL_FOUND )
     set( H3DAPI_INCLUDE_DIR ${H3DAPI_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} )
     set( H3DAPI_LIBRARIES ${OPENGL_LIBRARIES} )
@@ -89,7 +89,7 @@ if( H3DAPI_INCLUDE_DIR AND HAVE_H3DAPI_LIBRARY )
   
   # Glew is required for using the H3DAPI library
   # On windows this will also find opengl header includes.
-  find_package(GLEW REQUIRED)
+  find_package( GLEW REQUIRED )
   if( GLEW_FOUND )
     set( H3DAPI_INCLUDE_DIR ${H3DAPI_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} )
     set( H3DAPI_LIBRARIES ${H3DAPI_LIBRARIES} ${GLEW_LIBRARIES} )

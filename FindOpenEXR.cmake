@@ -49,7 +49,7 @@ foreach( _var_name ${open_exr_var_names} )
   find_library( ${_var_name} NAMES ${_lib_name}
                 PATHS ${OpenEXRLibrarySearchPath}
                 DOC ${_doc_string} )
-  math( EXPR i "${i} + 1")
+  math( EXPR i "${i} + 1" )
   mark_as_advanced( ${_var_name} )
 endforeach()
 
@@ -65,7 +65,7 @@ if( WIN32 )
     find_library( ${_var_name} NAMES ${_lib_name}_d
                   PATHS ${OpenEXRLibrarySearchPath}
                   DOC ${_doc_string} )
-    math( EXPR i "${i} + 1")
+    math( EXPR i "${i} + 1" )
     mark_as_advanced( ${_var_name} )
   endforeach()
   
@@ -90,5 +90,5 @@ set( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIRS} )
 set( OpenEXR_FOUND ${OPENEXR_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
 
 if( OpenEXR_FOUND AND WIN32 )
-  add_definitions(-DOPENEXR_DLL)
+  add_definitions( -DOPENEXR_DLL )
 endif()

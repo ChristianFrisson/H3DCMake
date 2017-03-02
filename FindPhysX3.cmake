@@ -72,13 +72,13 @@ endif()
 
 
 # Look for the libraries.
-foreach( PHYSX3_LIB ${PHYSX3_LIBS})
-  string(TOUPPER ${PHYSX3_LIB} _upper_lib_name)
+foreach( PHYSX3_LIB ${PHYSX3_LIBS} )
+  string( TOUPPER ${PHYSX3_LIB} _upper_lib_name )
   set( LIB_NAME PHYSX3_${_upper_lib_name}_LIBRARY )
   set( LIB_DEBUG_NAME PHYSX3_${_upper_lib_name}_DEBUG_LIBRARY )
   # unset libraries so that they are always looked for. This is because we want it to automatically
   # update if the PHYSX3_LIB_TYPE is changed.
-  unset( ${LIB_NAME} CACHE)
+  unset( ${LIB_NAME} CACHE )
 
   # FIND RELEASE LIBS
   find_library( ${LIB_NAME}

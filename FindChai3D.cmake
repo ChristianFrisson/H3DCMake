@@ -48,7 +48,7 @@ if( SEARCH_FOR_CHAI3D )
     mark_as_advanced( CHAI3D_DEBUG_LIBRARY )
   else()
     find_library( CHAI3D_LIBRARY NAMES chai3d_linux chai3d
-                  DOC "Path to chai3d_linux (or chai3d) library." )
+                  DOC "Path to chai3d_linux ( or chai3d ) library." )
   endif()
 else()
   set( CHAI3D_INCLUDE_DIR "" CACHE PATH "Path to include files for chai3d. The path is to where chai3d.h ( cWorld.h for chai3d versions earlier than 2.0 ) is located." )

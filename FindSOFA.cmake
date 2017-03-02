@@ -52,7 +52,7 @@ find_path( SOFA_INCLUDE_DIR_TINYXML NAMES tinyxml.h
 mark_as_advanced( SOFA_INCLUDE_DIR_TINYXML )
 
 # SOFA_FIND_COMPONENTS hold the values from COMPONENTS
-# in FindPackage(SOFA COMPONENTS core simulation )
+# in FindPackage( SOFA COMPONENTS core simulation )
 set( SOFA_LIBS ${SOFA_FIND_COMPONENTS} )
 
 set( LIB_SEARCH_PATHS )
@@ -72,8 +72,8 @@ get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
 # Look for the libraries.
-foreach( SOFA_LIB ${SOFA_LIBS})
-  string(TOUPPER ${SOFA_LIB} _upper_lib_name)
+foreach( SOFA_LIB ${SOFA_LIBS} )
+  string( TOUPPER ${SOFA_LIB} _upper_lib_name )
   set( SOFA_LIBRARY_NAMES ${SOFA_LIBRARY_NAMES} ${SOFA_LIB}${SOFA_LIB_SUFFIX}
        CACHE INTERNAL "Internal sofa library list variable. Can be used to setup delayload." FORCE )
   

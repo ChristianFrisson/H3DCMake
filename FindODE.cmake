@@ -40,7 +40,7 @@ else()
 
 # use the ode-config program to set the defines necessary. E.g. -DdSINGLE or -DdDOUBLE
 # depending on how ode was built.
-  find_program(ODE_CONFIG_EXECUTABLE ode-config
+  find_program( ODE_CONFIG_EXECUTABLE ode-config
                PATHS /usr/local/bin
                      /opt/local/bin )
   message( STATUS ${ODE_CONFIG_EXECUTABLE} )
@@ -52,7 +52,7 @@ else()
         ERROR_QUIET )
 
      if( RET EQUAL 0 )
-       string(REGEX REPLACE "\n" "" ODE_CFLAGS "${ODE_CFLAGS}" )
+       string( REGEX REPLACE "\n" "" ODE_CFLAGS "${ODE_CFLAGS}" )
        set( ODE_FLAGS ${ODE_CFLAGS} )
      endif()
   endif()

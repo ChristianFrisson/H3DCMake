@@ -7,7 +7,7 @@
 
 include( H3DExternalSearchPath )
 
-find_program(FREETYPE_CONFIG_EXECUTABLE freetype-config
+find_program( FREETYPE_CONFIG_EXECUTABLE freetype-config
       ONLY_CMAKE_FIND_ROOT_PATH
       DOC "Path to freetype_config executable. Used to find freetype, not used on a standard Windows installation of H3DAPI." )
 mark_as_advanced( FREETYPE_CONFIG_EXECUTABLE )
@@ -23,23 +23,23 @@ if( FREETYPE_CONFIG_EXECUTABLE )
 
   if( RET EQUAL 0 )
     if( ${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 6 )
-      string(STRIP "${FREETYPE_CFLAGS}" FREETYPE_CFLAGS)
+      string( STRIP "${FREETYPE_CFLAGS}" FREETYPE_CFLAGS )
     endif()
-    separate_arguments(FREETYPE_CFLAGS)
+    separate_arguments( FREETYPE_CFLAGS )
 
     # parse definitions from cxxflags; drop -D* from CFLAGS
-    string(REGEX REPLACE "-D[^;]+;" ""
-           FREETYPE_CFLAGS "${FREETYPE_CFLAGS}" )
+    string( REGEX REPLACE "-D[^;]+;" ""
+            FREETYPE_CFLAGS "${FREETYPE_CFLAGS}" )
 
     # parse include dirs from cxxflags; drop -I prefix
-    string(REGEX MATCHALL "-I[^;]+"
-           FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_CFLAGS}" )
-    string(REGEX REPLACE "-I[^;]+;" ""
-           FREETYPE_CFLAGS "${FREETYPE_CFLAGS}" )
-    string(REPLACE "-I" ""
-           FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_INCLUDE_DIR_ft2build}" )
-    string(REPLACE "\n" ""
-           FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_INCLUDE_DIR_ft2build}" )
+    string( REGEX MATCHALL "-I[^;]+"
+            FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_CFLAGS}" )
+    string( REGEX REPLACE "-I[^;]+;" ""
+            FREETYPE_CFLAGS "${FREETYPE_CFLAGS}" )
+    string( REPLACE "-I" ""
+            FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_INCLUDE_DIR_ft2build}" )
+    string( REPLACE "\n" ""
+            FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_INCLUDE_DIR_ft2build}" )
     set( FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_INCLUDE_DIR_ft2build}" )
 
   endif()

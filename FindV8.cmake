@@ -17,7 +17,7 @@ find_path( V8_INCLUDE_DIR NAMES v8.h
 mark_as_advanced( V8_INCLUDE_DIR )
 
 # Look for the library.
-# Does this work on UNIX systems? (LINUX)
+# Does this work on UNIX systems? ( LINUX )
 find_library( V8_LIBRARY NAMES v8
               PATHS ${module_lib_search_paths}
               DOC "Path to v8 library." )

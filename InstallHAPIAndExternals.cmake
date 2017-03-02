@@ -4,8 +4,8 @@
 # It requires that HAPI_INCLUDE_DIR is set to HAPI/include of
 # the build that should be checked.
 # HAPI_CMAKE_INSTALL_PREFIX must be set to the CMAKE_INSTALL_PREFIX
-# used when installing HAPI (basically the directory above the directory
-# in which HAPI binaries and libraries are installed.
+# used when installing HAPI ( basically the directory above the directory
+# in which HAPI binaries and libraries are installed ).
 # EXTERNAL_ROOT should be set to the External directory that comes with
 # H3D.
 # FEATURES_TO_INSTALL should be set to a list of pairs.  The first
@@ -122,16 +122,16 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                                "warning" "NOTE: HAPI compiled with Novint Falcon support. Test that application starts on system without Novint Falcon dlls before distributing package if you do not distribute it yourself."
                                
                                "#define HAVE_NIFALCONAPI"
-                               "warning" "NOTE: HAPI compiled with NiFalcon api support. Test that application starts on system without NiFalcon dlls (if there are any) before distributing package if you do not distribute it yourself."
+                               "warning" "NOTE: HAPI compiled with NiFalcon api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
                                
                                "#define NIFALCONAPI_LIBUSB"
-                               "warning" "NOTE: HAPI compiled with NiFalcon api LIBUSB support. Test that application starts on system without NiFalcon dlls (if there are any) before distributing package if you do not distribute it yourself."
+                               "warning" "NOTE: HAPI compiled with NiFalcon api LIBUSB support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
                                
                                "#define NIFALCONAPI_LIBFTD2XX"
-                               "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTD2XX api support. Test that application starts on system without NiFalcon dlls (if there are any) before distributing package if you do not distribute it yourself."
+                               "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTD2XX api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
                                
                                "#define NIFALCONAPI_LIBFTDI"
-                               "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTDI support. Test that application starts on system without NiFalcon dlls (if there are any) before distributing package if you do not distribute it yourself."
+                               "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTDI support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
                                
                                "#define HAVE_FPARSER"
                                "include" "fparser"
@@ -139,7 +139,7 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                                "bin" "fparser"
                                
                                "#define HAVE_HAPTIK_LIBRARY"
-                               "warning" "NOTE: HAPI compiled with HAPTIK library support. Test that application starts on system without HAPTIK dlls (if there are any) before distributing package if you do not distribute it yourself."
+                               "warning" "NOTE: HAPI compiled with HAPTIK library support. Test that application starts on system without HAPTIK dlls ( if there are any ) before distributing package if you do not distribute it yourself."
 
                                "#define HAVE_SIMBALLMEDICAL_API"
                                "include" "Simball"

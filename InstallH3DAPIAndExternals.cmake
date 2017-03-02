@@ -4,8 +4,8 @@
 # It requires that H3DUTIL_INCLUDE_DIR is set to H3DAPI/include of
 # the build that should be checked.
 # H3DAPI_CMAKE_INSTALL_PREFIX must be set to the CMAKE_INSTALL_PREFIX
-# used when installing H3DAPI (basically the directory above the directory
-# in which H3DAPI binaries and libraries are installed.
+# used when installing H3DAPI ( basically the directory above the directory
+# in which H3DAPI binaries and libraries are installed ).
 # EXTERNAL_ROOT should be set to the External directory that comes with
 # H3D.
 # FEATURES_TO_INSTALL should be set to a list of pairs.  The first

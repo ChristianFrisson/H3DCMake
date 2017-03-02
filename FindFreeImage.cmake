@@ -40,17 +40,17 @@ if( WIN32 AND PREFER_STATIC_LIBRARIES )
   
   handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FreeImage_STATIC_LIBRARY_RELEASE FreeImage_STATIC_LIBRARY_DEBUG
                                                 OLD_VARIABLE_NAMES FREEIMAGE_STATIC_LIBRARY FREEIMAGE_STATIC_DEBUG_LIBRARY
-                                                DOC_STRINGS "Path to freeimage static release library (windows only). For this configuration it might be called ${freeimage_static_library_name}"
-                                                            "Path to freeimage static debug library (windows only). For this configuration it might be called ${freeimage_static_library_name}_d" )
+                                                DOC_STRINGS "Path to freeimage static release library ( windows only ). For this configuration it might be called ${freeimage_static_library_name}"
+                                                            "Path to freeimage static debug library ( windows only ). For this configuration it might be called ${freeimage_static_library_name}_d" )
   
   find_library( FreeImage_STATIC_LIBRARY_RELEASE NAMES ${freeimage_static_library_name}
                                          PATHS ${module_lib_search_paths}
-                                         DOC "Path to freeimage static release library (windows only). For this configuration it might be called ${freeimage_static_library_name}" )
+                                         DOC "Path to freeimage static release library ( windows only ). For this configuration it might be called ${freeimage_static_library_name}" )
   mark_as_advanced( FreeImage_STATIC_LIBRARY_RELEASE )
 
   find_library( FreeImage_STATIC_LIBRARY_DEBUG NAMES ${freeimage_static_library_name}_d
                                                PATHS ${module_lib_search_paths}
-                                               DOC "Path to freeimage static debug library (windows only). For this configuration it might be called ${freeimage_static_library_name}_d" )
+                                               DOC "Path to freeimage static debug library ( windows only ). For this configuration it might be called ${freeimage_static_library_name}_d" )
   mark_as_advanced( FreeImage_STATIC_LIBRARY_DEBUG )
 endif()
 

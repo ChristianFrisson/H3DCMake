@@ -26,7 +26,7 @@ find_path( SpiderMonkey_INCLUDE_DIR NAMES jsapi.h
 mark_as_advanced( SpiderMonkey_INCLUDE_DIR )
 
 # Look for the library.
-# Does this work on UNIX systems? (LINUX)
+# Does this work on UNIX systems? ( LINUX )
 if( WIN32 )
   find_library( SpiderMonkey_LIBRARY NAMES js32
                 PATHS ${module_lib_search_paths}

@@ -21,7 +21,7 @@ find_path( Audiofile_INCLUDE_DIR NAMES audiofile.h
 mark_as_advanced( Audiofile_INCLUDE_DIR )
 
 # Look for the library.
-# Does this work on UNIX systems? (LINUX)
+# Does this work on UNIX systems? ( LINUX )
 find_library( Audiofile_LIBRARY NAMES audiofile
               PATHS ${module_lib_search_paths}
               DOC "Path to audiofile library." )

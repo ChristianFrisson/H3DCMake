@@ -12,14 +12,14 @@ endif()
 
 
 # Try to use pkgconfig
-#include(FindPkgConfig)
+#include( FindPkgConfig )
 # pkg-config is disabled for now since it does not seem to find
 # the directories we want always. 
 # explicitly set the PKG_CONFIG_FOUND to be False as it can be set to be
 # True by other module before FindFFmpeg module
 set( PKG_CONFIG_FOUND False )
 if( PKG_CONFIG_FOUND )
-  PKG_CHECK_MODULES(FFMPEGMODULES libavcodec libavformat libswscale)
+  PKG_CHECK_MODULES( FFMPEGMODULES libavcodec libavformat libswscale )
 else()
   include( H3DExternalSearchPath )
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
