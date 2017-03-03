@@ -22,14 +22,14 @@ find_path( NvidiaCG_INCLUDE_DIR NAMES cg.h cgGL.h
 mark_as_advanced( NvidiaCG_INCLUDE_DIR )
 
 # Look for the library cg.
-# Does this work on UNIX systems? ( LINUX )
+# Does this work on UNIX systems? (LINUX)
 find_library( NvidiaCG_LIBRARY NAMES cg Cg
               PATHS ${module_lib_search_paths}
               DOC "Path to cg library." )
 mark_as_advanced( NvidiaCG_LIBRARY )
 
 # Look for the library cg.
-# Does this work on UNIX systems? ( LINUX )
+# Does this work on UNIX systems? (LINUX)
 find_library( NvidiaCG_cgGL_LIBRARY NAMES cgGL CgGL
               PATHS ${module_lib_search_paths}
               DOC "Path to cgGL library." )

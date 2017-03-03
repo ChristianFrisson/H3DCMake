@@ -4,7 +4,7 @@
 #  NvidiaToolsExt_LIBRARIES    - List of libraries when using NVIDIA CG Toolkit.
 #  NvidiaToolsExt_FOUND        - True if the NVIDIA CG Toolkit is found.
 #
-# NVIDIA Tool Ext Toolkit ( NVTX ) is part of NSight profiling tool:
+# NVIDIA Tool Ext Toolkit (NVTX) is part of NSight profiling tool:
 #   https://developer.nvidia.com/nvidia-nsight-visual-studio-edition
 #
 # Tested with v4.0.0 

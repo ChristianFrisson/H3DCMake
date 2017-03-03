@@ -3,7 +3,7 @@
 #  DCMTK_INCLUDE_DIRS   - Directories to include to use DCMTK
 #  DCMTK_LIBRARIES     - Files to link against to use DCMTK
 #  DCMTK_FOUND         - If false, don't try to use DCMTK
-#  DCMTK_DIR           - ( optional ) Source directory for DCMTK
+#  DCMTK_DIR           - Optional source directory for DCMTK
 #
 # DCMTK_DIR can be used to make it simpler to find the various include
 # directories and compiled libraries if you've just compiled it in the
@@ -215,7 +215,7 @@ if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS AND HAVE_TIFF_OR_NO_TIFF_NEEDED )
   endforeach()
 
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
-    # MSVC after version 10( 2010 ) needs debug libraries since it cannot compile with
+    # MSVC after version 10(2010) needs debug libraries since it cannot compile with
     # the release versions
     foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
       set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} optimized ${DCMTK_${dcmtk_lib_name}_LIBRARY} debug ${DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY} )

@@ -1,4 +1,4 @@
-# - Find 3dxware ( www.3dconnexion.com )
+# - Find 3dxware (www.3dconnexion.com)
 #
 #  3DXWARE_INCLUDE_DIRS - Where to find si.h, siapp.h for Windows and xdrvlib.h, Xlib.h, Xutil.h, Xos.h, Xatom.h and keysym.h for LINUX.
 #  3DXWARE_LIBRARIES    - List of libraries when using 3dxware.
@@ -16,14 +16,14 @@ find_path( 3DXWARE_INCLUDE_DIR NAMES si.h siapp.h H3D/xdrvlib.h X11/Xlib.h X11/X
 mark_as_advanced( 3DXWARE_INCLUDE_DIR )
 
 # Look for the library siapp.
-# TODO: Does this work on UNIX systems? ( LINUX ) I strongly doubt it. What are the libraries to find on linux?
+# TODO: Does this work on UNIX systems? (LINUX) I strongly doubt it. What are the libraries to find on linux?
 find_library( 3DXWARE_SIAPP_LIBRARY NAMES siapp
               PATHS ${module_lib_search_paths}
               DOC "Path to siapp library." )
 mark_as_advanced( 3DXWARE_SIAPP_LIBRARY )
 
 # Look for the library spwmath.
-# Does this work on UNIX systems? ( LINUX )
+# Does this work on UNIX systems? (LINUX)
 find_library( 3DXWARE_SPWMATH_LIBRARY NAMES spwmath
               PATHS ${module_lib_search_paths}
               DOC "Path to spwmath library." )

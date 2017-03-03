@@ -33,7 +33,7 @@ endfunction()
 function( addCommonH3DMSVCCompileFlags compile_flags_container )
   if( MSVC )
     # Treat wchar_t as built in type for all visual studio versions.
-    # This is default for every version above 7 ( so far ) but we still set it for all.
+    # This is default for every version above 7 (so far) but we still set it for all.
     set( compile_flags_container_internal "/Zc:wchar_t" )
 
     if( MSVC80 )

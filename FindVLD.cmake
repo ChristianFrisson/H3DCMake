@@ -1,4 +1,4 @@
-# - Find vld( visual leak detector )
+# - Find vld (visual leak detector)
 # Find the visual leak detector headers and libraries.
 #
 #  VLD_INCLUDE_DIRS -  where to find vld.h,vld_def.h, etc.

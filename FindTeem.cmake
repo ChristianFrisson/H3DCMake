@@ -9,7 +9,7 @@ if( NOT WIN32 )
 endif()
 
 # This module starts with calling CMakes internal find module, which does not exist but
-# a config file is found on some systems. If that config file is used ( Teem_USE_FILE )
+# a config file is found on some systems. If that config file is used (Teem_USE_FILE)
 # then this version is used instead.
 include( H3DExternalSearchPath )
 set( Teem_FIND_QUIETLY_old ${Teem_FIND_QUIETLY} )

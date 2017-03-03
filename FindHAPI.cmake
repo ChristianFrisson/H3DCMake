@@ -10,12 +10,12 @@
 # Allowed values are "OpenHapticsRenderer" and "Chai3DRenderer". Only used
 # if HAPI_DECIDES_RENDERER_SUPPORT is 1.
 # HAPI_DECIDES_RENDERER_SUPPORT - If 1 HAPI decides which renderers are supported
-# by checking HAPI.h ( if found ). If 0 the HAPI_REQUIRED_RENDERERS list is used.
+# by checking HAPI.h (if found). If 0 the HAPI_REQUIRED_RENDERERS list is used.
 # Note that external dependencies of the renderers are also required if a renderer is
 # desired for support. For example, setting a dependency on OpenHapticsRenderer means
 # that SensAbles OpenHaptics libraries must exist on the system for HAPI to be found
 # properly. If a library do not use any of the external renderers then simply leave
-# HAPI_DECIDES_RENDERER_SUPPORT at its default value ( not existing or 0 ).
+# HAPI_DECIDES_RENDERER_SUPPORT at its default value (not existing or 0).
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
 # Look for the header file.
