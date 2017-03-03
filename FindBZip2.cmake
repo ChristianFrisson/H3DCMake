@@ -23,7 +23,7 @@ find_path( BZIP2_INCLUDE_DIR NAMES bzlib.h
            NO_SYSTEM_ENVIRONMENT_PATH )
 
 # Look for the library.
-find_library( BZIP2_LIBRARY NAMES libbz2 bz2 bzip2 
+find_library( BZIP2_LIBRARY NAMES libbz2 bz2 bzip2
               PATHS ${module_lib_search_paths}
               DOC "Path to bzip2 library."
               NO_SYSTEM_ENVIRONMENT_PATH )

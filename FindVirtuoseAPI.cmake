@@ -20,7 +20,7 @@ if( NOT MSVC14 )
 endif()
 
 # Look for the header file.
-find_path( VirtuoseAPI_INCLUDE_DIR NAMES VirtuoseAPI.h 
+find_path( VirtuoseAPI_INCLUDE_DIR NAMES VirtuoseAPI.h
                                 PATHS ${virtuoseapi_include_search_paths}
                                 DOC "Path in which the file VirtuoseAPI.h is located. Needed to support Haption haptics device such as the Virtuose series." )
 mark_as_advanced( VirtuoseAPI_INCLUDE_DIR )

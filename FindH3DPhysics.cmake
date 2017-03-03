@@ -72,7 +72,7 @@ if( H3DPhysics_INCLUDE_DIR AND HAVE_H3DPhysics_LIBRARY )
     set( H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} debug ${H3DPhysics_NAME}_d )
     message( STATUS "H3DPhysics debug libraries not found. Debug build might not work." )
   endif()
-  
+
   set( H3DPhysics_INCLUDE_DIR ${H3DPhysics_INCLUDE_DIR} )
   set( H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARIES} )
 else()

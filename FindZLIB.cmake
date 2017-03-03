@@ -17,7 +17,7 @@ find_path( ZLIB_INCLUDE_DIR NAMES zlib.h
            NO_SYSTEM_ENVIRONMENT_PATH )
 
 # Look for the library.
-find_library( ZLIB_LIBRARY NAMES zlib 
+find_library( ZLIB_LIBRARY NAMES zlib
               PATHS ${module_lib_search_paths}
               DOC "Path to zlib library."
               NO_SYSTEM_ENVIRONMENT_PATH )

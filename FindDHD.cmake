@@ -11,12 +11,12 @@ get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "DHD-API" )
 
 # Look for the header file.
-find_path( DHD_INCLUDE_DIR NAMES dhdc.h 
+find_path( DHD_INCLUDE_DIR NAMES dhdc.h
                            PATHS ${module_include_search_paths}
                            DOC "Path in which the file dhdc.h is located." )
 mark_as_advanced( DHD_INCLUDE_DIR )
 
-find_path( DHD_DRD_INCLUDE_DIR NAMES drdc.h 
+find_path( DHD_DRD_INCLUDE_DIR NAMES drdc.h
                                PATHS ${module_include_search_paths}
                                DOC "Path in which the file drdc.h is located, not needed if DHD_INCLUDE_DIR and DHD_LIBRARY is set." )
 mark_as_advanced( DHD_DRD_INCLUDE_DIR )
@@ -48,7 +48,7 @@ else()
     if( UNIX )
       find_library( DHD_USB_LIBRARY NAMES usb
                     DOC "Path to usb library." )
-      find_library( DHD_PCISCAN_LIBRARY NAMES pciscan 
+      find_library( DHD_PCISCAN_LIBRARY NAMES pciscan
                     DOC "Path to pciscan library." )
       mark_as_advanced( DHD_USB_LIBRARY )
       mark_as_advanced( DHD_PCISCAN_LIBRARY )

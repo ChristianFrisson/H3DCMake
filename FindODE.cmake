@@ -4,7 +4,7 @@
 #  ODE_INCLUDE_DIRS -  where to find ode.h, etc.
 #  ODE_LIBRARIES    - List of libraries when using ODE.
 #  ODE_FOUND        - True if ODE found.
-#  ODE_FLAGS        - Flags needed for ode to build 
+#  ODE_FLAGS        - Flags needed for ode to build
 
 include( H3DExternalSearchPath )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )

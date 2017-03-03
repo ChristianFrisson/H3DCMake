@@ -20,7 +20,7 @@ find_path( SimballMedical_INCLUDE_DIR NAMES Simball/SimballMedicalHID.h
 mark_as_advanced( SimballMedical_INCLUDE_DIR )
 
 # Look for the library.
-find_library( SimballMedical_LIBRARY NAMES SimballMedicalHID 
+find_library( SimballMedical_LIBRARY NAMES SimballMedicalHID
                         PATHS ${module_lib_search_paths}
                         DOC "Path to SimballMedicalHID library. Needed to support Simball device." )
 mark_as_advanced( SimballMedical_LIBRARY )

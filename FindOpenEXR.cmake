@@ -68,7 +68,7 @@ if( WIN32 )
     math( EXPR i "${i} + 1" )
     mark_as_advanced( ${_var_name} )
   endforeach()
-  
+
   set( openexr_required_lib_vars ${openexr_required_lib_vars} ${open_exr_var_names_debug} )
 endif()
 

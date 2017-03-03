@@ -10,7 +10,7 @@ getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths $
 
 # Look for the header file.
 find_path( 3DXWARE_INCLUDE_DIR NAMES si.h siapp.h H3D/xdrvlib.h X11/Xlib.h X11/Xutil.h X11/Xos.h X11/Xatom.h X11/keysym.h
-           PATHS  /usr/local/include 
+           PATHS  /usr/local/include
                  ${module_include_search_paths}
            DOC "Path in which the files si.h, siapp.h, H3D/xdrvlib.h, X11/Xlib.h, X11/Xutil.h, X11/Xos.h, X11/Xatom.h and X11/keysym.h are located." )
 mark_as_advanced( 3DXWARE_INCLUDE_DIR )

@@ -4,7 +4,7 @@
 #  PHYSX3_INCLUDE_DIRS - Where to find the include files of PHYSX3
 #  PHYSX3_LIBRARIES    - List of libraries when using PHYSX3.
 #  PHYSX3_FOUND        - True if PHYSX3 found.
-#  PHYSX3_FLAGS        - Flags needed for physx to build 
+#  PHYSX3_FLAGS        - Flags needed for physx to build
 
 include( H3DExternalSearchPath )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
@@ -39,7 +39,7 @@ set( PHYSX3_LIBS_DEBUG_FOUND 1 )
 # Decide which libraires to add
 if( NOT DEFINED PHYSX3_LIBS )
 
-  set( PHYSX3_LIBS 
+  set( PHYSX3_LIBS
       "PxTask"
       "PhysX3Common"
       "PhysX3Extensions"
@@ -58,7 +58,7 @@ if( NOT DEFINED PHYSX3_LIBS )
       "SceneQuery"
       "SimulationController" )
   endif()
-  
+
 endif()
 
 
@@ -89,7 +89,7 @@ foreach( PHYSX3_LIB ${PHYSX3_LIBS} )
                       ${PHYSX3_INSTALL_DIR}/lib${LIB}
                       ${module_lib_search_paths} )
   mark_as_advanced( ${LIB_NAME} )
-                      
+
   if( ${LIB_NAME} )
     if( UNIX )
       # To avoid undefined symbols at runtime we need to include the entire static library in our shared library
@@ -98,7 +98,7 @@ foreach( PHYSX3_LIB ${PHYSX3_LIBS} )
     set( PHYSX3_LIBS_PATHS ${PHYSX3_LIBS_PATHS} optimized ${${LIB_NAME}} )
   else()
     set( PHYSX3_LIBS_FOUND 0 )
-    set( PHYSX3_LIBS_NOTFOUND ${PHYSX3_LIBS_NOTFOUND} ${PHYSX3_LIB} ) 
+    set( PHYSX3_LIBS_NOTFOUND ${PHYSX3_LIBS_NOTFOUND} ${PHYSX3_LIB} )
   endif()
 
   #FIND DEBUG LIBS
@@ -110,7 +110,7 @@ foreach( PHYSX3_LIB ${PHYSX3_LIBS} )
                       ${PHYSX3_INSTALL_DIR}/lib${LIB}
                       ${module_lib_search_paths} )
   mark_as_advanced( ${LIB_DEBUG_NAME} )
-                      
+
   if( ${LIB_DEBUG_NAME} )
     if( UNIX )
       # To avoid undefined symbols at runtime we need to include the entire static library in our shared library
@@ -119,10 +119,10 @@ foreach( PHYSX3_LIB ${PHYSX3_LIBS} )
     set( PHYSX3_LIBS_DEBUG_PATHS ${PHYSX3_LIBS_DEBUG_PATHS} debug ${${LIB_DEBUG_NAME}} )
   else()
     set( PHYSX3_DEBUG_LIBS_FOUND 0 )
-    set( PHYSX3_DEBUG_LIBS_NOTFOUND ${PHYSX3_DEBUG_LIBS_NOTFOUND} ${PHYSX3_LIB} ) 
+    set( PHYSX3_DEBUG_LIBS_NOTFOUND ${PHYSX3_DEBUG_LIBS_NOTFOUND} ${PHYSX3_LIB} )
   endif()
 endforeach()
-                      
+
 mark_as_advanced( PHYSX3_LIBS )
 
 # Copy the results to the output variables.
@@ -141,7 +141,7 @@ endif()
 # Report the results.
 if( NOT PHYSX3_FOUND )
   set( PHYSX3_DIR_MESSAGE
-       "PHYSX3 was not found. Set PHYSX3_INSTALL_DIR to the root directory of the 
+       "PHYSX3 was not found. Set PHYSX3_INSTALL_DIR to the root directory of the
 installation containing the 'include' and 'lib' folders." )
   if( PHYSX3_FIND_REQUIRED )
     message( FATAL_ERROR "${PHYSX3_DIR_MESSAGE}" )

@@ -20,7 +20,7 @@ mark_as_advanced( fparser_INCLUDE_DIR )
 
 
 # Look for the library.
-find_library( fparser_LIBRARY_RELEASE NAMES fparser 
+find_library( fparser_LIBRARY_RELEASE NAMES fparser
                                       PATHS ${module_lib_search_paths}
                                       DOC "Path to fparser library." )
 mark_as_advanced( fparser_LIBRARY_RELEASE )

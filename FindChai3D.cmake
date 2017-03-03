@@ -33,7 +33,7 @@ if( SEARCH_FOR_CHAI3D )
       set( CHAI3D_LIBRARY_NAME chai3d_complete_vc8 )
     elseif( MSVC90 )
       set( CHAI3D_LIBRARY_NAME chai3d_complete_vc9 )
-    elseif( MSVC10 )             
+    elseif( MSVC10 )
       set( CHAI3D_LIBRARY_NAME chai3d_complete_vc10 )
     endif()
 
@@ -69,7 +69,7 @@ endif()
 
 # Copy the results to the output variables.
 if( CHAI3D_INCLUDE_DIR AND CHAI3D_LIBRARIES_FOUND )
-  
+
   # The way we get the version number might be unreliable since the version
   # number is not updated in every file for previous releases of chai3d.
   # Note that this might also break in the future if chai3d changes their
@@ -87,7 +87,7 @@ if( CHAI3D_INCLUDE_DIR AND CHAI3D_LIBRARIES_FOUND )
     endforeach()
   endif()
   set( CHAI3D_FOUND 1 )
-  
+
   if( MSVC80 OR MSVC90 OR MSVC10 )
     if( CHAI3D_LIBRARY )
       set( CHAI3D_LIBRARIES optimized ${CHAI3D_LIBRARY} )
@@ -105,7 +105,7 @@ if( CHAI3D_INCLUDE_DIR AND CHAI3D_LIBRARIES_FOUND )
   else()
     set( CHAI3D_LIBRARIES ${CHAI3D_LIBRARY} )
   endif()
-  
+
   if( MSVC AND SEARCH_FOR_CHAI3D )
     set( CHAI3D_LIBRARIES ${CHAI3D_LIBRARIES} optimized "atls.lib" debug "atlsd.lib" )
   endif()

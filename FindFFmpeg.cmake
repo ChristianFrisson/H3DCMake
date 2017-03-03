@@ -14,7 +14,7 @@ endif()
 # Try to use pkgconfig
 #include( FindPkgConfig )
 # pkg-config is disabled for now since it does not seem to find
-# the directories we want always. 
+# the directories we want always.
 # explicitly set the PKG_CONFIG_FOUND to be False as it can be set to be
 # True by other module before FindFFmpeg module
 set( PKG_CONFIG_FOUND False )
@@ -62,7 +62,7 @@ else()
   mark_as_advanced( FFMPEG_SWSCALE_INCLUDE_DIR )
 
   # Look for the libraries.
-  find_library( FFMPEG_AVCODEC_LIBRARY NAMES avcodec 
+  find_library( FFMPEG_AVCODEC_LIBRARY NAMES avcodec
                                        PATHS ${module_lib_search_paths}
                                        DOC "Path to avcodec library." )
   mark_as_advanced( FFMPEG_AVCODEC_LIBRARY )
@@ -72,7 +72,7 @@ else()
                                         DOC "Path to avformat library." )
   mark_as_advanced( FFMPEG_AVFORMAT_LIBRARY )
 
-  find_library( FFMPEG_SWSCALE_LIBRARY NAMES swscale 
+  find_library( FFMPEG_SWSCALE_LIBRARY NAMES swscale
                                        PATHS ${module_lib_search_paths}
                                        DOC "Path to swscale library." )
   mark_as_advanced( FFMPEG_SWSCALE_LIBRARY )

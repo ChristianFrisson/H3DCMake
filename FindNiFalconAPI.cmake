@@ -96,8 +96,8 @@ if( NiFalconAPI_INCLUDE_DIR AND HAVE_NI_FALCON_COMM_LIBRARY AND NiFalconAPI_LIBR
     set( HAVE_SET_OPTION 1 )
     set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} ${NiFalconAPI_comm_usb_LIBRARY} )
   endif()
-  
-  # ftdi library 
+
+  # ftdi library
   if( NiFalconAPI_comm_ftdi_LIBRARY )
     if( DEFINED HAVE_SET_OPTION )
       option( NiFalconAPI_LIBFTDI
@@ -108,7 +108,7 @@ if( NiFalconAPI_INCLUDE_DIR AND HAVE_NI_FALCON_COMM_LIBRARY AND NiFalconAPI_LIBR
              "Use libftdi for communication with Falcon device"
              ON )
     endif()
-       
+
     set( HAVE_SET_OPTION 1 )
     set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} ${NiFalconAPI_comm_ftdi_LIBRARY} )
   endif()
@@ -126,7 +126,7 @@ if( NiFalconAPI_INCLUDE_DIR AND HAVE_NI_FALCON_COMM_LIBRARY AND NiFalconAPI_LIBR
     endif()
 
     set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} ${NiFalconAPI_comm_ftd2xx_LIBRARY} )
-    
+
     if( WIN32 )
       if( NOT DEFINED NiFalconAPI_ftd2xx_LIBRARY )
         set( NiFalconAPI_ftd2xx_LIBRARY "" CACHE FILEPATH
@@ -137,7 +137,7 @@ if( NiFalconAPI_INCLUDE_DIR AND HAVE_NI_FALCON_COMM_LIBRARY AND NiFalconAPI_LIBR
       set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} ${NiFalconAPI_ftd2xx_LIBRARY} )
     endif()
   endif()
-    
+
   set( NiFalconAPI_INCLUDE_DIRS ${NiFalconAPI_INCLUDE_DIR} ${Boost_INCLUDE_DIR} )
 else()
   set( NiFalconAPI_FOUND 0 )

@@ -66,7 +66,7 @@ else()
   mark_as_advanced( Teem_INCLUDE_DIR )
 
   # Look for the library.
-  find_library( Teem_LIBRARY NAMES teem 
+  find_library( Teem_LIBRARY NAMES teem
                              PATHS /usr/local/lib
                                    ${module_lib_search_paths}
                              DOC "Path to teem library."
@@ -91,12 +91,12 @@ else()
     find_package( PNG ${quiet_required_args} )
     set( teem_external_libraries ${teem_external_libraries} PNG_LIBRARIES )
   endif()
-  
+
   if( Teem_BZIP2 )
     find_package( BZip2 ${quiet_required_args} )
     set( teem_external_libraries ${teem_external_libraries} BZIP2_LIBRARIES )
   endif()
-  
+
   find_package_handle_standard_args( Teem DEFAULT_MSG
                                      Teem_LIBRARY Teem_INCLUDE_DIR ${teem_external_libraries} )
 
@@ -105,14 +105,14 @@ else()
   foreach( external_lib ${teem_external_libraries} )
     set( Teem_LIBRARIES ${Teem_LIBRARIES} ${${external_lib}} )
   endforeach()
-  
+
   if( AIR_LIBRARY )
     set( Teem_LIBRARIES ${Teem_LIBRARIES} ${AIR_LIBRARY} )
   endif()
   if( BIFF_LIBRARY )
     set( Teem_LIBRARIES ${Teem_LIBRARIES} ${BIFF_LIBRARY} )
   endif()
-  
+
   # Backwards compatibility values set here.
   set( Teem_INCLUDE_DIR ${Teem_INCLUDE_DIRS} )
   set( Teem_FOUND ${TEEM_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

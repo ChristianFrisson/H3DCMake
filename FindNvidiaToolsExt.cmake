@@ -7,7 +7,7 @@
 # NVIDIA Tool Ext Toolkit (NVTX) is part of NSight profiling tool:
 #   https://developer.nvidia.com/nvidia-nsight-visual-studio-edition
 #
-# Tested with v4.0.0 
+# Tested with v4.0.0
 include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES NvidiaToolsExt_INCLUDE_DIR NvidiaToolsExt_LIBRARY
                                               OLD_VARIABLE_NAMES NVIDIATX_INCLUDE_DIR NVIDIATX_LIBRARY

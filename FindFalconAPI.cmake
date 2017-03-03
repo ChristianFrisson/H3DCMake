@@ -35,14 +35,14 @@ if( WIN32 )
 endif()
 
 # Look for the header file.
-find_path( FalconAPI_INCLUDE_DIR NAMES hdl/hdl.h 
+find_path( FalconAPI_INCLUDE_DIR NAMES hdl/hdl.h
                                  PATHS ${falcon_include_search_path}
                                  DOC "Path in which the file hdl/hdl.h is located. File is part of HDAL SDK. Needed to support the Novint Falcon Haptics device." )
 
 mark_as_advanced( FalconAPI_INCLUDE_DIR )
 
 # Look for the library.
-find_library( FalconAPI_hdl_LIBRARY NAMES hdl 
+find_library( FalconAPI_hdl_LIBRARY NAMES hdl
                                     PATHS ${falcon_lib_search_path}
                                     DOC "Path to hdl library. Library is part of HDAL SDK. Needed to support the Novint Falcon Haptics device." )
 mark_as_advanced( FalconAPI_hdl_LIBRARY )

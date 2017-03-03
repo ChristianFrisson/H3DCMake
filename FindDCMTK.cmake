@@ -11,7 +11,6 @@
 # the source.
 #
 # Written for VXL by Amitha Perera.
-# 
 
 set( DCMTK_DIR "" CACHE PATH "Set this to the root of the installed dcmtk files to find include files and libraries." )
 mark_as_advanced( DCMTK_DIR )
@@ -49,8 +48,8 @@ endif()
 
 
 find_path( DCMTK_config_INCLUDE_DIR NAMES dcmtk/config/osconfig.h
-           PATHS ${DCMTK_DIR}/config/include 
-                 ${DCMTK_DIR}/include 
+           PATHS ${DCMTK_DIR}/config/include
+                 ${DCMTK_DIR}/include
                  ${module_include_search_paths}
                  ${module_file_path}/../../dcmtk/include
                  /usr/local/dicom/include
@@ -78,7 +77,7 @@ endif()
 
 foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
   find_path( DCMTK_${dcmtk_lib_name}_INCLUDE_DIR NAMES dcmtk/${dcmtk_lib_name}
-           PATHS ${DCMTK_DIR}/${dcmtk_lib_name}/include 
+           PATHS ${DCMTK_DIR}/${dcmtk_lib_name}/include
                  ${DCMTK_DIR}/include/${dcmtk_lib_name}
                  ${DCMTK_DIR}/include
                  ${module_include_search_paths}
@@ -99,7 +98,7 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                       /usr/local/dicom/lib
                 DOC "Path to ${dcmtk_lib_name}${DCMTK_LIBRARY_POSTFIX} library." )
   mark_as_advanced( DCMTK_${dcmtk_lib_name}_LIBRARY )
-  
+
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
     # Visual Studio versions later than 2008 needs debug versions to compile in debug
     find_library( DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY "${dcmtk_lib_name}${DCMTK_LIBRARY_POSTFIX}_d"
@@ -130,7 +129,7 @@ foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
                     /usr/local/dicom/lib
               DOC "Path to ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX} library." )
   mark_as_advanced( DCMTK_${dcmtk_lib_ijg_name}_LIBRARY )
-  
+
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
     find_library( DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX}_d
                   PATHS ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc
@@ -181,7 +180,7 @@ if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS )
   else()
     set( DCMTK_Config_file_name "cfunix" )
   endif()
-  
+
   set( DCMTK_Config_file ${DCMTK_config_INCLUDE_DIR}/dcmtk/config/${DCMTK_Config_file_name}.h )
   if( NOT EXISTS ${DCMTK_Config_file} )
     if( EXISTS ${DCMTK_config_INCLUDE_DIR}/dcmtk/config/osconfig.h )
@@ -209,7 +208,7 @@ set( DCMTK_LIBRARIES "" )
 set( DCMTK_FOUND "NO" )
 if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS AND HAVE_TIFF_OR_NO_TIFF_NEEDED )
   set( DCMTK_FOUND "YES" )
-  
+
   foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
     set( DCMTK_INCLUDE_DIRS ${DCMTK_INCLUDE_DIRS} ${DCMTK_${dcmtk_lib_name}_INCLUDE_DIR} )
   endforeach()
@@ -224,7 +223,7 @@ if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS AND HAVE_TIFF_OR_NO_TIFF_NEEDED )
       set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} optimized ${DCMTK_${DCMTK_lib_ijg_name}_LIBRARY} debug ${DCMTK_${DCMTK_lib_ijg_name}_DEBUG_LIBRARY} )
     endforeach()
   else()
-    
+
     if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
       message( STATUS "DCMTK debug libraries not found. Debug compilation might not work with DCMTK." )
     endif()
@@ -240,7 +239,7 @@ if( HAVE_INCLUDE_DIRS AND HAVE_RELEASE_LIBS AND HAVE_TIFF_OR_NO_TIFF_NEEDED )
   if( WIN32 )
     set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} netapi32 ws2_32 )
   endif()
-  
+
   if( TIFF_FOUND )
     set( DCMTK_INCLUDE_DIRS ${DCMTK_INCLUDE_DIRS} ${TIFF_INCLUDE_DIR} )
     set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} ${TIFF_LIBRARIES} )

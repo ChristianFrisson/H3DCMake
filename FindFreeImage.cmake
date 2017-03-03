@@ -10,7 +10,7 @@ include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FreeImage_INCLUDE_DIR FreeImage_LIBRARY
                                               DOC_STRINGS "Path in which the file FreeImage.h is located."
                                                           "Path to freeimage library." )
-                                                          
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "FreeImage/Dist" "static" )
 
@@ -29,7 +29,7 @@ mark_as_advanced( FreeImage_LIBRARY )
 
 if( WIN32 AND PREFER_STATIC_LIBRARIES )
   set( freeimage_static_library_name FreeImage_vc7 )
-  
+
   if( MSVC80 )
     set( freeimage_static_library_name FreeImage_vc8 )
   elseif( MSVC90 )
@@ -37,12 +37,12 @@ if( WIN32 AND PREFER_STATIC_LIBRARIES )
   elseif( MSVC10 )
     set( freeimage_static_library_name FreeImage_vc10 )
   endif()
-  
+
   handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FreeImage_STATIC_LIBRARY_RELEASE FreeImage_STATIC_LIBRARY_DEBUG
                                                 OLD_VARIABLE_NAMES FREEIMAGE_STATIC_LIBRARY FREEIMAGE_STATIC_DEBUG_LIBRARY
                                                 DOC_STRINGS "Path to freeimage static release library ( windows only ). For this configuration it might be called ${freeimage_static_library_name}"
                                                             "Path to freeimage static debug library ( windows only ). For this configuration it might be called ${freeimage_static_library_name}_d" )
-  
+
   find_library( FreeImage_STATIC_LIBRARY_RELEASE NAMES ${freeimage_static_library_name}
                                          PATHS ${module_lib_search_paths}
                                          DOC "Path to freeimage static release library ( windows only ). For this configuration it might be called ${freeimage_static_library_name}" )

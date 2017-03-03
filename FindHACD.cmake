@@ -4,7 +4,7 @@
 #  HACD_INCLUDE_DIR -  where to find the include files of HACD
 #  HACD_LIBRARIES    - List of libraries when using HACD.
 #  HACD_FOUND        - True if HACD found.
-#  HACD_FLAGS        - Flags needed for ode to build 
+#  HACD_FLAGS        - Flags needed for ode to build
 
 include( H3DExternalSearchPath )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
@@ -36,11 +36,11 @@ if( WIN32 )
   find_library( HACD_DEBUG_LIB NAMES HACD_LIB_DEBUG
                 PATHS ${HACD_INSTALL_DIR}/build/win${LIB}/output/bin
                       ${module_lib_search_paths} )
-   
+
    mark_as_advanced( HACD_DEBUG_LIB )
-                      
+
 else()
-  find_library( HACD_LIB NAMES HACD_LIB )  
+  find_library( HACD_LIB NAMES HACD_LIB )
 endif()
 
 mark_as_advanced( HACD_LIB )
@@ -48,22 +48,22 @@ mark_as_advanced( HACD_LIB )
 # Copy the results to the output variables.
 if( HACD_INCLUDE_DIR AND HACD_LIB )
   set( HACD_FOUND 1 )
-  
+
   if( WIN32 )
-    
+
     set( HACD_LIBRARIES "" )
-    
+
     if( HACD_DEBUG_LIB )
       set( HACD_LIBRARIES ${HACD_LIBRARIES} optimized ${HACD_LIB} debug ${HACD_DEBUG_LIB} )
     else()
       set( HACD_LIBRARIES ${HACD_LIB} )
     endif()
-    
+
   else()
     set( HACD_LIBRARIES ${HACD_LIB} )
   endif()
-  
-  
+
+
   set( HACD_INCLUDE_DIR ${HACD_INCLUDE_DIR} )
 else()
   set( HACD_FOUND 0 )

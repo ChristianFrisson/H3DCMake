@@ -20,7 +20,7 @@ endif()
 find_library( DirectX_d3d9_LIBRARY NAMES d3d9
               PATHS $ENV{DXSDK_DIR}/Lib/${proc_arch}
               DOC "Path to d3d9 library." )
- 
+
 find_library( DirectX_d3dx9_LIBRARY NAMES d3dx9
               PATHS $ENV{DXSDK_DIR}/Lib/${proc_arch}
               DOC "Path to d3dx9 library." )

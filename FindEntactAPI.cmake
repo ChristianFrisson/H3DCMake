@@ -19,7 +19,7 @@ if( CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_SYSTEM_VERSION VERSION_GREATE
 endif()
 
 # Look for the header file.
-find_path( EntactAPI_INCLUDE_DIR NAMES EntactAPI.h 
+find_path( EntactAPI_INCLUDE_DIR NAMES EntactAPI.h
                                  PATHS ${entact_include_search_paths}
                                  DOC "Path in which the file EntactAPI.h is located. Needed to support Entact haptics device." )
 mark_as_advanced( EntactAPI_INCLUDE_DIR )
@@ -30,7 +30,7 @@ if( NOT WIN32 )
 endif()
 
 # Look for the library.
-find_library( EntactAPI_LIBRARY NAMES ${entact_api_lib_name} 
+find_library( EntactAPI_LIBRARY NAMES ${entact_api_lib_name}
                                 PATHS ${entact_lib_search_paths}
                                 DOC "Path to EntactAPI.lib library. Needed to support Entact haptics device." )
 mark_as_advanced( EntactAPI_LIBRARY )

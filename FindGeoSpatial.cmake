@@ -70,7 +70,7 @@ if( GeoSpatial_INCLUDE_DIR AND HAVE_GeoSpatial_LIBRARY )
     set( GeoSpatial_LIBRARIES ${GeoSpatial_LIBRARIES} debug ${GeoSpatial_NAME}_d )
     message( STATUS "GeoSpatial debug libraries not found. Debug build might not work." )
   endif()
-  
+
   set( GeoSpatial_INCLUDE_DIR ${GeoSpatial_INCLUDE_DIR} )
   set( GeoSpatial_LIBRARIES ${GeoSpatial_LIBRARIES} )
 else( GeoSpatial_INCLUDE_DIR AND HAVE_GeoSpatial_LIBRARY )

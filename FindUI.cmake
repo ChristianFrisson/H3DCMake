@@ -81,7 +81,7 @@ if( UI_INCLUDE_DIR AND HAVE_UI_LIBRARY )
     set( UI_LIBRARIES ${UI_LIBRARIES} debug ${UI_NAME}_d )
     message( STATUS "UI debug libraries not found. Debug build might not work." )
   endif()
-  
+
   set( UI_INCLUDE_DIR ${UI_INCLUDE_DIR} )
   set( UI_LIBRARIES ${UI_LIBRARIES} )
 else()
