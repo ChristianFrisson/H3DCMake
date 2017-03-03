@@ -38,8 +38,8 @@ if( WIN32 )
 else()
   find_library( ODE_LIBRARY NAMES ode )
 
-# use the ode-config program to set the defines necessary. E.g. -DdSINGLE or -DdDOUBLE
-# depending on how ode was built.
+  # use the ode-config program to set the defines necessary. E.g. -DdSINGLE or -DdDOUBLE
+  # depending on how ode was built.
   find_program( ODE_CONFIG_EXECUTABLE ode-config
                PATHS /usr/local/bin
                      /opt/local/bin )

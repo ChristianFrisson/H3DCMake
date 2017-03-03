@@ -158,7 +158,7 @@ if( HAVE_HAPI_LIBRARY AND HAPI_INCLUDE_DIR )
                                                         ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
                                                   DOC "Path to ${renderer_name}${HAPI_LIBRARY_SUFFIX} library." )
 
-     find_library( HAPI_${renderer_name}_DEBUG_LIBRARY NAMES ${renderer_name}${HAPI_LIBRARY_SUFFIX}_d
+      find_library( HAPI_${renderer_name}_DEBUG_LIBRARY NAMES ${renderer_name}${HAPI_LIBRARY_SUFFIX}_d
                    PATHS $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
                           ../../${DEFAULT_LIB_INSTALL}
                           ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}

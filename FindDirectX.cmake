@@ -13,7 +13,7 @@ mark_as_advanced( DirectX_INCLUDE_DIR )
 
 set( proc_arch x86 )
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
- set( proc_arch  x64 )
+  set( proc_arch  x64 )
 endif()
 
 # Look for the library.

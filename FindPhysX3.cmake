@@ -142,7 +142,7 @@ endif()
 if( NOT PHYSX3_FOUND )
   set( PHYSX3_DIR_MESSAGE
        "PHYSX3 was not found. Set PHYSX3_INSTALL_DIR to the root directory of the
-installation containing the 'include' and 'lib' folders." )
+  installation containing the 'include' and 'lib' folders." )
   if( PHYSX3_FIND_REQUIRED )
     message( FATAL_ERROR "${PHYSX3_DIR_MESSAGE}" )
   elseif( NOT PHYSX3_FIND_QUIETLY )
