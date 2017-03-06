@@ -17,10 +17,10 @@ mark_as_advanced( H3DPhysics_INCLUDE_DIR )
 # Look for the library.
 if( MSVC )
   set( H3D_MSVC_VERSION 6 )
-  set( TEMP_MSVC_VERSION 1299 )
-  while( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
+  set( temp_msvc_version 1299 )
+  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
     math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
-    math( EXPR TEMP_MSVC_VERSION "${TEMP_MSVC_VERSION} + 100" )
+    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
   endwhile()
   set( H3DPhysics_NAME "H3DPhysics_vc${H3D_MSVC_VERSION}" )
 elseif( UNIX )
@@ -29,23 +29,23 @@ else()
   set( H3DPhysics_NAME H3DPhysics )
 endif()
 
-set( DEFAULT_LIB_INSTALL "lib" )
+set( default_lib_install "lib" )
 if( WIN32 )
-  set( DEFAULT_LIB_INSTALL "lib32" )
+  set( default_lib_install "lib32" )
   if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    set( DEFAULT_LIB_INSTALL "lib64" )
+    set( default_lib_install "lib64" )
   endif()
 endif()
 
 find_library( H3DPhysics_LIBRARY NAMES ${H3DPhysics_NAME}
-              PATHS $ENV{H3D_ROOT}/../H3DPhysics/${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL} )
+              PATHS $ENV{H3D_ROOT}/../H3DPhysics/${default_lib_install}
+                    ../../../${default_lib_install}
+                    $ENV{H3D_ROOT}/../${default_lib_install} )
 
 find_library( H3DPhysics_DEBUG_LIBRARY NAMES ${H3DPhysics_NAME}_d
-              PATHS $ENV{H3D_ROOT}/../H3DPhysics/${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL} )
+              PATHS $ENV{H3D_ROOT}/../H3DPhysics/${default_lib_install}
+                    ../../../${default_lib_install}
+                    $ENV{H3D_ROOT}/../${default_lib_install} )
 mark_as_advanced( H3DPhysics_LIBRARY )
 mark_as_advanced( H3DPhysics_DEBUG_LIBRARY )
 

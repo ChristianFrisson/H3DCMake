@@ -18,12 +18,12 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${bullet_cache_
 set( BULLET_INSTALL_DIR "" CACHE PATH "Path to bullet installation" )
 mark_as_advanced( BULLET_INSTALL_DIR )
 
-set( BULLET_LIBRARY_SEARCH_PATHS "" )
-set( BULLET_INCLUDE_SEARCH_PATHS "" )
+set( bullet_library_search_paths "" )
+set( bullet_include_search_paths "" )
 if( MSVC )
   set( check_if_h3d_external_matches_vs_version ON )
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-  getExternalSearchPathsH3D( BULLET_INCLUDE_SEARCH_PATHS BULLET_LIBRARY_SEARCH_PATHS ${module_file_path} "bullet" "static" )
+  getExternalSearchPathsH3D( bullet_include_search_paths bullet_library_search_paths ${module_file_path} "bullet" "static" )
 endif()
 
 # Look for the header file.
@@ -32,7 +32,7 @@ find_path( BULLET_INCLUDE_DIR NAMES btBulletCollisionCommon.h
                  /usr/local/include/bullet
                  /opt/local/include
                  /opt/local/include/bullet
-                 ${BULLET_INCLUDE_SEARCH_PATHS}
+                 ${bullet_include_search_paths}
                  ${BULLET_INSTALL_DIR}/src
                  ${BULLET_INSTALL_DIR}/include/bullet )
 
@@ -43,46 +43,46 @@ set( bullet_cache_var_debug_names )
 if( WIN32 )
   set( bullet_cache_var_debug_names BULLET_COLLISION_LIBRARY_DEBUG BULLET_DYNAMICS_LIBRARY_DEBUG BULLET_MATH_LIBRARY_DEBUG BULLET_SOFTBODY_LIBRARY_DEBUG )
   find_library( BULLET_COLLISION_LIBRARY NAMES BulletCollision libBulletCollision libbulletcollision
-                PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
+                PATHS ${bullet_library_search_paths}
                       ${BULLET_INSTALL_DIR}/lib/release
                       ${BULLET_INSTALL_DIR}/lib
                 NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_COLLISION_LIBRARY_DEBUG NAMES BulletCollision_Debug
-                PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
+                PATHS ${bullet_library_search_paths}
                       ${BULLET_INSTALL_DIR}/lib/release
                 NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_DYNAMICS_LIBRARY NAMES BulletDynamics libBulletDynamics libbulletdynamics
-                PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
+                PATHS ${bullet_library_search_paths}
                       ${BULLET_INSTALL_DIR}/lib/release
                       ${BULLET_INSTALL_DIR}/lib
                 NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_DYNAMICS_LIBRARY_DEBUG NAMES BulletDynamics_Debug
-                PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
+                PATHS ${bullet_library_search_paths}
                       ${BULLET_INSTALL_DIR}/lib/release
                 NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_MATH_LIBRARY NAMES LinearMath libLinearMath libbulletmath
-                PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
+                PATHS ${bullet_library_search_paths}
                       ${BULLET_INSTALL_DIR}/lib/release
                       ${BULLET_INSTALL_DIR}/lib
                 NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_MATH_LIBRARY_DEBUG NAMES LinearMath_Debug
-                PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
+                PATHS ${bullet_library_search_paths}
                       ${BULLET_INSTALL_DIR}/lib/release
                 NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_SOFTBODY_LIBRARY NAMES BulletSoftBody libBulletSoftBody
-                PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
+                PATHS ${bullet_library_search_paths}
                       ${BULLET_INSTALL_DIR}/lib/release
                       ${BULLET_INSTALL_DIR}/lib
                 NO_SYSTEM_ENVIRONMENT_PATH )
 
   find_library( BULLET_SOFTBODY_LIBRARY_DEBUG NAMES BulletSoftBody_Debug
-                PATHS ${BULLET_LIBRARY_SEARCH_PATHS}
+                PATHS ${bullet_library_search_paths}
                       ${BULLET_INSTALL_DIR}/lib/release
                 NO_SYSTEM_ENVIRONMENT_PATH )
 

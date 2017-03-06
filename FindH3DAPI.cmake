@@ -22,51 +22,51 @@ mark_as_advanced( H3DAPI_INCLUDE_DIR )
 
 if( MSVC )
   set( H3D_MSVC_VERSION 6 )
-  set( TEMP_MSVC_VERSION 1299 )
-  while( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
+  set( temp_msvc_version 1299 )
+  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
     math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
     # Increments one more time if MSVC version is 13 as it doesn't exist
     if( ${H3D_MSVC_VERSION} EQUAL 13 )
       math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
     endif()
-    math( EXPR TEMP_MSVC_VERSION "${TEMP_MSVC_VERSION} + 100" )
+    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
   endwhile()
   set( H3DAPI_NAME "H3DAPI_vc${H3D_MSVC_VERSION}" )
 else()
   set( H3DAPI_NAME h3dapi )
 endif()
 
-set( DEFAULT_LIB_INSTALL "lib" )
+set( default_lib_install "lib" )
 if( WIN32 )
-  set( DEFAULT_LIB_INSTALL "lib32" )
+  set( default_lib_install "lib32" )
   if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    set( DEFAULT_LIB_INSTALL "lib64" )
+    set( default_lib_install "lib64" )
   endif()
 endif()
 
 # Look for the library.
 find_library( H3DAPI_LIBRARY NAMES ${H3DAPI_NAME}
-              PATHS $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
-                    ../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../../../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../../${DEFAULT_LIB_INSTALL}
-                    ../../../support/H3D/${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../../support/H3D/${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../../${DEFAULT_LIB_INSTALL}
+              PATHS $ENV{H3D_ROOT}/../${default_lib_install}
+                    ../../${default_lib_install}
+                    ${module_file_path}/../../../${default_lib_install}
+                    $ENV{H3D_ROOT}/../../../${default_lib_install}
+                    $ENV{H3D_ROOT}/../../${default_lib_install}
+                    ../../../support/H3D/${default_lib_install}
+                    ${module_file_path}/../../../../support/H3D/${default_lib_install}
+                    ../../../${default_lib_install}
+                    ${module_file_path}/../../../../${default_lib_install}
               DOC "Path to ${H3DAPI_NAME} library." )
 
 find_library( H3DAPI_DEBUG_LIBRARY NAMES ${H3DAPI_NAME}_d
-              PATHS $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
-                    ../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../../../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../../${DEFAULT_LIB_INSTALL}
-                    ../../../support/H3D/${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../../support/H3D/${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../../${DEFAULT_LIB_INSTALL}
+              PATHS $ENV{H3D_ROOT}/../${default_lib_install}
+                    ../../${default_lib_install}
+                    ${module_file_path}/../../../${default_lib_install}
+                    $ENV{H3D_ROOT}/../../../${default_lib_install}
+                    $ENV{H3D_ROOT}/../../${default_lib_install}
+                    ../../../support/H3D/${default_lib_install}
+                    ${module_file_path}/../../../../support/H3D/${default_lib_install}
+                    ../../../${default_lib_install}
+                    ${module_file_path}/../../../../${default_lib_install}
               DOC "Path to ${H3DAPI_NAME}_d library." )
 mark_as_advanced( H3DAPI_LIBRARY )
 mark_as_advanced( H3DAPI_DEBUG_LIBRARY )

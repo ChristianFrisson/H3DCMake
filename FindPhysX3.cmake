@@ -11,11 +11,11 @@ get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "physx3" )
 
 if( CMAKE_CL_64 )
-  set( LIB "64" )
-  set( ARCH "x64" )
+  set( lib "64" )
+  set( arch "x64" )
 else()
-  set( LIB "32" )
-  set( ARCH "x86" )
+  set( lib "32" )
+  set( arch "x86" )
 endif()
 
 if( NOT DEFINED PHYSX3_INSTALL_DIR )
@@ -82,11 +82,11 @@ foreach( PHYSX3_LIB ${PHYSX3_LIBS} )
 
   # FIND RELEASE LIBS
   find_library( ${LIB_NAME}
-                NAMES ${PHYSX3_LIB}${PHYSX3_LIB_TYPE_SUFFIX}_${ARCH} ${PHYSX3_LIB}${PHYSX3_LIB_TYPE_SUFFIX}
-                PATHS ${PHYSX3_INSTALL_DIR}/Lib/win${LIB}
-                      ${PHYSX3_INSTALL_DIR}/Lib/vc10win${LIB}
-                      ${PHYSX3_INSTALL_DIR}/Lib/linux${LIB}
-                      ${PHYSX3_INSTALL_DIR}/lib${LIB}
+                NAMES ${PHYSX3_LIB}${PHYSX3_LIB_TYPE_SUFFIX}_${arch} ${PHYSX3_LIB}${PHYSX3_LIB_TYPE_SUFFIX}
+                PATHS ${PHYSX3_INSTALL_DIR}/Lib/win${lib}
+                      ${PHYSX3_INSTALL_DIR}/Lib/vc10win${lib}
+                      ${PHYSX3_INSTALL_DIR}/Lib/linux${lib}
+                      ${PHYSX3_INSTALL_DIR}/lib${lib}
                       ${module_lib_search_paths} )
   mark_as_advanced( ${LIB_NAME} )
 
@@ -103,11 +103,11 @@ foreach( PHYSX3_LIB ${PHYSX3_LIBS} )
 
   #FIND DEBUG LIBS
   find_library( ${LIB_DEBUG_NAME}
-                NAMES ${PHYSX3_LIB}DEBUG_${ARCH} ${PHYSX3_LIB}DEBUG
-                PATHS ${PHYSX3_INSTALL_DIR}/Lib/win${LIB}
-                      ${PHYSX3_INSTALL_DIR}/Lib/vc10win${LIB}
-                      ${PHYSX3_INSTALL_DIR}/Lib/linux${LIB}
-                      ${PHYSX3_INSTALL_DIR}/lib${LIB}
+                NAMES ${PHYSX3_LIB}DEBUG_${arch} ${PHYSX3_LIB}DEBUG
+                PATHS ${PHYSX3_INSTALL_DIR}/Lib/win${lib}
+                      ${PHYSX3_INSTALL_DIR}/Lib/vc10win${lib}
+                      ${PHYSX3_INSTALL_DIR}/Lib/linux${lib}
+                      ${PHYSX3_INSTALL_DIR}/lib${lib}
                       ${module_lib_search_paths} )
   mark_as_advanced( ${LIB_DEBUG_NAME} )
 

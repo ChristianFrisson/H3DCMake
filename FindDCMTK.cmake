@@ -28,15 +28,15 @@ endif()
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
 
-set( DCMTK_LIBRARY_POSTFIX "" )
+set( dcmtk_library_postfix "" )
 if( MSVC_BEFORE_VS2010 )
   set( H3D_MSVC_VERSION 6 )
-  set( TEMP_MSVC_VERSION 1299 )
-  while( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
+  set( temp_msvc_version 1299 )
+  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
     math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
-    math( EXPR TEMP_MSVC_VERSION "${TEMP_MSVC_VERSION} + 100" )
+    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
   endwhile()
-  set( DCMTK_LIBRARY_POSTFIX "_vc${H3D_MSVC_VERSION}" )
+  set( dcmtk_library_postfix "_vc${H3D_MSVC_VERSION}" )
 endif()
 
 if( NOT WIN32 )
@@ -86,7 +86,7 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
            DOC "Path to dcmtk/${dcmtk_lib_name} is located." )
   mark_as_advanced( DCMTK_${dcmtk_lib_name}_INCLUDE_DIR )
 
-  find_library( DCMTK_${dcmtk_lib_name}_LIBRARY "${dcmtk_lib_name}${DCMTK_LIBRARY_POSTFIX}"
+  find_library( DCMTK_${dcmtk_lib_name}_LIBRARY "${dcmtk_lib_name}${dcmtk_library_postfix}"
                 PATHS ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc
                       ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc/Release
                       ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc/Debug
@@ -96,12 +96,12 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                       ${module_lib_search_paths}
                       ${module_file_path}/../../dcmtk/lib
                       /usr/local/dicom/lib
-                DOC "Path to ${dcmtk_lib_name}${DCMTK_LIBRARY_POSTFIX} library." )
+                DOC "Path to ${dcmtk_lib_name}${dcmtk_library_postfix} library." )
   mark_as_advanced( DCMTK_${dcmtk_lib_name}_LIBRARY )
 
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
     # Visual Studio versions later than 2008 needs debug versions to compile in debug
-    find_library( DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY "${dcmtk_lib_name}${DCMTK_LIBRARY_POSTFIX}_d"
+    find_library( DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY "${dcmtk_lib_name}${dcmtk_library_postfix}_d"
                   PATHS ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc
                         ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc/Release
                         ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc/Debug
@@ -111,13 +111,13 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                         ${module_lib_search_paths}
                         ${module_file_path}/../../dcmtk/lib
                         /usr/local/dicom/lib
-                  DOC "Path to ${dcmtk_lib_name}${DCMTK_LIBRARY_POSTFIX}_d library." )
+                  DOC "Path to ${dcmtk_lib_name}${dcmtk_library_postfix}_d library." )
     mark_as_advanced( DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY )
   endif()
 endforeach()
 
 foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
-  find_library( DCMTK_${dcmtk_lib_ijg_name}_LIBRARY ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX}
+  find_library( DCMTK_${dcmtk_lib_ijg_name}_LIBRARY ${dcmtk_lib_ijg_name}${dcmtk_library_postfix}
               PATHS ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc
                     ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc/Release
                     ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc/Debug
@@ -127,11 +127,11 @@ foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
                     ${module_lib_search_paths}
                     ${module_file_path}/../../dcmtk/lib
                     /usr/local/dicom/lib
-              DOC "Path to ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX} library." )
+              DOC "Path to ${dcmtk_lib_ijg_name}${dcmtk_library_postfix} library." )
   mark_as_advanced( DCMTK_${dcmtk_lib_ijg_name}_LIBRARY )
 
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
-    find_library( DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX}_d
+    find_library( DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY ${dcmtk_lib_ijg_name}${dcmtk_library_postfix}_d
                   PATHS ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc
                         ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc/Release
                         ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc/Debug
@@ -141,7 +141,7 @@ foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
                         ${module_lib_search_paths}
                         ${module_file_path}/../../dcmtk/lib
                         /usr/local/dicom/lib
-                  DOC "Path to ${dcmtk_lib_ijg_name}${DCMTK_LIBRARY_POSTFIX}_d library." )
+                  DOC "Path to ${dcmtk_lib_ijg_name}${dcmtk_library_postfix}_d library." )
     mark_as_advanced( DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY )
   endif()
 endforeach()

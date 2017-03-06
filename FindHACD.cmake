@@ -11,9 +11,9 @@ get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "hacd" "static" )
 
 if( CMAKE_CL_64 )
-  set( LIB "64" )
+  set( lib "64" )
 else()
-  set( LIB "32" )
+  set( lib "32" )
 endif()
 
 set( HACD_INSTALL_DIR "" CACHE PATH "Path to external HACD installation" )
@@ -21,7 +21,7 @@ set( HACD_INSTALL_DIR "" CACHE PATH "Path to external HACD installation" )
 # Look for the header file.
 find_path( HACD_INCLUDE_DIR NAMES hacdHACD.h
            PATHS /usr/local/include
-                 ${HACD_INSTALL_DIR}/build/win${LIB}/output/include
+                 ${HACD_INSTALL_DIR}/build/win${lib}/output/include
                  ${module_include_search_paths} )
 
 mark_as_advanced( HACD_INCLUDE_DIR )
@@ -30,11 +30,11 @@ mark_as_advanced( HACD_INCLUDE_DIR )
 if( WIN32 )
 
   find_library( HACD_LIB NAMES HACD_LIB
-                PATHS ${HACD_INSTALL_DIR}/build/win${LIB}/output/bin
+                PATHS ${HACD_INSTALL_DIR}/build/win${lib}/output/bin
                       ${module_lib_search_paths} )
 
   find_library( HACD_DEBUG_LIB NAMES HACD_LIB_DEBUG
-                PATHS ${HACD_INSTALL_DIR}/build/win${LIB}/output/bin
+                PATHS ${HACD_INSTALL_DIR}/build/win${lib}/output/bin
                       ${module_lib_search_paths} )
 
    mark_as_advanced( HACD_DEBUG_LIB )

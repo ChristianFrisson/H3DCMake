@@ -33,14 +33,14 @@ mark_as_advanced( HAPI_INCLUDE_DIR )
 set( HAPI_LIBRARY_SUFFIX "" )
 if( MSVC )
   set( H3D_MSVC_VERSION 6 )
-  set( TEMP_MSVC_VERSION 1299 )
-  while( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
+  set( temp_msvc_version 1299 )
+  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
     math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
     # Increments one more time if MSVC version is 13 as it doesn't exist
     if( ${H3D_MSVC_VERSION} EQUAL 13 )
       math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
     endif()
-    math( EXPR TEMP_MSVC_VERSION "${TEMP_MSVC_VERSION} + 100" )
+    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
   endwhile()
   set( HAPI_LIBRARY_SUFFIX "_vc${H3D_MSVC_VERSION}" )
   set( HAPI_NAME "HAPI${HAPI_LIBRARY_SUFFIX}" )
@@ -48,36 +48,36 @@ else()
   set( HAPI_NAME hapi )
 endif()
 
-set( DEFAULT_LIB_INSTALL "lib" )
+set( default_lib_install "lib" )
 if( WIN32 )
-  set( DEFAULT_LIB_INSTALL "lib32" )
+  set( default_lib_install "lib32" )
   if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    set( DEFAULT_LIB_INSTALL "lib64" )
+    set( default_lib_install "lib64" )
   endif()
 endif()
 
 find_library( HAPI_LIBRARY NAMES ${HAPI_NAME}
-                           PATHS $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
-                                 ../../${DEFAULT_LIB_INSTALL}
-                                 ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
-                                 $ENV{H3D_ROOT}/../../../${DEFAULT_LIB_INSTALL}
-                                 $ENV{H3D_ROOT}/../../${DEFAULT_LIB_INSTALL}
-                                 ../../../support/H3D/${DEFAULT_LIB_INSTALL}
-                                 ${module_file_path}/../../../../support/H3D/${DEFAULT_LIB_INSTALL}
-                                 ../../../${DEFAULT_LIB_INSTALL}
-                                 ${module_file_path}/../../../../${DEFAULT_LIB_INSTALL}
+                           PATHS $ENV{H3D_ROOT}/../${default_lib_install}
+                                 ../../${default_lib_install}
+                                 ${module_file_path}/../../../${default_lib_install}
+                                 $ENV{H3D_ROOT}/../../../${default_lib_install}
+                                 $ENV{H3D_ROOT}/../../${default_lib_install}
+                                 ../../../support/H3D/${default_lib_install}
+                                 ${module_file_path}/../../../../support/H3D/${default_lib_install}
+                                 ../../../${default_lib_install}
+                                 ${module_file_path}/../../../../${default_lib_install}
                            DOC "Path to ${HAPI_NAME} library." )
 
 find_library( HAPI_DEBUG_LIBRARY NAMES ${HAPI_NAME}_d
-              PATHS $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
-                    ../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../../../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../../${DEFAULT_LIB_INSTALL}
-                    ../../../support/H3D/${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../../support/H3D/${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../../${DEFAULT_LIB_INSTALL}
+              PATHS $ENV{H3D_ROOT}/../${default_lib_install}
+                    ../../${default_lib_install}
+                    ${module_file_path}/../../../${default_lib_install}
+                    $ENV{H3D_ROOT}/../../../${default_lib_install}
+                    $ENV{H3D_ROOT}/../../${default_lib_install}
+                    ../../../support/H3D/${default_lib_install}
+                    ${module_file_path}/../../../../support/H3D/${default_lib_install}
+                    ../../../${default_lib_install}
+                    ${module_file_path}/../../../../${default_lib_install}
                     DOC "Path to ${HAPI_NAME}_d library." )
 mark_as_advanced( HAPI_LIBRARY )
 mark_as_advanced( HAPI_DEBUG_LIBRARY )
@@ -153,15 +153,15 @@ if( HAVE_HAPI_LIBRARY AND HAPI_INCLUDE_DIR )
 
     if( WIN32 )  
       find_library( HAPI_${renderer_name}_LIBRARY NAMES ${renderer_name}${HAPI_LIBRARY_SUFFIX}
-                                                  PATHS $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
-                                                        ../../${DEFAULT_LIB_INSTALL}
-                                                        ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
+                                                  PATHS $ENV{H3D_ROOT}/../${default_lib_install}
+                                                        ../../${default_lib_install}
+                                                        ${module_file_path}/../../../${default_lib_install}
                                                   DOC "Path to ${renderer_name}${HAPI_LIBRARY_SUFFIX} library." )
 
       find_library( HAPI_${renderer_name}_DEBUG_LIBRARY NAMES ${renderer_name}${HAPI_LIBRARY_SUFFIX}_d
-                   PATHS $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
-                          ../../${DEFAULT_LIB_INSTALL}
-                          ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
+                   PATHS $ENV{H3D_ROOT}/../${default_lib_install}
+                          ../../${default_lib_install}
+                          ${module_file_path}/../../../${default_lib_install}
                           DOC "Path to ${renderer_name}${HAPI_LIBRARY_SUFFIX}_d library." )
       mark_as_advanced( HAPI_${renderer_name}_LIBRARY )
       mark_as_advanced( HAPI_${renderer_name}_DEBUG_LIBRARY )

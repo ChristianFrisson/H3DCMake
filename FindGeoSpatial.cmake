@@ -17,10 +17,10 @@ mark_as_advanced( GeoSpatial_INCLUDE_DIR )
 # Look for the library.
 if( MSVC )
   set( H3D_MSVC_VERSION 6 )
-  set( TEMP_MSVC_VERSION 1299 )
-  while( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
+  set( temp_msvc_version 1299 )
+  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
     math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
-    math( EXPR TEMP_MSVC_VERSION "${TEMP_MSVC_VERSION} + 100" )
+    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
   endwhile()
   set( GeoSpatial_NAME "GeoSpatial_vc${H3D_MSVC_VERSION}" )
 elseif( UNIX )
@@ -29,21 +29,21 @@ else()
   set( GeoSpatial_NAME GeoSpatial )
 endif()
 
-set( DEFAULT_LIB_INSTALL "lib" )
+set( default_lib_install "lib" )
 if( WIN32 )
-  set( DEFAULT_LIB_INSTALL "lib32" )
+  set( default_lib_install "lib32" )
   if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    set( DEFAULT_LIB_INSTALL "lib64" )
+    set( default_lib_install "lib64" )
   endif()
 endif()
 
 find_library( GeoSpatial_LIBRARY NAMES ${GeoSpatial_NAME}
-              PATHS $ENV{H3D_ROOT}/../GeoSpatial/${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL} )
+              PATHS $ENV{H3D_ROOT}/../GeoSpatial/${default_lib_install}
+                    ../../../${default_lib_install} )
 
 find_library( GeoSpatial_DEBUG_LIBRARY NAMES ${GeoSpatial_NAME}_d
-              PATHS $ENV{H3D_ROOT}/../GeoSpatial/${DEFAULT_LIB_INSTALL}
-                    ../../../${DEFAULT_LIB_INSTALL} )
+              PATHS $ENV{H3D_ROOT}/../GeoSpatial/${default_lib_install}
+                    ../../../${default_lib_install} )
 mark_as_advanced( GeoSpatial_LIBRARY )
 mark_as_advanced( GeoSpatial_DEBUG_LIBRARY )
 

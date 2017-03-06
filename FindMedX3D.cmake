@@ -21,14 +21,14 @@ mark_as_advanced( MEDX3D_INCLUDE_DIR )
 # Look for the library.
 if( MSVC )
   set( H3D_MSVC_VERSION 6 )
-  set( TEMP_MSVC_VERSION 1299 )
-  while( ${MSVC_VERSION} GREATER ${TEMP_MSVC_VERSION} )
+  set( temp_msvc_version 1299 )
+  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
     math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
     # Increments one more time if MSVC version is 13 as it doesn't exist
     if( ${H3D_MSVC_VERSION} EQUAL 13 )
       math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
     endif()
-    math( EXPR TEMP_MSVC_VERSION "${TEMP_MSVC_VERSION} + 100" )
+    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
   endwhile()
   set( MEDX3D_NAME "MedX3D_vc${H3D_MSVC_VERSION}" )
 elseif( UNIX )
@@ -37,27 +37,27 @@ else()
   set( MEDX3D_NAME MedX3D )
 endif()
 
-set( DEFAULT_LIB_INSTALL "lib" )
+set( default_lib_install "lib" )
 if( WIN32 )
-  set( DEFAULT_LIB_INSTALL "lib32" )
+  set( default_lib_install "lib32" )
   if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    set( DEFAULT_LIB_INSTALL "lib64" )
+    set( default_lib_install "lib64" )
   endif()
 endif()
 
 find_library( MEDX3D_LIBRARY NAMES ${MEDX3D_NAME}
-              PATHS $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../MedX3D/${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../MedX3D/${DEFAULT_LIB_INSTALL} )
+              PATHS $ENV{H3D_ROOT}/../${default_lib_install}
+                    $ENV{H3D_ROOT}/../MedX3D/${default_lib_install}
+                    ${module_file_path}/../../../${default_lib_install}
+                    ${module_file_path}/../../${default_lib_install}
+                    ${module_file_path}/../../../MedX3D/${default_lib_install} )
 
 find_library( MEDX3D_DEBUG_LIBRARY NAMES ${MEDX3D_NAME}_d
-              PATHS $ENV{H3D_ROOT}/../${DEFAULT_LIB_INSTALL}
-                    $ENV{H3D_ROOT}/../MedX3D/${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../${DEFAULT_LIB_INSTALL}
-                    ${module_file_path}/../../../MedX3D/${DEFAULT_LIB_INSTALL} )
+              PATHS $ENV{H3D_ROOT}/../${default_lib_install}
+                    $ENV{H3D_ROOT}/../MedX3D/${default_lib_install}
+                    ${module_file_path}/../../../${default_lib_install}
+                    ${module_file_path}/../../${default_lib_install}
+                    ${module_file_path}/../../../MedX3D/${default_lib_install} )
 mark_as_advanced( MEDX3D_LIBRARY )
 mark_as_advanced( MEDX3D_DEBUG_LIBRARY )
 

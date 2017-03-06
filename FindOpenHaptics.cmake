@@ -13,10 +13,10 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES OpenHaptics_INC
 
 set( program_files_path "" )
 if( CMAKE_CL_64 )
-  set( LIB "x64" )
+  set( lib "x64" )
   set( program_files_path "$ENV{ProgramW6432}" )
 else()
-  set( LIB "win32" )
+  set( lib "win32" )
   set( program_files_path "$ENV{ProgramFiles}" )
 endif()
 
@@ -29,13 +29,13 @@ find_path( OpenHaptics_INCLUDE_DIR NAMES HL/hl.h HD/hd.h HDU/hdu.h
 mark_as_advanced( OpenHaptics_INCLUDE_DIR )
 
 set( openhaptics_library_directories $ENV{3DTOUCH_BASE}/lib        # OpenHaptics 2.0
-                              $ENV{3DTOUCH_BASE}/lib/${LIB}  # OpenHaptics 3.0
+                              $ENV{3DTOUCH_BASE}/lib/${lib}  # OpenHaptics 3.0
                               $ENV{OH_SDK_BASE}/lib        # OpenHaptics 2.0
-                              $ENV{OH_SDK_BASE}/lib/${LIB}  # OpenHaptics 3.0
-                              $ENV{OH_SDK_BASE}/lib/${LIB}/Release
-                              $ENV{OH_SDK_BASE}/lib/${LIB}/ReleaseAcademicEdition
+                              $ENV{OH_SDK_BASE}/lib/${lib}  # OpenHaptics 3.0
+                              $ENV{OH_SDK_BASE}/lib/${lib}/Release
+                              $ENV{OH_SDK_BASE}/lib/${lib}/ReleaseAcademicEdition
                               "${program_files_path}/SensAble/3DTouch/lib"        # OpenHaptics 2.0
-                              "${program_files_path}/SensAble/3DTouch/lib/${LIB}" # OpenHaptics 3.0
+                              "${program_files_path}/SensAble/3DTouch/lib/${lib}" # OpenHaptics 3.0
                               "/usr/lib64" )
 
 # TODO: Add conditional checking for x64 system
@@ -53,11 +53,11 @@ mark_as_advanced( OpenHaptics_HD_LIBRARY )
 
 find_library( OpenHaptics_HDU_LIBRARY NAMES HDU
                          PATHS  $ENV{3DTOUCH_BASE}/utilities/lib        # OpenHaptics 2.0
-                                $ENV{3DTOUCH_BASE}/utilities/lib/${LIB}/Release  # OpenHaptics 3.0
+                                $ENV{3DTOUCH_BASE}/utilities/lib/${lib}/Release  # OpenHaptics 3.0
                                 $ENV{OH_SDK_BASE}/utilities/lib        # OpenHaptics 2.0
-                                $ENV{OH_SDK_BASE}/utilities/lib/${LIB}/Release  # OpenHaptics 3.0
+                                $ENV{OH_SDK_BASE}/utilities/lib/${lib}/Release  # OpenHaptics 3.0
                                 "${program_files_path}/SensAble/3DTouch/utilities/lib"        # OpenHaptics 2.0
-                                "${program_files_path}/SensAble/3DTouch/utilities/lib/${LIB}/Release"  # OpenHaptics 3.0
+                                "${program_files_path}/SensAble/3DTouch/utilities/lib/${lib}/Release"  # OpenHaptics 3.0
                                 "/usr/lib64"
                          DOC "Path to hdu library. Comes with OpenHaptics installation, needed for PhantomDevice to work." )
 mark_as_advanced( OpenHaptics_HDU_LIBRARY )
