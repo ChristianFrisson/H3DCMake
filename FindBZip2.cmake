@@ -7,11 +7,6 @@
 #  BZIP2_FOUND        - True if bzip2 found.
 
 include( H3DExternalSearchPath )
-checkCMakeInternalModule( BZip2 ) # Will call CMakes internal find module for this feature.
-
-if( ( DEFINED BZIP2_FOUND ) AND BZIP2_FOUND )
-  return()
-endif()
 
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "Bzip2" )
@@ -37,5 +32,5 @@ set( BZIP2_LIBRARIES ${BZIP2_LIBRARY} )
 set( BZIP2_INCLUDE_DIRS ${BZIP2_INCLUDE_DIR} )
 
 if( NOT BZIP2_FOUND )
-  checkCMakeInternalModule( BZIP2 )  # Will call CMakes internal find module for this feature.
+  checkCMakeInternalModule( BZip2 OUTPUT_AS_UPPER_CASE )  # Will call CMakes internal find module for this feature.
 endif()

@@ -7,10 +7,6 @@
 #  CURL_FOUND        - True if curlfound.
 
 include( H3DExternalSearchPath )
-checkCMakeInternalModule( CURL ) # Will call CMakes internal find module for this feature.
-if( ( DEFINED CURL_FOUND ) AND CURL_FOUND )
-  return()
-endif()
 
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
@@ -38,19 +34,23 @@ set( curl_staticlib 0 )
 # handle the QUIETLY and REQUIRED arguments and set CURL_FOUND to TRUE
 # if all listed variables are TRUE
 if( WIN32 AND PREFER_STATIC_LIBRARIES )
-  find_package_handle_standard_args( CURL DEFAULT_MSG
-                                     CURL_STATIC_LIBRARY CURL_INCLUDE_DIR )
+  checkIfModuleFound( CURL
+                      REQUIRED_VARS CURL_INCLUDE_DIR CURL_STATIC_LIBRARY )
   set( CURL_LIBRARIES ${CURL_STATIC_LIBRARY} )
-  set( curl_staticlib ${CURL_FOUND} ) # CURL_FOUND is set by find_package_handle_standard_args and should be up to date here.
+  set( curl_staticlib ${CURL_FOUND} ) # CURL_FOUND is set by checkIfModuleFound and should be up to date here.
 endif()
 
 if( NOT curl_staticlib ) # This goes a bit against the standard, the reason is that if static libraries are desired the normal ones are only fallback.
-  find_package_handle_standard_args( CURL DEFAULT_MSG
-                                     CURL_LIBRARY CURL_INCLUDE_DIR )
+  checkIfModuleFound( CURL
+                      REQUIRED_VARS CURL_INCLUDE_DIR CURL_LIBRARY )
   set( CURL_LIBRARIES ${CURL_LIBRARY} )
 endif()
 
 set( CURL_INCLUDE_DIRS ${CURL_INCLUDE_DIR} )
+
+if( NOT CURL_FOUND )
+  checkCMakeInternalModule( CURL )  # Will call CMakes internal find module for this feature.
+endif()
 
 # Backwards compatibility values set here.
 set( CURL_INCLUDE_DIR ${CURL_INCLUDE_DIRS} )
