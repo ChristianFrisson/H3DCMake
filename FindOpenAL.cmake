@@ -31,5 +31,5 @@ set( OPENAL_LIBRARIES ${OPENAL_LIBRARY} )
 set( OPENAL_INCLUDE_DIRS ${OPENAL_INCLUDE_DIR} )
 
 if( NOT OPENAL_FOUND )
-  checkCMakeInternalModule( OPENAL )  # Will call CMakes internal find module for this feature.
+  checkCMakeInternalModule( OpenAL OUTPUT_AS_UPPER_CASE )  # Will call CMakes internal find module for this feature.
 endif()
