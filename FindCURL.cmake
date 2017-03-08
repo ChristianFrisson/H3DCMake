@@ -29,7 +29,6 @@ if( WIN32 AND PREFER_STATIC_LIBRARIES )
   mark_as_advanced( CURL_STATIC_LIBRARY )
 endif()
 
-include( FindPackageHandleStandardArgs )
 set( curl_staticlib 0 )
 # handle the QUIETLY and REQUIRED arguments and set CURL_FOUND to TRUE
 # if all listed variables are TRUE
