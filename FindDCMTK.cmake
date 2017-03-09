@@ -72,18 +72,28 @@ if( EXISTS ${DCMTK_config_INCLUDE_DIR}/dcmtk/config/osconfig.h )
   endif()
 endif()
 
-set( DCMTK_lib_names_internal dcmjpeg ofstd oflog dcmimage dcmdata dcmimgle )
-if( DCMTK_lib_names )
-  set( DCMTK_lib_names_internal ${DCMTK_lib_names} )
+if( DEFINED DCMTK_lib_names OR DEFINED DCMTK_lib_ijg_names )
+  message( AUTHOR_WARNING "The setting DCMTK_lib_names and DCMTK_lib_ijg_names are deprecated. Use the COMPONENTS feature of find_package instead." )
+  if( NOT DCMTK_FIND_COMPONENTS )
+    set( DCMTK_FIND_COMPONENTS ${DCMTK_lib_names} ${DCMTK_lib_ijg_names} )
+  endif()
 endif()
 
-set( DCMTK_lib_ijg_names_internal ijg8 ijg12 ijg16 )
-if( DCMTK_lib_ijg_names )
-  set( DCMTK_lib_ijg_names_internal ${DCMTK_lib_ijg_names} )
+set( dcmtk_lib_names        dcmjpeg ofstd oflog dcmimage dcmdata dcmimgle ijg8 ijg12 ijg16 )
+set( dcmtk_lib_names_no_ijg dcmjpeg ofstd oflog dcmimage dcmdata dcmimgle )
+if( DCMTK_FIND_COMPONENTS )
+  set( dcmtk_lib_names ${DCMTK_FIND_COMPONENTS} )
+  set( dcmtk_lib_names_no_ijg )
+  foreach( lib_name ${DCMTK_FIND_COMPONENTS} )
+    string( FIND ${lib_name} "ijg" ijg_string )
+    if( ijg_string EQUAL -1 )
+      set( dcmtk_lib_names_no_ijg ${dcmtk_lib_names_no_ijg} ${lib_name} )
+    endif()
+  endforeach()
 endif()
 
 set( required_vars DCMTK_config_INCLUDE_DIR )
-foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
+foreach( dcmtk_lib_name ${dcmtk_lib_names_no_ijg} )
   find_path( DCMTK_${dcmtk_lib_name}_INCLUDE_DIR NAMES dcmtk/${dcmtk_lib_name}
            PATHS ${DCMTK_DIR}/${dcmtk_lib_name}/include
                  ${DCMTK_DIR}/include/${dcmtk_lib_name}
@@ -91,16 +101,24 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                  ${module_include_search_paths}
                  ${module_file_path}/../../dcmtk/include
                  /usr/local/dicom/include
-           DOC "Path to dcmtk/${dcmtk_lib_name} is located."
+           DOC "Path to where dcmtk/${dcmtk_lib_name} is located."
            NO_SYSTEM_ENVIRONMENT_PATH )
   mark_as_advanced( DCMTK_${dcmtk_lib_name}_INCLUDE_DIR )
+  list( APPEND required_vars DCMTK_${dcmtk_lib_name}_INCLUDE_DIR )
+endforeach()
 
+foreach( dcmtk_lib_name ${dcmtk_lib_names} )
   find_library( DCMTK_${dcmtk_lib_name}_LIBRARY "${dcmtk_lib_name}${dcmtk_library_postfix}"
                 PATHS ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc
                       ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc/Release
                       ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc/Debug
                       ${DCMTK_DIR}/${dcmtk_lib_name}/Release
                       ${DCMTK_DIR}/${dcmtk_lib_name}/Debug
+                      ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/libsrc
+                      ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/libsrc/Release
+                      ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/libsrc/Debug
+                      ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/Release
+                      ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/Debug
                       ${DCMTK_DIR}/lib
                       ${module_lib_search_paths}
                       ${module_file_path}/../../dcmtk/lib
@@ -108,7 +126,7 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                 DOC "Path to ${dcmtk_lib_name}${dcmtk_library_postfix} library."
                 NO_SYSTEM_ENVIRONMENT_PATH )
   mark_as_advanced( DCMTK_${dcmtk_lib_name}_LIBRARY )
-  list( APPEND required_vars DCMTK_${dcmtk_lib_name}_INCLUDE_DIR DCMTK_${dcmtk_lib_name}_LIBRARY )
+  list( APPEND required_vars DCMTK_${dcmtk_lib_name}_LIBRARY )
 
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
     # Visual Studio versions later than 2008 needs debug versions to compile in debug
@@ -118,6 +136,11 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                         ${DCMTK_DIR}/${dcmtk_lib_name}/libsrc/Debug
                         ${DCMTK_DIR}/${dcmtk_lib_name}/Release
                         ${DCMTK_DIR}/${dcmtk_lib_name}/Debug
+                        ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/libsrc
+                        ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/libsrc/Release
+                        ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/libsrc/Debug
+                        ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/Release
+                        ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_name}/Debug
                         ${DCMTK_DIR}/lib
                         ${module_lib_search_paths}
                         ${module_file_path}/../../dcmtk/lib
@@ -126,40 +149,6 @@ foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
                   NO_SYSTEM_ENVIRONMENT_PATH )
     mark_as_advanced( DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY )
     list( APPEND required_vars DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY )
-  endif()
-endforeach()
-
-foreach( dcmtk_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
-  find_library( DCMTK_${dcmtk_lib_ijg_name}_LIBRARY ${dcmtk_lib_ijg_name}${dcmtk_library_postfix}
-              PATHS ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc
-                    ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc/Release
-                    ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc/Debug
-                    ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/Release
-                    ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/Debug
-                    ${DCMTK_DIR}/lib
-                    ${module_lib_search_paths}
-                    ${module_file_path}/../../dcmtk/lib
-                    /usr/local/dicom/lib
-              DOC "Path to ${dcmtk_lib_ijg_name}${dcmtk_library_postfix} library."
-              NO_SYSTEM_ENVIRONMENT_PATH )
-  mark_as_advanced( DCMTK_${dcmtk_lib_ijg_name}_LIBRARY )
-  list( APPEND required_vars DCMTK_${dcmtk_lib_ijg_name}_LIBRARY )
-
-  if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
-    find_library( DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY ${dcmtk_lib_ijg_name}${dcmtk_library_postfix}_d
-                  PATHS ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc
-                        ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc/Release
-                        ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/libsrc/Debug
-                        ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/Release
-                        ${DCMTK_DIR}/dcmjpeg/lib${dcmtk_lib_ijg_name}/Debug
-                        ${DCMTK_DIR}/lib
-                        ${module_lib_search_paths}
-                        ${module_file_path}/../../dcmtk/lib
-                        /usr/local/dicom/lib
-                  DOC "Path to ${dcmtk_lib_ijg_name}${dcmtk_library_postfix}_d library."
-                  NO_SYSTEM_ENVIRONMENT_PATH )
-    mark_as_advanced( DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY )
-    list( APPEND required_vars DCMTK_${dcmtk_lib_ijg_name}_DEBUG_LIBRARY )
   endif()
 endforeach()
 
@@ -200,25 +189,19 @@ checkIfModuleFound( DCMTK
 set( DCMTK_LIBRARIES )
 set( DCMTK_INCLUDE_DIRS )
 if( DCMTK_FOUND )
-  foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
+  foreach( dcmtk_lib_name ${dcmtk_lib_names_no_ijg} )
     set( DCMTK_INCLUDE_DIRS ${DCMTK_INCLUDE_DIRS} ${DCMTK_${dcmtk_lib_name}_INCLUDE_DIR} )
   endforeach()
 
   if( WIN32 AND NOT MSVC_BEFORE_VS2010 )
     # MSVC after version 10(2010) needs debug libraries since it cannot compile with
     # the release versions
-    foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
+    foreach( dcmtk_lib_name ${dcmtk_lib_names} )
       set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} optimized ${DCMTK_${dcmtk_lib_name}_LIBRARY} debug ${DCMTK_${dcmtk_lib_name}_DEBUG_LIBRARY} )
     endforeach()
-    foreach( DCMTK_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
-      set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} optimized ${DCMTK_${DCMTK_lib_ijg_name}_LIBRARY} debug ${DCMTK_${DCMTK_lib_ijg_name}_DEBUG_LIBRARY} )
-    endforeach()
   else()
-    foreach( dcmtk_lib_name ${DCMTK_lib_names_internal} )
+    foreach( dcmtk_lib_name ${dcmtk_lib_names} )
       set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} ${DCMTK_${dcmtk_lib_name}_LIBRARY} )
-    endforeach()
-    foreach( DCMTK_lib_ijg_name ${DCMTK_lib_ijg_names_internal} )
-      set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} ${DCMTK_${DCMTK_lib_ijg_name}_LIBRARY} )
     endforeach()
   endif()
 
@@ -231,7 +214,7 @@ if( DCMTK_FOUND )
     set( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} ${TIFF_LIBRARIES} )
   endif()
 else()
-  if( tiff_needed )
+  if( tiff_needed OR DCMTK_FIND_COMPONENTS )
     # DCMTKs internal module does not take into account dependency with tiff for some reason.
     # therefore we do not call the internal function if our system detected that tiff is needed.
     include( FindPackageHandleStandardArgs )
