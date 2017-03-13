@@ -37,3 +37,6 @@ find_package_handle_standard_args( DirectX DEFAULT_MSG
 
 set( DirectX_LIBRARIES ${DirectX_d3d9_LIBRARY} ${DirectX_d3dx9_LIBRARY} )
 set( DirectX_INCLUDE_DIRS ${DirectX_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( DirectX_FOUND ${DIRECTX_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

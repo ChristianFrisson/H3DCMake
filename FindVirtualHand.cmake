@@ -46,3 +46,4 @@ set( VirtualHand_INCLUDE_DIRS ${VirtualHand_INCLUDE_DIR} )
 
 # Backwards compatibility values set here.
 set( VirtualHand_INCLUDE_DIR ${VirtualHand_INCLUDE_DIRS} )
+set( VirtualHand_FOUND ${VIRTUALHAND_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

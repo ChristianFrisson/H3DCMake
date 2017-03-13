@@ -2,7 +2,7 @@
 # Find the native OpenAL headers and libraries.
 # If none is found for Windows use the distributed one in External
 #
-#  OPENAL_INCLUDE_DIR  - Where to find al.h, etc.
+#  OPENAL_INCLUDE_DIRS - Where to find al.h, etc.
 #  OPENAL_LIBRARIES    - List of libraries when using OpenAL.
 #  OPENAL_FOUND        - True if OpenAL found.
 # NOTE the upper case on the values is because the cmake find module uses upper case and we do not want to

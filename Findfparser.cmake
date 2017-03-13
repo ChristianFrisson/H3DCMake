@@ -53,3 +53,4 @@ endif()
 
 # Backwards compatibility values set here.
 set( fparser_INCLUDE_DIR ${fparser_INCLUDE_DIRS} )
+set( fparser_FOUND ${FPARSER_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

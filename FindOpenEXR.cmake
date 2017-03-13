@@ -76,7 +76,7 @@ include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set OpenEXR_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( OpenEXR DEFAULT_MSG
-                                   ZLIB_FOUND OpenEXR_INCLUDE_DIR ${openexr_required_lib_vars} )
+                                   OpenEXR_INCLUDE_DIR ${openexr_required_lib_vars} ZLIB_FOUND )
 
 set( OpenEXR_LIBRARIES )
 foreach( _lib_var ${openexr_required_lib_vars} )

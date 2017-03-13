@@ -32,4 +32,4 @@ set( Haptik_INCLUDE_DIRS ${Haptik_INCLUDE_DIR} )
 # Backwards compatibility values set here.
 set( HAPTIK_INCLUDE_DIR ${Haptik_INCLUDE_DIRS} )
 set( HAPTIK_LIBRARIES ${Haptik_LIBRARIES} )
-set( Haptik_FOUND ${HAPTIK_FOUND} )
+set( Haptik_FOUND ${HAPTIK_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
