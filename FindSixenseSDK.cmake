@@ -16,13 +16,11 @@ get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
 if( CMAKE_CL_64 )
-  set( LIB "win64" )
-  set( SDK_LIB "x64" )
+  set( sdk_lib "x64" )
   set( PROGRAMFILES_X86 "ProgramFiles(x86)" ) # Needed because ( and ) are disallowed characters in cmake 3.1.0, see policy cmp0053
   set( steam_path "$ENV{${PROGRAMFILES_X86}}/Steam/SteamApps/common/Sixense SDK/SixenseSDK" )
 else()
-  set( LIB "lib32" )
-  set( SDK_LIB "win32" )
+  set( sdk_lib "win32" )
   set( steam_path "$ENV{ProgramFiles}/Steam/SteamApps/common/Sixense SDK/SixenseSDK" )
 endif()
 
@@ -51,11 +49,11 @@ if( MSVC )
 endif()
 
 # Look for the library.
-find_library( SixenseSDK_LIBRARY NAMES sixense sixense_${SDK_LIB}
-                              PATHS ${SIXENSE_INSTALL_DIR}/lib/${SDK_LIB}/${VS_DIR}/release_dll
+find_library( SixenseSDK_LIBRARY NAMES sixense sixense_${sdk_lib}
+                              PATHS ${SIXENSE_INSTALL_DIR}/lib/${sdk_lib}/${VS_DIR}/release_dll
                                     ${module_lib_search_paths}
-                                    ${steam_path}/lib/${SDK_LIB}/${VS_DIR}/release_dll
-                                    $ENV{SIXENSE_SDK_PATH}/lib/${SDK_LIB}/${VS_DIR}/release_dll
+                                    ${steam_path}/lib/${sdk_lib}/${VS_DIR}/release_dll
+                                    $ENV{SIXENSE_SDK_PATH}/lib/${sdk_lib}/${VS_DIR}/release_dll
                               DOC "Path to sixense library. Required to use the HydraSensor." )
 mark_as_advanced( SixenseSDK_LIBRARY )
 

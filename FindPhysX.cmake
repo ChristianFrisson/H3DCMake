@@ -14,9 +14,9 @@ get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "PhysX/Physics" "PhysX/Foundation" "PhysX/PhysXLoader" "PhysX/Cooking" )
 
 if( CMAKE_CL_64 )
-  set( LIB "64" )
+  set( lib "64" )
 else()
-  set( LIB "32" )
+  set( lib "32" )
 endif()
 
 set( module_include_search_paths "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
@@ -54,16 +54,16 @@ find_path( PhysX_COOKING_INCLUDE_DIR NAMES NxCooking.h
 
 mark_as_advanced( PhysX_COOKING_INCLUDE_DIR )
 
-set( module_lib_search_paths "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
-                             "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
-                             "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
-                             "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${LIB}"
+set( module_lib_search_paths "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${lib}"
+                             "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${lib}"
+                             "C:/Program/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${lib}"
+                             "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${lib}"
                              ${module_lib_search_paths} )
 # Look for the library.
-find_library( PhysX_LIB_LOADER NAMES PhysXLoader PhysXLoader${LIB}
+find_library( PhysX_LIB_LOADER NAMES PhysXLoader PhysXLoader${lib}
                 PATHS ${module_lib_search_paths} )
 
-find_library( PhysX_LIB_CORE NAMES PhysXCore PhysXCore${LIB}
+find_library( PhysX_LIB_CORE NAMES PhysXCore PhysXCore${lib}
                 PATHS ${module_lib_search_paths} )
                       
 mark_as_advanced( PhysX_LIB_LOADER )

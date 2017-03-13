@@ -1,15 +1,15 @@
 # Contains common H3D functions that are used a bit here and there.
 
-set( H3D_MSVC_VERSION 6 )
+set( h3d_msvc_version 6 )
 if( MSVC )
   set( temp_msvc_version 1299 )
   while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
-    math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
+    math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
     math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
   endwhile()
 
-  if( ${H3D_MSVC_VERSION} GREATER 12 ) # MSVC skipped 13 in their numbering system.
-    math( EXPR H3D_MSVC_VERSION "${H3D_MSVC_VERSION} + 1" )
+  if( ${h3d_msvc_version} GREATER 12 ) # MSVC skipped 13 in their numbering system.
+    math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
   endif()
 endif()
 
@@ -22,9 +22,9 @@ function( setH3DMSVCOutputName the_target target_base_name )
     # since they are not compatible with each other. 
     # the_target can not link incrementally on vc8 for some reason. We shut of incremental linking for
     # all visual studio versions.
-    set_target_properties( ${the_target} PROPERTIES OUTPUT_NAME ${target_base_name}_vc${H3D_MSVC_VERSION} )
+    set_target_properties( ${the_target} PROPERTIES OUTPUT_NAME ${target_base_name}_vc${h3d_msvc_version} )
     if( ARGC GREATER 2 )
-      set( ${ARGV2} _vc${H3D_MSVC_VERSION} PARENT_SCOPE )
+      set( ${ARGV2} _vc${h3d_msvc_version} PARENT_SCOPE )
     endif()
   endif()
 endfunction()
