@@ -83,7 +83,7 @@ foreach( _lib_var ${openexr_required_lib_vars} )
   set( OpenEXR_LIBRARIES ${OpenEXR_LIBRARIES} ${${_lib_var}} )
 endforeach()
 set( OpenEXR_LIBRARIES ${OpenEXR_LIBRARIES} ${ZLIB_LIBRARIES} )
-set( OpenEXR_INCLUDE_DIRS ${OpenEXR_INCLUDE_DIR}/OpenEXR ${OpenEXR_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} )
+set( OpenEXR_INCLUDE_DIRS ${OpenEXR_INCLUDE_DIR}/OpenEXR ${OpenEXR_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS} )
 
 # Backwards compatibility values set here.
 set( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIRS} )

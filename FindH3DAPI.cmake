@@ -91,7 +91,7 @@ if( H3DAPI_INCLUDE_DIR AND HAVE_H3DAPI_LIBRARY )
   # On windows this will also find opengl header includes.
   find_package( GLEW REQUIRED )
   if( GLEW_FOUND )
-    set( H3DAPI_INCLUDE_DIR ${H3DAPI_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} )
+    set( H3DAPI_INCLUDE_DIR ${H3DAPI_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS} )
     set( H3DAPI_LIBRARIES ${H3DAPI_LIBRARIES} ${GLEW_LIBRARIES} )
   endif()
 

@@ -189,9 +189,9 @@ if( HAVE_HAPI_LIBRARY AND HAPI_INCLUDE_DIR )
         # OpenHapticsRenderer library is found. Check for OpenHaptics on the system. It must exist for the library
         # using HAPI since it is assumed that the library using HAPI will include OpenHapticsRenderer.h.
         find_package( OpenHaptics REQUIRED )
-        if( OPENHAPTICS_FOUND )
-          set( HAPI_RENDERERS_INCLUDE_DIR ${HAPI_RENDERERS_INCLUDE_DIR} ${OPENHAPTICS_INCLUDE_DIR} )
-          set( HAPI_RENDERERS_LIBRARIES ${HAPI_RENDERERS_LIBRARIES} ${OPENHAPTICS_LIBRARIES} )
+        if( OpenHaptics_FOUND )
+          set( HAPI_RENDERERS_INCLUDE_DIR ${HAPI_RENDERERS_INCLUDE_DIR} ${OpenHaptics_INCLUDE_DIRS} )
+          set( HAPI_RENDERERS_LIBRARIES ${HAPI_RENDERERS_LIBRARIES} ${OpenHaptics_LIBRARIES} )
         endif()
       endif()
       
