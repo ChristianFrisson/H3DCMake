@@ -82,48 +82,48 @@ if( H3DUTIL_INCLUDE_DIR AND EXTERNAL_ROOT )
       math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
       math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
     endwhile()
-  
+
     ## TODO: Somehow check if TEEM is compiled against BZPI2, PNG and/or ZLIB, probably have to use find modules.
     # When the first item for an external entry is only "#define" then it will always be included.
     set( externals_to_look_for "#define HAVE_ZLIB"
                                "include" "zlib"
                                "lib" "zlib"
                                "bin" "zlib1"
-                               
+
                                "#define HAVE_FREEIMAGE"
                                "include" "FreeImage"
                                "lib" "FreeImage"
                                "bin" "FreeImage"
-                               
+
                                "#define HAVE_OPENEXR"
                                "include" "OpenEXR"
                                "lib" "IlmImf" "IlmThread" "Imath" "Half" "Iex"
                                "bin" "IlmImf" "IlmThread" "Imath" "Half" "Iex"
-                               
+
                                "#define HAVE_TEEM"
                                "include" "teem" )
     if( Teem_BZIP2 )
       set( externals_to_look_for ${externals_to_look_for} "Bzip2" )
     endif()
-    
+
     set( externals_to_look_for ${externals_to_look_for}
                                "lib" "teem" )
     if( Teem_BZIP2 )
       set( externals_to_look_for ${externals_to_look_for} "libbz2" )
     endif()
-    
+
     set( externals_to_look_for ${externals_to_look_for}
                                "bin" "teem" )
     if( Teem_BZIP2 )
       set( externals_to_look_for ${externals_to_look_for} "libbz2" )
     endif()
-    
-    set( externals_to_look_for ${externals_to_look_for}                               
+
+    set( externals_to_look_for ${externals_to_look_for}
                                "#define"
                                "include" "pthread" "H3DUtil"
                                "lib" "pthreadVC2" "H3DUtil"
                                "bin" "pthreadVC2" "H3DUtil"
-                               
+
                                "#define HAVE_DCMTK"
                                "include" "dcmtk"
                                "lib" )
@@ -137,7 +137,7 @@ if( H3DUTIL_INCLUDE_DIR AND EXTERNAL_ROOT )
       endforeach()
     endforeach()
   endif()
-  
+
   list( LENGTH FEATURES_TO_INSTALL FEATURES_TO_INSTALL_LENGTH )
   math( EXPR FEATURES_TO_INSTALL_LENGTH "${FEATURES_TO_INSTALL_LENGTH} - 1" )
   set( features_to_install_truncated "" )
@@ -145,7 +145,7 @@ if( H3DUTIL_INCLUDE_DIR AND EXTERNAL_ROOT )
     list( GET FEATURES_TO_INSTALL ${loop_var} one_feature )
     list( APPEND features_to_install_truncated ${one_feature} )
   endforeach()
-  
+
   set( INCLUDE_DIRS_TO_CHECK ${EXTERNAL_ROOT}/include ${H3DUTIL_INCLUDE_DIR} )
   set( ADD_EXTERNAL FALSE )
   set( current_checked_feature "" )

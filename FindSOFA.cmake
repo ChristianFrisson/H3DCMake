@@ -55,7 +55,7 @@ mark_as_advanced( SOFA_INCLUDE_DIR_TINYXML )
 # in FindPackage( SOFA COMPONENTS core simulation )
 set( SOFA_LIBS ${SOFA_FIND_COMPONENTS} )
 
-set( LIB_SEARCH_PATHS )
+set( lib_search_paths )
 
 set( SOFA_LIBS_FOUND 1 )
 set( SOFA_LIBS_DEBUG_FOUND 1 )
@@ -76,33 +76,33 @@ foreach( SOFA_LIB ${SOFA_LIBS} )
   string( TOUPPER ${SOFA_LIB} _upper_lib_name )
   set( SOFA_LIBRARY_NAMES ${SOFA_LIBRARY_NAMES} ${SOFA_LIB}${SOFA_LIB_SUFFIX}
        CACHE INTERNAL "Internal sofa library list variable. Can be used to setup delayload." FORCE )
-  
+
   # Look for release library
   find_library( SOFA_${_upper_lib_name}_LIBRARY NAMES sofa${SOFA_LIB}${SOFA_LIB_SUFFIX}
                                                       sofa_${SOFA_LIB}${SOFA_LIB_SUFFIX}
                 PATHS ${SOFA_INSTALL_DIR}/lib
                       ${module_lib_search_paths} )
   mark_as_advanced( SOFA_${_upper_lib_name}_LIBRARY )
-                      
+
   # Look for debug library
   find_library( SOFA_${_upper_lib_name}_DEBUG_LIBRARY NAMES sofa${SOFA_LIB}${SOFA_LIB_SUFFIX}d
                                                             sofa_${SOFA_LIB}${SOFA_LIB_SUFFIX}d
                 PATHS ${SOFA_INSTALL_DIR}/lib
                       ${module_lib_search_paths} )
   mark_as_advanced( SOFA_${_upper_lib_name}_DEBUG_LIBRARY )
-                      
+
   if( SOFA_${_upper_lib_name}_LIBRARY )
     set( SOFA_LIBS_PATHS ${SOFA_LIBS_PATHS} optimized ${SOFA_${_upper_lib_name}_LIBRARY} )
   else()
     set( SOFA_LIBS_FOUND 0 )
-    set( SOFA_LIBS_NOTFOUND ${SOFA_LIBS_NOTFOUND} ${SOFA_LIB} ) 
+    set( SOFA_LIBS_NOTFOUND ${SOFA_LIBS_NOTFOUND} ${SOFA_LIB} )
   endif()
-  
+
   if( SOFA_${_upper_lib_name}_DEBUG_LIBRARY )
     set( SOFA_LIBS_DEBUG_PATHS ${SOFA_LIBS_DEBUG_PATHS} debug ${SOFA_${_upper_lib_name}_DEBUG_LIBRARY} )
   else()
     set( SOFA_LIBS_DEBUG_FOUND 0 )
-    set( SOFA_LIBS_DEBUG_NOTFOUND ${SOFA_LIBS_DEBUG_NOTFOUND} ${SOFA_LIB} ) 
+    set( SOFA_LIBS_DEBUG_NOTFOUND ${SOFA_LIBS_DEBUG_NOTFOUND} ${SOFA_LIB} )
   endif()
 endforeach()
 

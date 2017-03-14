@@ -85,7 +85,7 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
       math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
       math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
     endwhile()
-    
+
     # Install OpenAL.
     set( OpenAlInstallExe "" CACHE FILEPATH "Needs to be set to add openal installation to the package." )
     mark_as_advanced( OpenAlInstallExe )
@@ -119,7 +119,7 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                                                   "A comment\\n \\\${EndIf}\\n" )
       endif()
     endif()
-    
+
     # Install python if not already installed
     set( PythonInstallMSI "" CACHE FILEPATH "Needs to be set to add python installation to the package." )
     mark_as_advanced( PythonInstallMSI )
@@ -132,7 +132,7 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
       set( PYTHON_INSTALL_COMMAND_2 " Extract python installer\\n  File \\\"${TEMP_PythonInstallMSI}\\\"\\n" )
       set( PYTHON_INSTALL_COMMAND_3 " Wait a bit for system to unlock file.\\n  Sleep 1000\\n"
                                     " Delete python installer\\n  Delete \\\"$INSTDIR\\\\${PYTHON_FILE_NAME}\\\"\\n\\n" )
-      
+
       set( H3DPYTHON_NSIS_EXTRA_UNINSTALL_COMMANDS ${PYTHON_INSTALL_COMMAND_1}
                                                    " Check if python is installed\\n  StrCmp $0 \\\"\\\" uninstall_python_no 0\\n"
                                                    " Check if uninstall python \\n  MessageBox MB_YESNO \\\"Do you want to uninstall python? It is recommended if no other applications use python ${CPACK_PYTHON_VERSION}.\\\" IDYES uninstall_python_yes IDNO uninstall_python_no\\n"
@@ -156,7 +156,7 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                                                  ${PYTHON_INSTALL_COMMAND_3}
                                                  "A comment \\n  install_python_no:\\n" )
     endif()
-    
+
     # Extra install commands will be set to install python and OpenAL
     set( redist_versions 8 9 10 )
     foreach( redist_version ${redist_versions} )
@@ -198,78 +198,78 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                                                  " A comment \\n  uninstall_vcredist_no:\\n\\n" )
       endif()
     endforeach()
-  
+
     # When the first item for an external entry is only "#define" then it will always be included.
     set( externals_to_look_for "#define HAVE_XERCES"
                                "include" "xercesc"
                                "lib" "xerces-c_3"
                                "bin" "xerces-c_3_1"
-                               
+
                                "#define HAVE_OPENAL"
                                "include" "AL"
                                "lib" "OpenAL32"
                                "nsisextrainstall" ${H3DOAL_NSIS_EXTRA_INSTALL_COMMANDS}
                                "nsisextrauninstall" ${H3DOAL_NSIS_EXTRA_UNINSTALL_COMMANDS}
-                                                              
+
                                "#define HAVE_LIBVORBIS"
                                "include" "vorbis" "ogg"
                                "lib" "libvorbis" "libogg" "libvorbisfile"
                                "bin" "libvorbis" "libogg" "libvorbisfile"
-                               
+
                                "#define HAVE_LIBAUDIOFILE"
                                "include" "libaudiofile"
                                "lib" "audiofile"
                                "bin" "audiofile"
-                               
+
                                "#define HAVE_CG"
                                "include" "Cg"
                                "lib" "cgGL" "cg"
                                "bin" "cg" "cgGL"
-                               
+
                                "#define HAVE_FTGL"
                                "include" "FTGL"
                                "lib" "ftgl"
                                "bin" "ftgl"
-                               
+
                                "#define HAVE_FTGL"
                                "include" "FTGL"
                                "lib" "ftgl"
                                "bin" "ftgl"
-                               
+
                                "#define HAVE_FREETYPE"
                                "include" "freetype"
                                "lib" "freetype2312"
-                               
+
                                "#define HAVE_FONTCONFIG"
                                "warning" "NOTE: H3DAPI compiled with font config support. Make sure font config features are included."
-                               
+
                                "#define HAVE_3DXWARE"
                                "warning" "NOTE: H3DAPI compiled with 3DXWare support. Test that application starts on system without 3DConnection drivers installed before distributing package if you do not distribute it yourself."
-                               
+
                                "#define HAVE_PYTHON"
                                "nsisextrainstall" ${H3DPYTHON_NSIS_EXTRA_INSTALL_COMMANDS}
                                "nsisextrauninstall" ${H3DPYTHON_NSIS_EXTRA_UNINSTALL_COMMANDS}
-                               
+
                                "#define HAVE_LIBCURL"
                                "include" "curl"
                                "lib" "libcurl"
                                "bin" "libcurl"
-                               
+
                                "#define HAVE_SPIDERMONKEY"
                                "include" "js"
                                "lib" "js32"
                                "bin" "js32"
-                               
+
                                "#define HAVE_DSHOW"
                                "include" "DirectShow"
                                "lib" "strmbase"
-                               
+
                                "#define HAVE_FFMPEG"
                                "warning" "NOTE: H3DAPI compiled with ffmpeg support. Make sure fmpeg features are included."
-                               
+
                                "#define HAVE_VIRTUAL_HAND_SDK"
                                "warning" "NOTE: H3DAPI compiled with Virtual Hand support. Test that application starts on system without Virtual hand installed before distributing package if you do not distribute it yourself."
-                               
+
                                "#define"
                                "include" "GL/freeglut" "GL/freeglut" "GL/freeglut_ext" "GL/freeglut_std" "GL/glew" "GL/glext" "GL/glut" "GL/wglew" "H3D"
                                "lib" "glew32" "freeglut" "H3DAPI"
@@ -277,7 +277,7 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                                "nsisextrainstall" ${H3DVS_NSIS_EXTRA_INSTALL_COMMANDS}
                                "nsisextrauninstall" ${H3DVS_NSIS_EXTRA_UNINSTALL_COMMANDS} )
   endif()
-  
+
   list( LENGTH FEATURES_TO_INSTALL FEATURES_TO_INSTALL_LENGTH )
   math( EXPR FEATURES_TO_INSTALL_LENGTH "${FEATURES_TO_INSTALL_LENGTH} - 1" )
   set( features_to_install_truncated "" )
@@ -285,7 +285,7 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
     list( GET FEATURES_TO_INSTALL ${loop_var} one_feature )
     list( APPEND features_to_install_truncated ${one_feature} )
   endforeach()
-  
+
   set( INCLUDE_DIRS_TO_CHECK ${EXTERNAL_ROOT}/include ${H3DAPI_INCLUDE_DIR} )
   set( ADD_EXTERNAL FALSE )
   set( current_checked_feature "" )
@@ -419,7 +419,7 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                    REGEX "(/.svn)|(/CVS)" EXCLUDE )
         endforeach()
       endif()
-      
+
       if( H3DAPI_INCLUDE_FILES_INSTALL )
         foreach( ext_include_file ${H3DAPI_INCLUDE_FILES_INSTALL} )
           set( include_file_path_last_part "" )

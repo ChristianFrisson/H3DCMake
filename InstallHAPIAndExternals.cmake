@@ -82,7 +82,7 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
       math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
       math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
     endwhile()
-  
+
     ## TODO: Somehow check if TEEM is compiled against BZPI2, PNG and/or ZLIB, probably have to use find modules.
     # When the first item for an external entry is only "#define" then it will always be included.
     set( externals_to_look_for "#define HAVE_OPENHAPTICS" )
@@ -94,7 +94,7 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                                "lib" "OpenHapticsRenderer"
                                "bin" "OpenHapticsRenderer"
                                "warning" "NOTE: HAPI compiled with OpenHaptics support. Test that application starts on system without OpenHaptics before distributing package if you do not distribute it yourself."
-                               
+
                                "#define HAVE_CHAI3D" )
     if( NOT TARGET HAPI )
       set( externals_to_look_for ${externals_to_look_for}
@@ -104,12 +104,12 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                                "include" "chai3d"
                                "lib" "chai3d_complete_vc${h3d_msvc_version}" "Chai3DRenderer"
                                "bin" "Chai3DRenderer"
-                                                              
+
                                "#define HAVE_ENTACTAPI"
                                "include" "EntactAPI"
                                "lib" "EntactAPI"
                                "bin" "EntactAPI"
-                               
+
                                "#define HAVE_DHDAPI"
                                "include" "DHD-API"
                                "lib" "dhdms"
@@ -120,24 +120,24 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
 
                                "#define HAVE_FALCONAPI"
                                "warning" "NOTE: HAPI compiled with Novint Falcon support. Test that application starts on system without Novint Falcon dlls before distributing package if you do not distribute it yourself."
-                               
+
                                "#define HAVE_NIFALCONAPI"
                                "warning" "NOTE: HAPI compiled with NiFalcon api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
-                               
+
                                "#define NIFALCONAPI_LIBUSB"
                                "warning" "NOTE: HAPI compiled with NiFalcon api LIBUSB support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
-                               
+
                                "#define NIFALCONAPI_LIBFTD2XX"
                                "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTD2XX api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
-                               
+
                                "#define NIFALCONAPI_LIBFTDI"
                                "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTDI support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
-                               
+
                                "#define HAVE_FPARSER"
                                "include" "fparser"
                                "lib" "fparser"
                                "bin" "fparser"
-                               
+
                                "#define HAVE_HAPTIK_LIBRARY"
                                "warning" "NOTE: HAPI compiled with HAPTIK library support. Test that application starts on system without HAPTIK dlls ( if there are any ) before distributing package if you do not distribute it yourself."
 
@@ -145,25 +145,25 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
                                "include" "Simball"
                                "lib" "SimballMedicalHID"
                                "bin" "SimballMedicalHID"
-                               
+
                                "#define HAVE_HAPTIC_MASTER_API"
                                "bin" "HapticAPI" "HapticMasterDriver"
-                               
+
                                "#define HAVE_QUANSERAPI"
-                               
+
                                "#define HAVE_MLHI"
-                               
+
                                "#define HAVE_OPENGL"
                                "include" "GL/freeglut" "GL/freeglut" "GL/freeglut_ext" "GL/freeglut_std" "GL/glew" "GL/glext" "GL/glut" "GL/wglew"
                                "lib" "glew32" "freeglut"
                                "bin" "glew32" "freeglut"
-                               
+
                                "#define"
                                "include" "HAPI"
                                "lib" "HAPI"
                                "bin" "HAPI" )
   endif()
-  
+
   list( LENGTH FEATURES_TO_INSTALL FEATURES_TO_INSTALL_LENGTH )
   math( EXPR FEATURES_TO_INSTALL_LENGTH "${FEATURES_TO_INSTALL_LENGTH} - 1" )
   set( features_to_install_truncated "" )
@@ -171,7 +171,7 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
     list( GET FEATURES_TO_INSTALL ${loop_var} one_feature )
     list( APPEND features_to_install_truncated ${one_feature} )
   endforeach()
-  
+
   set( INCLUDE_DIRS_TO_CHECK ${EXTERNAL_ROOT}/include ${HAPI_INCLUDE_DIR} )
   set( ADD_EXTERNAL FALSE )
   set( current_checked_feature "" )

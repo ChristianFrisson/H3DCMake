@@ -4,12 +4,12 @@
 #  PhysX_INCLUDE_DIRS - Where to find the include files of PhysX
 #  PhysX_LIBRARIES    - List of libraries when using PhysX.
 #  PhysX_FOUND        - True if PhysX found.
-#  PhysX_FLAGS        - Flags needed for ode to build 
+#  PhysX_FLAGS        - Flags needed for ode to build
 
 include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES PhysX_PhysXLOADER_INCLUDE_DIR PhysX_PHYSICS_INCLUDE_DIR PhysX_FOUNDATION_INCLUDE_DIR PhysX_COOKING_INCLUDE_DIR PhysX_LIB_LOADER PhysX_LIB_CORE
                                               OLD_VARIABLE_NAMES PHYSX_PHYSXLOADER_INCLUDE_DIR )
-                                                          
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "PhysX/Physics" "PhysX/Foundation" "PhysX/PhysXLoader" "PhysX/Cooking" )
 
@@ -65,7 +65,7 @@ find_library( PhysX_LIB_LOADER NAMES PhysXLoader PhysXLoader${lib}
 
 find_library( PhysX_LIB_CORE NAMES PhysXCore PhysXCore${lib}
                 PATHS ${module_lib_search_paths} )
-                      
+
 mark_as_advanced( PhysX_LIB_LOADER )
 mark_as_advanced( PhysX_LIB_CORE )
 
