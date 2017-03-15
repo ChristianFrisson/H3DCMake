@@ -82,10 +82,11 @@ find_package_handle_standard_args( FFmpeg DEFAULT_MSG
                                    FFmpeg_AVCODEC_INCLUDE_DIR FFmpeg_AVFORMAT_INCLUDE_DIR FFmpeg_SWSCALE_INCLUDE_DIR
                                    FFmpeg_AVCODEC_LIBRARY FFmpeg_AVFORMAT_LIBRARY FFmpeg_SWSCALE_LIBRARY )
 
-set( FFmpeg_LIBRARIES ${FFmpeg_LIBRARY} )
-set( FFmpeg_INCLUDE_DIRS ${FFmpeg_INCLUDE_DIR} )
+set( FFmpeg_LIBRARIES ${FFmpeg_AVCODEC_LIBRARY} ${FFmpeg_AVFORMAT_LIBRARY} ${FFmpeg_SWSCALE_LIBRARY} )
+set( FFmpeg_INCLUDE_DIRS ${FFmpeg_AVCODEC_INCLUDE_DIR} ${FFmpeg_AVFORMAT_INCLUDE_DIR} ${FFmpeg_SWSCALE_INCLUDE_DIR} )
 
 # Backwards compatibility values set here.
 set( FFMPEG_INCLUDE_DIR ${FFmpeg_INCLUDE_DIRS} )
+set( FFMPEG_INCLUDE_DIRS ${FFmpeg_INCLUDE_DIRS} )
 set( FFMPEG_LIBRARIES ${FFmpeg_LIBRARIES} )
 set( FFmpeg_FOUND ${FFMPEG_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
