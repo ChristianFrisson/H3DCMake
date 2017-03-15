@@ -56,11 +56,11 @@ find_package_handle_standard_args( FalconAPI DEFAULT_MSG
 set( FalconAPI_LIBRARIES ${FalconAPI_hdl_LIBRARY} )
 set( FalconAPI_INCLUDE_DIRS ${FalconAPI_INCLUDE_DIR} )
 
-if( CMAKE_CL_64 AND ( NOT FalconAPI_FIND_QUITELY ) AND ( NOT FalconAPI_FOUND ) )
-  set( FalconAPI_DIR_MESSAGE "${FalconAPI_DIR_MESSAGE} NOVINT HAS NOT RELEASED A 64 BIT VERSION OF HDAL SDK YET." )
-endif()
-
 # Backwards compatibility values set here.
 set( FALCONAPI_INCLUDE_DIR ${FalconAPI_INCLUDE_DIRS} )
 set( FALCONAPI_LIBRARIES ${FalconAPI_LIBRARIES} )
 set( FalconAPI_FOUND ${FALCONAPI_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
+
+if( CMAKE_CL_64 AND ( NOT FalconAPI_FIND_QUITELY ) AND ( NOT FalconAPI_FOUND ) )
+  set( FalconAPI_DIR_MESSAGE "${FalconAPI_DIR_MESSAGE} NOVINT HAS NOT RELEASED A 64 BIT VERSION OF HDAL SDK YET." )
+endif()

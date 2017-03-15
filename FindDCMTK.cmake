@@ -13,11 +13,12 @@
 # Written for VXL by Amitha Perera.
 #
 # Updates from SenseGraphics to make this module less recognizable.
-# DCMTK_lib_names - Use this to list which DCMTK libraries to include. Default values are:
+#
+# The following features are deprecated and the COMPONENTS feature of find_package should be used instead.
+# DCMTK_lib_names (deprecated) - Use this to list which DCMTK libraries to include. Default values are:
 # dcmjpeg ofstd oflog dcmimage dcmdata dcmimgle
-# DCMTK_lib_ijg_names - Use this to list which DCMTK ijg libraries to include. Default values are
+# DCMTK_lib_ijg_names (deprecated) - Use this to list which DCMTK ijg libraries to include. Default values are
 # ijg8 ijg12 ijg16
-# TODO: replace this with the COMPONENT feature of find_package.
 
 set( DCMTK_DIR "" CACHE PATH "Set this to the root of the installed dcmtk files to find include files and libraries." )
 mark_as_advanced( DCMTK_DIR )
@@ -72,11 +73,8 @@ if( EXISTS ${DCMTK_config_INCLUDE_DIR}/dcmtk/config/osconfig.h )
   endif()
 endif()
 
-if( DEFINED DCMTK_lib_names OR DEFINED DCMTK_lib_ijg_names )
+if( DCMTK_lib_names OR DCMTK_lib_ijg_names )
   message( AUTHOR_WARNING "The setting DCMTK_lib_names and DCMTK_lib_ijg_names are deprecated. Use the COMPONENTS feature of find_package instead." )
-  if( NOT DCMTK_FIND_COMPONENTS )
-    set( DCMTK_FIND_COMPONENTS ${DCMTK_lib_names} ${DCMTK_lib_ijg_names} )
-  endif()
 endif()
 
 set( dcmtk_lib_names        dcmjpeg ofstd oflog dcmimage dcmdata dcmimgle ijg8 ijg12 ijg16 )
@@ -90,6 +88,9 @@ if( DCMTK_FIND_COMPONENTS )
       set( dcmtk_lib_names_no_ijg ${dcmtk_lib_names_no_ijg} ${lib_name} )
     endif()
   endforeach()
+elseif( DCMTK_lib_names OR DCMTK_lib_ijg_names )
+  set( dcmtk_lib_names ${DCMTK_lib_names} ${DCMTK_lib_ijg_names} )
+  set( dcmtk_lib_names_no_ijg ${DCMTK_lib_names} )
 endif()
 
 set( required_vars DCMTK_config_INCLUDE_DIR )

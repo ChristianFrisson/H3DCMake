@@ -54,8 +54,56 @@ find_library( NiFalconAPI_comm_ftd2xx_LIBRARY
               DOC "Path to nifalcon_comm_ftd2xx library." )
 mark_as_advanced( NiFalconAPI_comm_ftd2xx_LIBRARY )
 
-# Set to true if we have any communication library supported
-set( HAVE_NI_FALCON_COMM_LIBRARY ( NiFalconAPI_comm_ftd2xx_LIBRARY AND ( NOT WIN32 OR NiFalconAPI_ftd2xx_LIBRARY ) ) OR NiFalconAPI_comm_usb_LIBRARY OR NiFalconAPI_comm_ftdi_LIBRARY )
+if( WIN32 )
+  if( NOT DEFINED NiFalconAPI_ftd2xx_LIBRARY )
+    set( NiFalconAPI_ftd2xx_LIBRARY NiFalconAPI_ftd2xx_LIBRARY-NOTFOUND CACHE FILEPATH "Path to ftd2xx library." )
+    mark_as_advanced( NiFalconAPI_ftd2xx_LIBRARY )
+  endif()
+endif()
+
+# comm libraries, preferred order usb, ftdi, ftd2xx
+if( NiFalconAPI_comm_usb_LIBRARY )
+  option( NiFalconAPI_LIBUSB
+          "Use libusb for communication with Falcon device"
+          ON )
+  set( have_set_option 1 )
+endif()
+
+if( NiFalconAPI_comm_ftdi_LIBRARY )
+  if( DEFINED have_set_option )
+    option( NiFalconAPI_LIBFTDI
+           "Use libftdi for communication with Falcon device"
+           OFF )
+  else()
+    option( NiFalconAPI_LIBFTDI
+           "Use libftdi for communication with Falcon device"
+           ON )
+  endif()
+endif()
+
+if( NiFalconAPI_comm_ftd2xx_LIBRARY )
+  if( DEFINED have_set_option )
+    option( NiFalconAPI_LIBFTD2XX
+            "Use libftd2xx for communication with Falcon device"
+            OFF )
+  else()
+    option( NiFalconAPI_LIBFTD2XX
+           "Use libftd2xx for communication with Falcon device"
+         ON )
+  endif()
+endif()
+
+set( required_comm_lib_vars NiFalconAPI_comm_usb_LIBRARY )
+if( NOT NiFalconAPI_LIBUSB )
+  if( NiFalconAPI_LIBFTDI )
+    set( required_comm_lib_vars NiFalconAPI_comm_ftdi_LIBRARY )
+  elseif( NiFalconAPI_LIBFTD2XX )
+    set( required_comm_lib_vars NiFalconAPI_comm_ftd2xx_LIBRARY )
+    if( WIN32 )
+      set( required_comm_lib_vars ${required_comm_lib_vars} NiFalconAPI_ftd2xx_LIBRARY )
+    endif()
+  endif()
+endif()
 
 # Look for the nifalcon_cpp library.
 find_library( NiFalconAPI_LIBRARY
@@ -81,82 +129,19 @@ endif()
 
 find_package( Boost COMPONENTS program_options thread )
 
-# Copy the results to the output variables.
-if( NiFalconAPI_INCLUDE_DIR AND HAVE_NI_FALCON_COMM_LIBRARY AND NiFalconAPI_LIBRARY AND Boost_FOUND )
-  set( NiFalconAPI_FOUND 1 )
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set NiFalconAPI_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( NiFalconAPI DEFAULT_MSG
+                                   NiFalconAPI_INCLUDE_DIR NiFalconAPI_LIBRARY ${required_comm_lib_vars} Boost_FOUND )
 
-  # add the nifalcon library
-  set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARY} )
-
-  # comm libraries, preferred order usb, ftdi, ftd2xx
-  if( NiFalconAPI_comm_usb_LIBRARY )
-     option( NiFalconAPI_LIBUSB
-           "Use libusb for communication with Falcon device"
-           ON )
-    set( HAVE_SET_OPTION 1 )
-    set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} ${NiFalconAPI_comm_usb_LIBRARY} )
-  endif()
-
-  # ftdi library
-  if( NiFalconAPI_comm_ftdi_LIBRARY )
-    if( DEFINED HAVE_SET_OPTION )
-      option( NiFalconAPI_LIBFTDI
-             "Use libftdi for communication with Falcon device"
-             OFF )
-    else()
-      option( NiFalconAPI_LIBFTDI
-             "Use libftdi for communication with Falcon device"
-             ON )
-    endif()
-
-    set( HAVE_SET_OPTION 1 )
-    set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} ${NiFalconAPI_comm_ftdi_LIBRARY} )
-  endif()
-
-  # ftd2xx library
-  if( NiFalconAPI_comm_ftd2xx_LIBRARY )
-    if( DEFINED HAVE_SET_OPTION )
-      option( NiFalconAPI_LIBFTD2XX
-             "Use libftd2xx for communication with Falcon device"
-           OFF )
-    else()
-      option( NiFalconAPI_LIBFTD2XX
-             "Use libftd2xx for communication with Falcon device"
-           ON )
-    endif()
-
-    set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} ${NiFalconAPI_comm_ftd2xx_LIBRARY} )
-
-    if( WIN32 )
-      if( NOT DEFINED NiFalconAPI_ftd2xx_LIBRARY )
-        set( NiFalconAPI_ftd2xx_LIBRARY "" CACHE FILEPATH
-             "Path to ftd2xx library." )
-        mark_as_advanced( NiFalconAPI_ftd2xx_LIBRARY )
-      else()
-      endif()
-      set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} ${NiFalconAPI_ftd2xx_LIBRARY} )
-    endif()
-  endif()
-
-  set( NiFalconAPI_INCLUDE_DIRS ${NiFalconAPI_INCLUDE_DIR} ${Boost_INCLUDE_DIR} )
-else()
-  set( NiFalconAPI_FOUND 0 )
-  set( NiFalconAPI_LIBRARIES )
-  set( NiFalconAPI_INCLUDE_DIRS )
-endif()
-
-# Report the results.
-if( NOT NiFalconAPI_FOUND )
-  set( NiFalconAPI_DIR_MESSAGE
-       "NiFalconAPI was not found. Make sure to set NiFalconAPI_INCLUDE_DIR and the correct combination of NiFalconAPI_comm_ftd2xx_LIBRARY, NiFalconAPI_ftd2xx_LIBRARY, NiFalconAPI_comm_usb_LIBRARY, NiFalconAPI_comm_ftdi_LIBRARY and NiFalconAPI_LIBRARY." )
-  if( NiFalconAPI_FIND_REQUIRED )
-    message( FATAL_ERROR "${NiFalconAPI_DIR_MESSAGE}" )
-  elseif( NOT NiFalconAPI_FIND_QUIETLY )
-    message( STATUS "${NiFalconAPI_DIR_MESSAGE}" )
-  endif()
-endif()
+set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARY} )
+foreach( comm_lib_var ${required_comm_lib_vars} )
+  set( NiFalconAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} ${comm_lib_var} )
+endforeach()
+set( NiFalconAPI_INCLUDE_DIRS ${NiFalconAPI_INCLUDE_DIR} ${Boost_INCLUDE_DIR} )
 
 # Backwards compatibility values set here.
 set( NIFALCONAPI_INCLUDE_DIR ${NiFalconAPI_INCLUDE_DIRS} )
 set( NIFALCONAPI_LIBRARIES ${NiFalconAPI_LIBRARIES} )
-set( NIFALCONAPI_FOUND ${NiFalconAPI_Found} )
+set( NiFalconAPI_FOUND ${NIFALCONAPI_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

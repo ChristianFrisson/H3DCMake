@@ -37,11 +37,16 @@ include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set fparser_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( fparser DEFAULT_MSG
-                                   fparser_LIBRARY fparser_INCLUDE_DIR )
+                                   fparser_INCLUDE_DIR fparser_LIBRARY )
 
 set( fparser_LIBRARIES ${fparser_LIBRARY} )
 set( fparser_INCLUDE_DIRS ${fparser_INCLUDE_DIR} )
 
+# Backwards compatibility values set here.
+set( fparser_INCLUDE_DIR ${fparser_INCLUDE_DIRS} )
+set( fparser_FOUND ${FPARSER_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
+
+# Additional message on MSVC
 if( fparser_FOUND AND MSVC )
   if( NOT fparser_LIBRARY_RELEASE )
     message( WARNING "fparser release library not found. Release build might not work properly. To get rid of this warning set fparser_LIBRARY_RELEASE." )
@@ -50,7 +55,3 @@ if( fparser_FOUND AND MSVC )
     message( WARNING "fparser debug library not found. Debug build might not work properly. To get rid of this warning set fparser_LIBRARY_DEBUG." )
   endif()
 endif()
-
-# Backwards compatibility values set here.
-set( fparser_INCLUDE_DIR ${fparser_INCLUDE_DIRS} )
-set( fparser_FOUND ${FPARSER_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

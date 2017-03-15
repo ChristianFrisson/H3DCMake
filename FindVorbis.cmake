@@ -69,7 +69,7 @@ if( WIN32 AND PREFER_STATIC_LIBRARIES )
   find_package_handle_standard_args( Vorbis DEFAULT_MSG
                                      Vorbis_vorbisfile_STATIC_LIBRARY Vorbis_ogg_STATIC_LIBRARY Vorbis_INCLUDE_DIR )
   set( Vorbis_LIBRARIES ${Vorbis_STATIC_LIBRARY} )
-  set( vorbis_staticlib ${Vorbis_FOUND} ) # Vorbis_FOUND is set by find_package_handle_standard_args and should be up to date here.
+  set( vorbis_staticlib ${VORBIS_FOUND} ) # VORBIS_FOUND is set by find_package_handle_standard_args and should be up to date here. Upper case due to CMake 2.8 support
 endif()
 
 if( NOT vorbis_staticlib ) # This goes a bit against the standard, the reason is that if static libraries are desired the normal ones are only fallback.

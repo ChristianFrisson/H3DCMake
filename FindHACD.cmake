@@ -1,12 +1,15 @@
 # - Find HACD
 # Find the native HACD headers and libraries.
 #
-#  HACD_INCLUDE_DIR -  where to find the include files of HACD
+#  HACD_INCLUDE_DIRS - Where to find the include files of HACD
 #  HACD_LIBRARIES    - List of libraries when using HACD.
 #  HACD_FOUND        - True if HACD found.
-#  HACD_FLAGS        - Flags needed for ode to build
 
 include( H3DExternalSearchPath )
+
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES HACD_LIBRARY_RELEASE HACD_LIBRARY_DEBUG
+                                              OLD_VARIABLE_NAMES HACD_LIB HACD_DEBUG_LIB )
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "hacd" "static" )
 
@@ -26,58 +29,37 @@ find_path( HACD_INCLUDE_DIR NAMES hacdHACD.h
 
 mark_as_advanced( HACD_INCLUDE_DIR )
 
+find_library( HACD_LIBRARY_RELEASE NAMES HACD_LIB
+              PATHS ${HACD_INSTALL_DIR}/build/win${lib}/output/bin
+                    ${module_lib_search_paths} )
+mark_as_advanced( HACD_LIBRARY_RELEASE )
+
 # Look for the library.
 if( WIN32 )
-
-  find_library( HACD_LIB NAMES HACD_LIB
+  find_library( HACD_LIBRARY_DEBUG NAMES HACD_LIB_DEBUG
                 PATHS ${HACD_INSTALL_DIR}/build/win${lib}/output/bin
                       ${module_lib_search_paths} )
 
-  find_library( HACD_DEBUG_LIB NAMES HACD_LIB_DEBUG
-                PATHS ${HACD_INSTALL_DIR}/build/win${lib}/output/bin
-                      ${module_lib_search_paths} )
-
-   mark_as_advanced( HACD_DEBUG_LIB )
-
-else()
-  find_library( HACD_LIB NAMES HACD_LIB )
+   mark_as_advanced( HACD_LIBRARY_DEBUG )
 endif()
 
-mark_as_advanced( HACD_LIB )
+include( SelectLibraryConfigurations )
+select_library_configurations( HACD )
 
-# Copy the results to the output variables.
-if( HACD_INCLUDE_DIR AND HACD_LIB )
-  set( HACD_FOUND 1 )
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set HACD_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( HACD DEFAULT_MSG
+                                   HACD_INCLUDE_DIR HACD_LIBRARY )
 
-  if( WIN32 )
+set( HACD_LIBRARIES ${HACD_LIBRARY} )
+set( HACD_INCLUDE_DIRS ${HACD_INCLUDE_DIR} )
 
-    set( HACD_LIBRARIES "" )
-
-    if( HACD_DEBUG_LIB )
-      set( HACD_LIBRARIES ${HACD_LIBRARIES} optimized ${HACD_LIB} debug ${HACD_DEBUG_LIB} )
-    else()
-      set( HACD_LIBRARIES ${HACD_LIB} )
-    endif()
-
-  else()
-    set( HACD_LIBRARIES ${HACD_LIB} )
+if( HACD_FOUND AND MSVC )
+  if( NOT HACD_LIBRARY_RELEASE )
+    message( WARNING "HACD release library not found. Release build might not work properly. To get rid of this warning set HACD_LIBRARY_RELEASE." )
   endif()
-
-
-  set( HACD_INCLUDE_DIR ${HACD_INCLUDE_DIR} )
-else()
-  set( HACD_FOUND 0 )
-  set( HACD_LIBRARIES )
-  set( HACD_INCLUDE_DIR )
-endif()
-
-# Report the results.
-if( NOT HACD_FOUND )
-  set( HACD_DIR_MESSAGE
-       "HACD was not found. Set HACD_INSTALL_DIR to the root directory of the installation containing the 'build' folders." )
-  if( HACD_FIND_REQUIRED )
-    message( FATAL_ERROR "${HACD_DIR_MESSAGE}" )
-  elseif( NOT HACD_FIND_QUIETLY )
-    message( STATUS "${HACD_DIR_MESSAGE}" )
+  if( NOT HACD_LIBRARY_DEBUG )
+    message( WARNING "HACD debug library not found. Debug build might not work properly. To get rid of this warning set HACD_LIBRARY_DEBUG." )
   endif()
 endif()
