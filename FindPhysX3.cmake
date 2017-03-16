@@ -130,7 +130,7 @@ foreach( physx3_lib ${physx3_libs} )
     endif()
     set( physx3_libs_debug_paths ${physx3_libs_debug_paths} debug ${${lib_debug_name}} )
   endif()
-  
+
   set( required_vars ${required_vars} ${lib_name} ${lib_debug_name} )
 endforeach()
 

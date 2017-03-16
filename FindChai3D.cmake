@@ -16,7 +16,7 @@ if( WIN32 )
     set( chai3d_library_name chai3d_complete_vc10 )
   endif()
 else()
-  
+
 endif()
 
 include( H3DExternalSearchPath )
@@ -25,7 +25,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES Chai3D_INCLUDE_
                                               DOC_STRINGS "Path to include files for chai3d. The path is to where chai3d.h ( cWorld.h for chai3d versions earlier than 2.0 ) is located."
                                                           "Path to chai3d library (possible names also include ${chai3d_library_name}, chai3d-release and chai3d_linux)"
                                                           "Path to ${chai3d_library_name}_d or chai3d-debug library." )
-                                                          
+
 set( search_for_chai3d 1 )
 
 if( MSVC )
@@ -104,11 +104,11 @@ if( Chai3D_FOUND )
       string( REGEX MATCH "[0-9][.][0-9][.]*[0-9]*" Chai3D_VERSION ${line} )
     endforeach()
   endif()
-  
+
   if( MSVC AND search_for_chai3d )
     set( Chai3D_LIBRARIES ${Chai3D_LIBRARIES} optimized "atls.lib" debug "atlsd.lib" )
   endif()
-  
+
   # Backwards compatibility values set here.
   set( CHAI3D_VERSION ${Chai3D_VERSION} )
 endif()

@@ -199,9 +199,9 @@ if( HAVE_HAPI_LIBRARY AND HAPI_INCLUDE_DIR )
         # Chai3DRenderer library is found. Check for chai3d on the system. It must exist for the library
         # using HAPI since it is assumed that the library using HAPI will include Chai3DRenderer.h.
         find_package( Chai3D REQUIRED )
-        if( CHAI3D_FOUND )
-          set( HAPI_RENDERERS_INCLUDE_DIR ${HAPI_RENDERERS_INCLUDE_DIR} ${CHAI3D_INCLUDE_DIR} )
-          set( HAPI_RENDERERS_LIBRARIES ${HAPI_RENDERERS_LIBRARIES} ${CHAI3D_LIBRARIES} )
+        if( Chai3D_FOUND )
+          set( HAPI_RENDERERS_INCLUDE_DIR ${HAPI_RENDERERS_INCLUDE_DIR} ${Chai3D_INCLUDE_DIRS} )
+          set( HAPI_RENDERERS_LIBRARIES ${HAPI_RENDERERS_LIBRARIES} ${Chai3D_LIBRARIES} )
         endif()
       endif()
     else()
