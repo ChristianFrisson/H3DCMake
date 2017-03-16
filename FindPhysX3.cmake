@@ -1,12 +1,55 @@
-# - Find PHYSX3
-# Find the native PHYSX3 headers and libraries.
+# - Find PhysX3
+# Find the native PhysX3 headers and libraries.
 #
-#  PHYSX3_INCLUDE_DIRS - Where to find the include files of PHYSX3
-#  PHYSX3_LIBRARIES    - List of libraries when using PHYSX3.
-#  PHYSX3_FOUND        - True if PHYSX3 found.
-#  PHYSX3_FLAGS        - Flags needed for physx to build
+#  PhysX3_INCLUDE_DIRS - Where to find the include files of PhysX3
+#  PhysX3_LIBRARIES    - List of libraries when using PhysX3.
+#  PhysX3_FOUND        - True if PhysX3 found.
+
+if( PHYSX3_LIBS )
+  message( AUTHOR_WARNING "The setting PHYSX3_LIBS is deprecated. Use the COMPONENTS feature of find_package instead." )
+endif()
+
+if( PhysX3_FIND_COMPONENTS )
+  set( physx3_libs ${PhysX3_FIND_COMPONENTS} )
+else()
+  if( PHYSX3_LIBS )
+    set( physx3_libs ${PHYSX3_LIBS} )
+  else()
+    # Decide which libraries to add
+    set( physx3_libs
+      "PxTask"
+      "PhysX3Common"
+      "PhysX3Extensions"
+      "PhysX3"
+      "PhysX3Vehicle"
+      "PhysX3Cooking"
+      "PhysX3CharacterKinematic"
+      "PhysXProfileSDK"
+      "PhysXVisualDebuggerSDK" )
+
+    if( UNIX )
+      set( physx3_libs ${physx3_libs}
+        "PvdRuntime"
+        "LowLevel"
+        "LowLevelCloth"
+        "SceneQuery"
+        "SimulationController" )
+    endif()
+  endif()
+endif()
 
 include( H3DExternalSearchPath )
+
+set( old_lib_names )
+set( new_lib_names )
+foreach( physx3_lib ${physx3_libs} )
+  set( new_lib_names ${new_lib_names} PhysX3_${physx3_lib}_LIBRARY_RELEASE PhysX3_${physx3_lib}_LIBRARY_DEBUG )
+  string( TOUPPER ${physx3_lib} _upper_lib_name )
+  set( old_lib_names ${old_lib_names} PHYSX3_${_upper_lib_name}_LIBRARY PHYSX3_${_upper_lib_name}_DEBUG_LIBRARY )
+endforeach()
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${new_lib_names} PhysX3_INCLUDE_DIR PhysX3_INSTALL_DIR PhysX3_LIB_TYPE
+                                              OLD_VARIABLE_NAMES ${old_lib_names} )
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "physx3" )
 
@@ -18,134 +61,89 @@ else()
   set( arch "x86" )
 endif()
 
-if( NOT DEFINED PHYSX3_INSTALL_DIR )
-  set( PHYSX3_INSTALL_DIR "" CACHE PATH "Path to external PhysX 3 installation" )
+if( NOT DEFINED PhysX3_INSTALL_DIR )
+  set( PhysX3_INSTALL_DIR "" CACHE PATH "Path to external PhysX 3 installation" )
 endif()
-mark_as_advanced( PHYSX3_INSTALL_DIR )
+mark_as_advanced( PhysX3_INSTALL_DIR )
 
 # Look for the header file.
-find_path( PHYSX3_INCLUDE_DIR NAMES PxPhysics.h
+find_path( PhysX3_INCLUDE_DIR NAMES PxPhysics.h
            PATHS /usr/local/include
-                 ${PHYSX3_INSTALL_DIR}/Include
-                 ${PHYSX3_INSTALL_DIR}/include/PhysX3
+                 ${PhysX3_INSTALL_DIR}/Include
+                 ${PhysX3_INSTALL_DIR}/include/PhysX3
                  ${module_include_search_paths} )
 
-mark_as_advanced( PHYSX3_INCLUDE_DIR )
+mark_as_advanced( PhysX3_INCLUDE_DIR )
 
-set( PHYSX3_LIBS_FOUND 1 )
-set( PHYSX3_LIBS_DEBUG_FOUND 1 )
-
-
-# Decide which libraires to add
-if( NOT DEFINED PHYSX3_LIBS )
-
-  set( PHYSX3_LIBS
-      "PxTask"
-      "PhysX3Common"
-      "PhysX3Extensions"
-      "PhysX3"
-      "PhysX3Vehicle"
-      "PhysX3Cooking"
-      "PhysX3CharacterKinematic"
-      "PhysXProfileSDK"
-      "PhysXVisualDebuggerSDK" )
-
-  if( UNIX )
-    set( PHYSX3_LIBS ${PHYSX3_LIBS}
-      "PvdRuntime"
-      "LowLevel"
-      "LowLevelCloth"
-      "SceneQuery"
-      "SimulationController" )
-  endif()
-
-endif()
-
-
-set( PHYSX3_LIB_TYPE "CHECKED" CACHE STRING "PhysX library type" )
-set_property( CACHE PHYSX3_LIB_TYPE PROPERTY STRINGS RELEASE CHECKED PROFILE )
-if( ${PHYSX3_LIB_TYPE} STREQUAL RELEASE )
-  set( PHYSX3_LIB_TYPE_SUFFIX "" )
+set( PhysX3_LIB_TYPE "CHECKED" CACHE STRING "PhysX library type" )
+set_property( CACHE PhysX3_LIB_TYPE PROPERTY STRINGS RELEASE CHECKED PROFILE )
+if( ${PhysX3_LIB_TYPE} STREQUAL RELEASE )
+  set( physx3_lib_type_suffix "" )
 else()
-  set( PHYSX3_LIB_TYPE_SUFFIX ${PHYSX3_LIB_TYPE} )
+  set( physx3_lib_type_suffix ${PhysX3_LIB_TYPE} )
 endif()
 
 
+set( required_vars PhysX3_INCLUDE_DIR )
+set( physx3_libs_paths )
+set( physx3_libs_debug_paths )
 # Look for the libraries.
-foreach( PHYSX3_LIB ${PHYSX3_LIBS} )
-  string( TOUPPER ${PHYSX3_LIB} _upper_lib_name )
-  set( LIB_NAME PHYSX3_${_upper_lib_name}_LIBRARY )
-  set( LIB_DEBUG_NAME PHYSX3_${_upper_lib_name}_DEBUG_LIBRARY )
+foreach( physx3_lib ${physx3_libs} )
+  set( lib_name PhysX3_${physx3_lib}_LIBRARY_RELEASE )
+  set( lib_debug_name PhysX3_${physx3_lib}_LIBRARY_DEBUG )
   # unset libraries so that they are always looked for. This is because we want it to automatically
-  # update if the PHYSX3_LIB_TYPE is changed.
-  unset( ${LIB_NAME} CACHE )
+  # update if the PhysX3_LIB_TYPE is changed.
+  unset( ${lib_name} CACHE )
 
-  # FIND RELEASE LIBS
-  find_library( ${LIB_NAME}
-                NAMES ${PHYSX3_LIB}${PHYSX3_LIB_TYPE_SUFFIX}_${arch} ${PHYSX3_LIB}${PHYSX3_LIB_TYPE_SUFFIX}
-                PATHS ${PHYSX3_INSTALL_DIR}/Lib/win${lib}
-                      ${PHYSX3_INSTALL_DIR}/Lib/vc10win${lib}
-                      ${PHYSX3_INSTALL_DIR}/Lib/linux${lib}
-                      ${PHYSX3_INSTALL_DIR}/lib${lib}
+  # Find release libs.
+  find_library( ${lib_name}
+                NAMES ${physx3_lib}${physx3_lib_type_suffix}_${arch} ${physx3_lib}${physx3_lib_type_suffix}
+                PATHS ${PhysX3_INSTALL_DIR}/Lib/win${lib}
+                      ${PhysX3_INSTALL_DIR}/Lib/vc10win${lib}
+                      ${PhysX3_INSTALL_DIR}/Lib/linux${lib}
+                      ${PhysX3_INSTALL_DIR}/lib${lib}
                       ${module_lib_search_paths} )
-  mark_as_advanced( ${LIB_NAME} )
+  mark_as_advanced( ${lib_name} )
 
-  if( ${LIB_NAME} )
+  if( ${lib_name} )
     if( UNIX )
       # To avoid undefined symbols at runtime we need to include the entire static library in our shared library
-      set( PHYSX3_${_upper_lib_name}_LIBRARY -Wl,-whole-archive ${PHYSX3_${_upper_lib_name}_LIBRARY} -Wl,-no-whole-archive )
+      set( ${lib_name} -Wl,-whole-archive ${${lib_name}} -Wl,-no-whole-archive )
     endif()
-    set( PHYSX3_LIBS_PATHS ${PHYSX3_LIBS_PATHS} optimized ${${LIB_NAME}} )
-  else()
-    set( PHYSX3_LIBS_FOUND 0 )
-    set( PHYSX3_LIBS_NOTFOUND ${PHYSX3_LIBS_NOTFOUND} ${PHYSX3_LIB} )
+    set( physx3_libs_paths ${physx3_libs_paths} optimized ${${lib_name}} )
   endif()
 
-  #FIND DEBUG LIBS
-  find_library( ${LIB_DEBUG_NAME}
-                NAMES ${PHYSX3_LIB}DEBUG_${arch} ${PHYSX3_LIB}DEBUG
-                PATHS ${PHYSX3_INSTALL_DIR}/Lib/win${lib}
-                      ${PHYSX3_INSTALL_DIR}/Lib/vc10win${lib}
-                      ${PHYSX3_INSTALL_DIR}/Lib/linux${lib}
-                      ${PHYSX3_INSTALL_DIR}/lib${lib}
+  # Find Debug libs.
+  find_library( ${lib_debug_name}
+                NAMES ${physx3_lib}DEBUG_${arch} ${physx3_lib}DEBUG
+                PATHS ${PhysX3_INSTALL_DIR}/Lib/win${lib}
+                      ${PhysX3_INSTALL_DIR}/Lib/vc10win${lib}
+                      ${PhysX3_INSTALL_DIR}/Lib/linux${lib}
+                      ${PhysX3_INSTALL_DIR}/lib${lib}
                       ${module_lib_search_paths} )
-  mark_as_advanced( ${LIB_DEBUG_NAME} )
+  mark_as_advanced( ${lib_debug_name} )
 
-  if( ${LIB_DEBUG_NAME} )
+  if( ${lib_debug_name} )
     if( UNIX )
       # To avoid undefined symbols at runtime we need to include the entire static library in our shared library
-      set( PHYSX3_${_upper_lib_name}_LIBRARY -Wl,-whole-archive ${PHYSX3_${_upper_lib_name}_LIBRARY} -Wl,-no-whole-archive )
+      set( ${lib_debug_name} -Wl,-whole-archive ${${lib_debug_name}} -Wl,-no-whole-archive )
     endif()
-    set( PHYSX3_LIBS_DEBUG_PATHS ${PHYSX3_LIBS_DEBUG_PATHS} debug ${${LIB_DEBUG_NAME}} )
-  else()
-    set( PHYSX3_DEBUG_LIBS_FOUND 0 )
-    set( PHYSX3_DEBUG_LIBS_NOTFOUND ${PHYSX3_DEBUG_LIBS_NOTFOUND} ${PHYSX3_LIB} )
+    set( physx3_libs_debug_paths ${physx3_libs_debug_paths} debug ${${lib_debug_name}} )
   endif()
+  
+  set( required_vars ${required_vars} ${lib_name} ${lib_debug_name} )
 endforeach()
 
-mark_as_advanced( PHYSX3_LIBS )
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set PhysX3_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( PhysX3 DEFAULT_MSG ${required_vars} )
 
-# Copy the results to the output variables.
-if( PHYSX3_INCLUDE_DIR AND
-     PHYSX3_LIBS_FOUND AND
-     PHYSX3_LIBS_DEBUG_FOUND )
-  set( PHYSX3_FOUND 1 )
-  set( PHYSX3_LIBRARIES ${PHYSX3_LIBS_PATHS} ${PHYSX3_LIBS_DEBUG_PATHS} )
-  set( PHYSX3_INCLUDE_DIRS ${PHYSX3_INCLUDE_DIR} )
-else()
-  set( PHYSX3_FOUND 0 )
-  set( PHYSX3_LIBRARIES )
-  set( PHYSX3_INCLUDE_DIRS )
-endif()
+set( PhysX3_LIBRARIES ${physx3_libs_paths} ${physx3_libs_debug_paths} )
+set( PhysX3_INCLUDE_DIRS ${PhysX3_INCLUDE_DIR} )
 
-# Report the results.
-if( NOT PHYSX3_FOUND )
-  set( PHYSX3_DIR_MESSAGE
-       "PHYSX3 was not found. Set PHYSX3_INSTALL_DIR to the root directory of the
-  installation containing the 'include' and 'lib' folders." )
-  if( PHYSX3_FIND_REQUIRED )
-    message( FATAL_ERROR "${PHYSX3_DIR_MESSAGE}" )
-  elseif( NOT PHYSX3_FIND_QUIETLY )
-    message( STATUS "${PHYSX3_DIR_MESSAGE}" )
-  endif()
-endif()
+# Backwards compatibility values set here.
+set( PHYSX3_INCLUDE_DIR ${PhysX3_INCLUDE_DIRS} )
+set( PHYSX3_INCLUDE_DIRS ${PhysX3_INCLUDE_DIRS} )
+set( PHYSX3_LIBRARIES ${PhysX3_LIBRARIES} )
+set( PhysX3_FOUND ${PHYSX3_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.

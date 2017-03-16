@@ -26,7 +26,7 @@ find_path( wxWidgets_INCLUDE_DIR NAMES wx/wx.h
 mark_as_advanced( wxWidgets_INCLUDE_DIR )
 
 if( wxWidgets_USE_LIBS )
-  message( AUTHOR_WARNING "The setting wxWidgets_USE_LIBS are deprecated. Use the COMPONENTS feature of find_package instead." )
+  message( AUTHOR_WARNING "The setting wxWidgets_USE_LIBS is deprecated. Use the COMPONENTS feature of find_package instead." )
 endif()
 
 if( wxWidgets_FIND_COMPONENTS )
