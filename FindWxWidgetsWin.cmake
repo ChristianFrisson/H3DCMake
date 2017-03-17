@@ -5,7 +5,7 @@
 #  wxWidgets_LIBRARIES    - List of libraries when using WxWidgets.
 #  wxWidgets_FOUND        - True if WxWidgets found.
 
-message( AUTHOR_WARNING "FindWxWidgetsWin.cmake is deprecated. Change from find_package( WxWidgetsWin ) to find_package( WxWidgets )." )
+message( AUTHOR_WARNING "FindWxWidgetsWin.cmake is deprecated. Change from find_package( WxWidgetsWin ) or find_package( wxWidgetsWin ) to find_package( WxWidgets )." )
 set( quiet_required_args )
 if( WxWidgetsWin_FIND_QUIETLY )
   set( quiet_required_args QUIET )

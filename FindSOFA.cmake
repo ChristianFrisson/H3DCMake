@@ -81,7 +81,7 @@ foreach( sofa_lib ${sofa_libs} )
                 PATHS ${SOFA_INSTALL_DIR}/lib
                       ${module_lib_search_paths} )
   mark_as_advanced( SOFA_${_upper_lib_name}_LIBRARY )
-  set( required_release_lib_vars ${required_release_lib_vars} SOFA_${_upper_lib_name}_LIBRARY)
+  set( required_release_lib_vars ${required_release_lib_vars} SOFA_${_upper_lib_name}_LIBRARY )
 
   # Look for debug library
   find_library( SOFA_${_upper_lib_name}_DEBUG_LIBRARY NAMES sofa${sofa_lib}${sofa_lib_suffix}d

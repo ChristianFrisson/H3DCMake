@@ -8,7 +8,7 @@
 
 include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES PhysX_PhysXLoader_INCLUDE_DIR PhysX_Physics_INCLUDE_DIR PhysX_Foundation_INCLUDE_DIR PhysX_Cooking_INCLUDE_DIR PhysX_Loader_LIBRARY PhysX_Core_LIBRARY
-                                              OLD_VARIABLE_NAMES PHYSX_PHYSXLOADER_INCLUDE_DIR PHYSX_PHYSICS_INCLUDE_DIR PHYSX_FOUNDATION_INCLUDE_DIR PHYSX_COOKING_INCLUDE_DIR PHYSX_LIB_LOADER PHYSX_LIB_CORE)
+                                              OLD_VARIABLE_NAMES PHYSX_PHYSXLOADER_INCLUDE_DIR PHYSX_PHYSICS_INCLUDE_DIR PHYSX_FOUNDATION_INCLUDE_DIR PHYSX_COOKING_INCLUDE_DIR PHYSX_LIB_LOADER PHYSX_LIB_CORE )
 
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "PhysX/Physics" "PhysX/Foundation" "PhysX/PhysXLoader" "PhysX/Cooking" )
