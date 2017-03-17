@@ -30,15 +30,15 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${open_exr_var_
                                               OLD_VARIABLE_NAMES ${open_exr_old_var_names} ${open_exr_old_var_names_debug}
                                               DOC_STRINGS ${doc_strings} ${doc_strings_debug} )
 
-set( OpenEXRIncludeSearchPath "" )
-set( OpenEXRLibrarySearchPath "" )
+set( openexr_include_search_path "" )
+set( openexr_library_search_path "" )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 set( check_if_h3d_external_matches_vs_version ON )
-getExternalSearchPathsH3D( OpenEXRIncludeSearchPath OpenEXRLibrarySearchPath ${module_file_path} )
+getExternalSearchPathsH3D( openexr_include_search_path openexr_library_search_path ${module_file_path} )
 
 # Look for the header file.
 find_path( OpenEXR_INCLUDE_DIR NAMES OpenEXR/Iex.h
-           PATHS ${OpenEXRIncludeSearchPath}
+           PATHS ${openexr_include_search_path}
            DOC "Path in which the file OpenEXR/Iex.h is located." )
 
 set( i 0 )
@@ -47,7 +47,7 @@ foreach( _var_name ${open_exr_var_names} )
   list( GET open_exr_lib_names ${i} _lib_name )
   # Look for the library.
   find_library( ${_var_name} NAMES ${_lib_name}
-                PATHS ${OpenEXRLibrarySearchPath}
+                PATHS ${openexr_library_search_path}
                 DOC ${_doc_string} )
   math( EXPR i "${i} + 1" )
   mark_as_advanced( ${_var_name} )
@@ -63,7 +63,7 @@ if( WIN32 )
     list( GET open_exr_lib_names ${i} _lib_name )
     # Look for the library.
     find_library( ${_var_name} NAMES ${_lib_name}_d
-                  PATHS ${OpenEXRLibrarySearchPath}
+                  PATHS ${openexr_library_search_path}
                   DOC ${_doc_string} )
     math( EXPR i "${i} + 1" )
     mark_as_advanced( ${_var_name} )

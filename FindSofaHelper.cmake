@@ -10,15 +10,15 @@ include( H3DExternalSearchPath )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "sofahelper" "sofahelper/framework" )
 
+if( WIN32 )
+  set( SOFA_LIBRARY_POSTFIX "_16_08" )
+endif()
+
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SofaHelper_INCLUDE_DIR SofaHelper_LIBRARY_RELEASE SofaHelper_LIBRARY_DEBUG
                                               OLD_VARIABLE_NAMES SOFAHELPER_INCLUDE_DIR SOFAHELPER_LIBRARY SOFAHELPER_DEBUG_LIBRARY
                                               DOC_STRINGS "Path in which the file AdvancedTimer.h is located."
                                                           "Path to SofaHelper${SOFA_LIBRARY_POSTFIX} library."
                                                           "Path to SofaHelper${SOFA_LIBRARY_POSTFIX}d library." )
-
-if( WIN32 )
-  set( SOFA_LIBRARY_POSTFIX "_16_08" )
-endif()
 
 
 

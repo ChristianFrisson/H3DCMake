@@ -18,10 +18,10 @@ if( FREETYPE_CONFIG_EXECUTABLE )
   execute_process(
         COMMAND sh "${FREETYPE_CONFIG_EXECUTABLE}" --cflags
         OUTPUT_VARIABLE FREETYPE_CFLAGS
-        RESULT_VARIABLE RET
+        RESULT_VARIABLE return_value
         ERROR_QUIET )
 
-  if( RET EQUAL 0 )
+  if( return_value EQUAL 0 )
     if( ${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 6 )
       string( STRIP "${FREETYPE_CFLAGS}" FREETYPE_CFLAGS )
     endif()

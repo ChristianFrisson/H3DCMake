@@ -48,34 +48,34 @@ else()
 endif()
 
 set( required_lib_vars )
-foreach( WXLIB ${wxlibs} )
-  find_library( wxWidgets_${WXLIB}_LIBRARY
+foreach( wxlib ${wxlibs} )
+  find_library( wxWidgets_${wxlib}_LIBRARY
                 NAMES
-                    wxmsw30u_${WXLIB}
-                    wxbase30u_${WXLIB}
-                    wxmsw29u_${WXLIB}
-                    wxbase29u_${WXLIB}
-                    wxmsw28${_UCD}_${WXLIB}
-                    wx${WXLIB}
+                    wxmsw30u_${wxlib}
+                    wxbase30u_${wxlib}
+                    wxmsw29u_${wxlib}
+                    wxbase29u_${wxlib}
+                    wxmsw28${_UCD}_${wxlib}
+                    wx${wxlib}
                     PATHS ${wxwidgets_library_search_paths}
-                    DOC "Path to wx ${WXLIB} library." )
-  mark_as_advanced( wxWidgets_${WXLIB}_LIBRARY )
-  set( required_lib_vars ${required_lib_vars} wxWidgets_${WXLIB}_LIBRARY )
+                    DOC "Path to wx ${wxlib} library." )
+  mark_as_advanced( wxWidgets_${wxlib}_LIBRARY )
+  set( required_lib_vars ${required_lib_vars} wxWidgets_${wxlib}_LIBRARY )
 
   if( wxWidgets_Win_DEBUG_LIBS )
     # The _dbg variable is not used for 2.8 since the libraries that used to be in External worked for both debug and release.
-    find_library( wxWidgets_${WXLIB}${_dbg}_LIBRARY
+    find_library( wxWidgets_${wxlib}${_dbg}_LIBRARY
                   NAMES
-                  wxmsw30u${_dbg}_${WXLIB}
-                  wxbase30u${_dbg}_${WXLIB}
-                  wxmsw29u${_dbg}_${WXLIB}
-                  wxbase29u${_dbg}_${WXLIB}
-                  wxmsw28${_UCD}_${WXLIB}
-                  wx${WXLIB}${_dbg}
+                  wxmsw30u${_dbg}_${wxlib}
+                  wxbase30u${_dbg}_${wxlib}
+                  wxmsw29u${_dbg}_${wxlib}
+                  wxbase29u${_dbg}_${wxlib}
+                  wxmsw28${_UCD}_${wxlib}
+                  wx${wxlib}${_dbg}
                   PATHS ${wxwidgets_library_search_paths}
-                  DOC "Path to wx ${WXLIB}d library." )
-    mark_as_advanced( wxWidgets_${WXLIB}${_dbg}_LIBRARY )
-    set( required_lib_vars ${required_lib_vars} wxWidgets_${WXLIB}${_dbg}_LIBRARY )
+                  DOC "Path to wx ${wxlib}d library." )
+    mark_as_advanced( wxWidgets_${wxlib}${_dbg}_LIBRARY )
+    set( required_lib_vars ${required_lib_vars} wxWidgets_${wxlib}${_dbg}_LIBRARY )
   endif()
 endforeach()
 
@@ -104,10 +104,10 @@ if( wxWidgets_FOUND )
   if( wxWidgets_Win_DEBUG_LIBS )
     set( wxWidgets_LIBRARIES ${wxWidgets_LIBRARIES} debug ${wxWidgets_base${_dbg}_LIBRARY} )
   endif()
-  foreach( WXLIB ${wxlibs} )
-    set( wxWidgets_LIBRARIES ${wxWidgets_LIBRARIES} optimized ${wxWidgets_${WXLIB}_LIBRARY} )
+  foreach( wxlib ${wxlibs} )
+    set( wxWidgets_LIBRARIES ${wxWidgets_LIBRARIES} optimized ${wxWidgets_${wxlib}_LIBRARY} )
     if( wxWidgets_Win_DEBUG_LIBS )
-      set( wxWidgets_LIBRARIES ${wxWidgets_LIBRARIES} debug ${wxWidgets_${WXLIB}${_dbg}_LIBRARY} )
+      set( wxWidgets_LIBRARIES ${wxWidgets_LIBRARIES} debug ${wxWidgets_${wxlib}${_dbg}_LIBRARY} )
     endif()
   endforeach()
 else()

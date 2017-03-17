@@ -47,13 +47,13 @@ else()
   if( ODE_CONFIG_EXECUTABLE )
      execute_process(
         COMMAND sh "${ODE_CONFIG_EXECUTABLE}" --cflags
-        OUTPUT_VARIABLE ODE_CFLAGS
-        RESULT_VARIABLE RET
+        OUTPUT_VARIABLE ode_cflags
+        RESULT_VARIABLE return_value
         ERROR_QUIET )
 
-     if( RET EQUAL 0 )
-       string( REGEX REPLACE "\n" "" ODE_CFLAGS "${ODE_CFLAGS}" )
-       set( ODE_FLAGS ${ODE_CFLAGS} )
+     if( return_value EQUAL 0 )
+       string( REGEX REPLACE "\n" "" ode_cflags "${ode_cflags}" )
+       set( ODE_FLAGS ${ode_cflags} )
      endif()
   endif()
 endif()

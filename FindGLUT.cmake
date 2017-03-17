@@ -16,13 +16,13 @@ find_path( GLUT_INCLUDE_DIR NAMES GL/glut.h
            NO_SYSTEM_ENVIRONMENT_PATH )
 mark_as_advanced( GLUT_INCLUDE_DIR )
 
-set( GLUT_LIBRARY_NAMES freeglut glut32 )
+set( glut_library_names freeglut glut32 )
 if( WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
-  set( GLUT_LIBRARY_NAMES freeglut_static )
+  set( glut_library_names freeglut_static )
 endif()
 
 # Look for the library.
-find_library( GLUT_LIBRARY NAMES ${GLUT_LIBRARY_NAMES}
+find_library( GLUT_LIBRARY NAMES ${glut_library_names}
               PATHS ${module_lib_search_paths}
               DOC "Path to glut32 library."
               NO_SYSTEM_ENVIRONMENT_PATH )
@@ -38,5 +38,5 @@ if( NOT GLUT_FOUND )
 endif()
 
 if( GLUT_FOUND AND WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
-  set( FREEGLUT_STATIC 1 )
+  set( FREEGLUT_STATIC 1 ) # cmake_define do not change name.
 endif()

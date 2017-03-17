@@ -1,12 +1,21 @@
 # - Find DHD
 # Find the native DHD headers and libraries.
 #
-#  DHD_INCLUDE_DIRS -  where to find DHD headers
+#  DHD_INCLUDE_DIRS - Where to find DHD headers
 #  DHD_LIBRARIES    - List of libraries when using DHD.
 #  DHD_FOUND        - True if DHD found.
-#  DHD_DRD_SUPPORT  - True if DRD header/library was actually found.
+#  DHD_drd_FOUND    - True if drd header/library was actually found.
 
 include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES DHD_drd_INCLUDE_DIR DHD_drd_LIBRARY DHD_IOKit_LIBRARY DHD_CoreFoundation_LIBRARY DHD_usb_LIBRARY DHD_pciscan_LIBRARY
+                                              OLD_VARIABLE_NAMES DHD_DRD_INCLUDE_DIR DHD_DRD_LIBRARY DHD_IOKIT_LIBRARY DHD_COREFOUNDATION_LIBRARY DHD_USB_LIBRARY DHD_PCISCAN_LIBRARY
+                                              DOC_STRINGS "Path in which the file drdc.h is located, not needed if DHD_INCLUDE_DIR and DHD_LIBRARY is set."
+                                                          "Path to dhd library."
+                                                          "Path to IOKit library."
+                                                          "Path to CoreFoundation library."
+                                                          "Path to usb library."
+                                                          "Path to pciscan library." )
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "DHD-API" )
 
@@ -16,102 +25,64 @@ find_path( DHD_INCLUDE_DIR NAMES dhdc.h
                            DOC "Path in which the file dhdc.h is located." )
 mark_as_advanced( DHD_INCLUDE_DIR )
 
-find_path( DHD_DRD_INCLUDE_DIR NAMES drdc.h
+find_path( DHD_drd_INCLUDE_DIR NAMES drdc.h
                                PATHS ${module_include_search_paths}
                                DOC "Path in which the file drdc.h is located, not needed if DHD_INCLUDE_DIR and DHD_LIBRARY is set." )
-mark_as_advanced( DHD_DRD_INCLUDE_DIR )
+mark_as_advanced( DHD_drd_INCLUDE_DIR )
 
 # Look for the library.
+set( extra_required_libs )
 if( WIN32 )
   find_library( DHD_LIBRARY NAMES dhdms dhdms64
                             PATHS ${module_lib_search_paths}
                             DOC "Path to dhdms library." )
-  find_library( DHD_DRD_LIBRARY NAMES drdms drdms64
+  find_library( DHD_drd_LIBRARY NAMES drdms drdms64
                                 PATHS ${module_lib_search_paths}
                                 DOC "Path to drdms library, not needed if DHD_INCLUDE_DIR and DHD_LIBRARY is set." )
 else()
   find_library( DHD_LIBRARY NAMES dhd
                             PATHS ${module_lib_search_paths}
                             DOC "Path to dhd library." )
-  find_library( DHD_DRD_LIBRARY NAMES drdms drdms64
+  find_library( DHD_drd_LIBRARY NAMES drd
                                 PATHS ${module_lib_search_paths}
                                 DOC "Path to drd library, not needed if DHD_INCLUDE_DIR and DHD_LIBRARY is set." )
 
   if( APPLE )
-    find_library( DHD_IOKIT_LIBRARY NAMES IOKit
+    find_library( DHD_IOKit_LIBRARY NAMES IOKit
                   DOC "Path to IOKit library." )
-    find_library( DHD_COREFOUNDATION_LIBRARY NAMES CoreFoundation
+    find_library( DHD_CoreFoundation_LIBRARY NAMES CoreFoundation
                   DOC "Path to CoreFoundation library." )
-    mark_as_advanced( DHD_IOKIT_LIBRARY )
-    mark_as_advanced( DHD_COREFOUNDATION_LIBRARY )
+    mark_as_advanced( DHD_IOKit_LIBRARY DHD_CoreFoundation_LIBRARY )
+    set( extra_required_libs ${extra_required_libs} DHD_IOKit_LIBRARY DHD_CoreFoundation_LIBRARY )
   else()
     if( UNIX )
-      find_library( DHD_USB_LIBRARY NAMES usb
+      find_library( DHD_usb_LIBRARY NAMES usb
                     DOC "Path to usb library." )
-      find_library( DHD_PCISCAN_LIBRARY NAMES pciscan
+      find_library( DHD_pciscan_LIBRARY NAMES pciscan
                     DOC "Path to pciscan library." )
-      mark_as_advanced( DHD_USB_LIBRARY )
-      mark_as_advanced( DHD_PCISCAN_LIBRARY )
+      mark_as_advanced( DHD_usb_LIBRARY DHD_pciscan_LIBRARY )
+      set( extra_required_libs ${extra_required_libs} DHD_usb_LIBRARY DHD_pciscan_LIBRARY )
     endif()
   endif()
 endif()
-mark_as_advanced( DHD_LIBRARY )
-mark_as_advanced( DHD_DRD_LIBRARY )
+mark_as_advanced( DHD_LIBRARY DHD_drd_LIBRARY )
 
-if( DHD_DRD_INCLUDE_DIR AND DHD_DRD_LIBRARY )
-  set( DHD_DRD_FOUND ON )
+checkIfModuleFound( DHD_drd
+                    REQUIRED_VARS DHD_drd_INCLUDE_DIR DHD_drd_LIBRARY ${extra_required_libs} )
+
+if( DHD_drd_FOUND )
+  set( DHD_FOUND ${DHD_drd_FOUND} )
+  set( DHD_LIBRARIES ${DHD_drd_LIBRARY} ${extra_required_libs} )
+  set( DHD_INCLUDE_DIRS ${DHD_drd_INCLUDE_DIR} )
 else()
-  set( DHD_DRD_FOUND OFF )
+  include( FindPackageHandleStandardArgs )
+  # handle the QUIETLY and REQUIRED arguments and set DHD_FOUND to TRUE
+  # if all listed variables are TRUE
+  find_package_handle_standard_args( DHD DEFAULT_MSG
+                                     DHD_INCLUDE_DIR DHD_LIBRARY ${extra_required_libs} )
+  set( DHD_LIBRARIES ${DHD_LIBRARY} ${extra_required_libs} )
+  set( DHD_INCLUDE_DIRS ${DHD_INCLUDE_DIR} )
 endif()
 
-
-# Copy the results to the output variables.
-if( ( DHD_INCLUDE_DIR AND DHD_LIBRARY ) OR DHD_DRD_FOUND )
-  set( DHD_FOUND 1 )
-  if( DHD_DRD_FOUND )
-    set( DHD_LIBRARIES ${DHD_DRD_LIBRARY} )
-    set( DHD_INCLUDE_DIRS ${DHD_DRD_INCLUDE_DIR} )
-  else()
-    set( DHD_LIBRARIES ${DHD_LIBRARY} )
-    set( DHD_INCLUDE_DIRS ${DHD_INCLUDE_DIR} )
-  endif()
-  if( APPLE )
-    if( DHD_IOKIT_LIBRARY AND DHD_COREFOUNDATION_LIBRARY )
-        set( DHD_LIBRARIES ${DHD_LIBRARIES} ${DHD_IOKIT_LIBRARY} ${DHD_COREFOUNDATION_LIBRARY} )
-      else()
-        set( DHD_FOUND 0 )
-        set( DHD_LIBRARIES )
-        set( DHD_INCLUDE_DIRS )
-      endif()
-  else()
-    if( UNIX )
-      if( DHD_USB_LIBRARY AND DHD_PCISCAN_LIBRARY )
-        set( DHD_LIBRARIES ${DHD_LIBRARIES} ${DHD_USB_LIBRARY} ${DHD_PCISCAN_LIBRARY} )
-      else()
-        set( DHD_FOUND 0 )
-        set( DHD_LIBRARIES )
-        set( DHD_INCLUDE_DIRS )
-      endif()
-    endif()
-  endif()
-else()
-  set( DHD_FOUND 0 )
-  set( DHD_LIBRARIES )
-  set( DHD_INCLUDE_DIRS )
-endif()
-# Report the results.
-if( NOT DHD_FOUND )
-  set( DHD_DIR_MESSAGE
-       "DHD was not found. Make sure to set DHD_LIBRARY" )
-  if( UNIX )
-     set( DHD_DIR_MESSAGE
-          "${DHD_DIR_MESSAGE}, DHD_USB_LIBRARY, DHD_PCISCAN_LIBRARY" )
-  endif()
-  set( DHD_DIR_MESSAGE
-       "${DHD_DIR_MESSAGE} and DHD_INCLUDE_DIR. If you do not have DHD library you will not be able to use the Omega or Delta haptics devices from ForceDimension." )
-  if( DHD_FIND_REQUIRED )
-    message( FATAL_ERROR "${DHD_DIR_MESSAGE}" )
-  elseif( NOT DHD_FIND_QUIETLY )
-    message( STATUS "${DHD_DIR_MESSAGE}" )
-  endif()
-endif()
+# Backwards compatibility values set here.
+set( DHD_DRD_FOUND ${DHD_drd_FOUND} )

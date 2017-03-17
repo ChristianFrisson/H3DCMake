@@ -32,7 +32,6 @@ find_library( XercesC_LIBRARY NAMES  xerces-c_3 xerces-c xerces-c_2
 mark_as_advanced( XercesC_LIBRARY )
 
 set( XercesC_LIBRARIES_FOUND 0 )
-set( XercesC_STATIC_LIBRARIES_FOUND 0 )
 
 if( WIN32 AND PREFER_STATIC_LIBRARIES )
   set( xercesc_static_library_name xerces-c_static_3 xerces-c_static_2 )

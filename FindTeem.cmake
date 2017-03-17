@@ -12,13 +12,13 @@ endif()
 # a config file is found on some systems. If that config file is used (Teem_USE_FILE)
 # then this version is used instead.
 include( H3DExternalSearchPath )
-set( Teem_FIND_QUIETLY_old ${Teem_FIND_QUIETLY} )
-set( Teem_FIND_REQUIRED_old ${Teem_FIND_REQUIRED} )
+set( teem_find_quietly_old ${Teem_FIND_QUIETLY} )
+set( teem_find_required_old ${Teem_FIND_REQUIRED} )
 set( Teem_FIND_QUIETLY TRUE )
 set( Teem_FIND_REQUIRED FALSE )
 checkCMakeInternalModule( Teem ) # Will call CMakes internal find module for this feature.
-set( Teem_FIND_QUIETLY_old ${Teem_FIND_QUIETLY} )
-set( Teem_FIND_REQUIRED_old ${Teem_FIND_REQUIRED} )
+set( Teem_FIND_QUIETLY ${teem_find_quietly_old} )
+set( Teem_FIND_REQUIRED ${teem_find_required_old} )
 
 if( Teem_FOUND AND Teem_USE_FILE )
   # We do not use Teem_USE_FILE simply because it uses link_directories which is
@@ -29,7 +29,6 @@ if( Teem_FOUND AND Teem_USE_FILE )
   # On windows Teem_USE_FILE does not work at all due to it not handling Release and Debug
   # sub directories.
   set( Teem_INCLUDE_DIR ${Teem_INCLUDE_DIRS} )
-  set( Teem_LIBRARIES_tmp ${Teem_LIBRARIES} )
   # Do we need to loop here? In that case beware of optimized and debug keywords.
   if( EXISTS "${Teem_LIBRARY_DIRS}/lib${Teem_LIBRARIES}.so" )
     set( Teem_LIBRARIES "${Teem_LIBRARY_DIRS}/lib${Teem_LIBRARIES}.so" )

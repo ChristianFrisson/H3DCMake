@@ -5,19 +5,19 @@
 #  SOFA_LIBRARIES    - List of libraries when using SOFA.
 #  SOFA_FOUND        - True if SOFA found.
 
-set( SOFA_DEFAULT_INSTALL_DIR "" )
+set( sofa_default_install_dir "" )
 if( MSVC10 )
   if( H3D_USE_DEPENDENCIES_ONLY )
-    foreach( EXTERNAL_INCLUDE_DIR_TMP ${EXTERNAL_INCLUDE_DIR} )
-      if( EXISTS ${EXTERNAL_INCLUDE_DIR_TMP}/sofa )
-        set( SOFA_DEFAULT_INSTALL_DIR "${EXTERNAL_INCLUDE_DIR_TMP}/sofa" )
+    foreach( external_include_dir_tmp ${EXTERNAL_INCLUDE_DIR} )
+      if( EXISTS ${external_include_dir_tmp}/sofa )
+        set( sofa_default_install_dir "${external_include_dir_tmp}/sofa" )
       endif()
     endforeach()
   elseif( $ENV{H3D_EXTERNAL_ROOT} )
-    set( SOFA_DEFAULT_INSTALL_DIR "$ENV{H3D_EXTERNAL_ROOT}/include/sofa" )
+    set( sofa_default_install_dir "$ENV{H3D_EXTERNAL_ROOT}/include/sofa" )
   endif()
 endif()
-set( SOFA_INSTALL_DIR "${SOFA_DEFAULT_INSTALL_DIR}" CACHE PATH "Path to root of SOFA installation" )
+set( SOFA_INSTALL_DIR "${sofa_default_install_dir}" CACHE PATH "Path to root of SOFA installation" )
 mark_as_advanced( SOFA_INSTALL_DIR )
 
 # Look for the header file.
@@ -53,17 +53,14 @@ mark_as_advanced( SOFA_INCLUDE_DIR_TINYXML )
 
 # SOFA_FIND_COMPONENTS hold the values from COMPONENTS
 # in FindPackage( SOFA COMPONENTS core simulation )
-set( SOFA_LIBS ${SOFA_FIND_COMPONENTS} )
+set( sofa_libs ${SOFA_FIND_COMPONENTS} )
 
-set( lib_search_paths )
+set( sofa_libs_debug_found 1 )
 
-set( SOFA_LIBS_FOUND 1 )
-set( SOFA_LIBS_DEBUG_FOUND 1 )
+set( sofa_lib_version_major 1 )
+set( sofa_lib_version_minor 0 )
 
-set( SOFA_LIB_VERSION_MAJOR 1 )
-set( SOFA_LIB_VERSION_MINOR 0 )
-
-set( SOFA_LIB_SUFFIX "_${SOFA_LIB_VERSION_MAJOR}_${SOFA_LIB_VERSION_MINOR}" )
+set( sofa_lib_suffix "_${sofa_lib_version_major}_${sofa_lib_version_minor}" )
 
 set( SOFA_LIBRARY_NAMES "" CACHE INTERNAL "Internal sofa library list variable. Can be used to setup delayload." FORCE )
 
@@ -72,73 +69,52 @@ get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
 # Look for the libraries.
-foreach( SOFA_LIB ${SOFA_LIBS} )
-  string( TOUPPER ${SOFA_LIB} _upper_lib_name )
-  set( SOFA_LIBRARY_NAMES ${SOFA_LIBRARY_NAMES} ${SOFA_LIB}${SOFA_LIB_SUFFIX}
+set( required_release_lib_vars )
+foreach( sofa_lib ${sofa_libs} )
+  string( TOUPPER ${sofa_lib} _upper_lib_name )
+  set( SOFA_LIBRARY_NAMES ${SOFA_LIBRARY_NAMES} ${sofa_lib}${sofa_lib_suffix}
        CACHE INTERNAL "Internal sofa library list variable. Can be used to setup delayload." FORCE )
 
   # Look for release library
-  find_library( SOFA_${_upper_lib_name}_LIBRARY NAMES sofa${SOFA_LIB}${SOFA_LIB_SUFFIX}
-                                                      sofa_${SOFA_LIB}${SOFA_LIB_SUFFIX}
+  find_library( SOFA_${_upper_lib_name}_LIBRARY NAMES sofa${sofa_lib}${sofa_lib_suffix}
+                                                      sofa_${sofa_lib}${sofa_lib_suffix}
                 PATHS ${SOFA_INSTALL_DIR}/lib
                       ${module_lib_search_paths} )
   mark_as_advanced( SOFA_${_upper_lib_name}_LIBRARY )
+  set( required_release_lib_vars ${required_release_lib_vars} SOFA_${_upper_lib_name}_LIBRARY)
 
   # Look for debug library
-  find_library( SOFA_${_upper_lib_name}_DEBUG_LIBRARY NAMES sofa${SOFA_LIB}${SOFA_LIB_SUFFIX}d
-                                                            sofa_${SOFA_LIB}${SOFA_LIB_SUFFIX}d
+  find_library( SOFA_${_upper_lib_name}_DEBUG_LIBRARY NAMES sofa${sofa_lib}${sofa_lib_suffix}d
+                                                            sofa_${sofa_lib}${sofa_lib_suffix}d
                 PATHS ${SOFA_INSTALL_DIR}/lib
                       ${module_lib_search_paths} )
   mark_as_advanced( SOFA_${_upper_lib_name}_DEBUG_LIBRARY )
 
   if( SOFA_${_upper_lib_name}_LIBRARY )
-    set( SOFA_LIBS_PATHS ${SOFA_LIBS_PATHS} optimized ${SOFA_${_upper_lib_name}_LIBRARY} )
-  else()
-    set( SOFA_LIBS_FOUND 0 )
-    set( SOFA_LIBS_NOTFOUND ${SOFA_LIBS_NOTFOUND} ${SOFA_LIB} )
+    set( sofa_libs_paths ${sofa_libs_paths} optimized ${SOFA_${_upper_lib_name}_LIBRARY} )
   endif()
 
   if( SOFA_${_upper_lib_name}_DEBUG_LIBRARY )
-    set( SOFA_LIBS_DEBUG_PATHS ${SOFA_LIBS_DEBUG_PATHS} debug ${SOFA_${_upper_lib_name}_DEBUG_LIBRARY} )
+    set( sofa_libs_debug_paths ${sofa_libs_debug_paths} debug ${SOFA_${_upper_lib_name}_DEBUG_LIBRARY} )
   else()
-    set( SOFA_LIBS_DEBUG_FOUND 0 )
-    set( SOFA_LIBS_DEBUG_NOTFOUND ${SOFA_LIBS_DEBUG_NOTFOUND} ${SOFA_LIB} )
+    set( sofa_libs_debug_found 0 )
+    set( sofa_libs_debug_notfound ${sofa_libs_debug_notfound} ${sofa_lib} )
   endif()
 endforeach()
 
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set SOFA_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( SOFA DEFAULT_MSG
+                                   SOFA_INCLUDE_DIR SOFA_INCLUDE_DIR_MODULES SOFA_INCLUDE_DIR_APP
+                                   SOFA_INCLUDE_DIR_BOOST SOFA_INCLUDE_DIR_EIGEN SOFA_INCLUDE_DIR_TINYXML
+                                   ${required_release_lib_vars} )
+
 # Copy the results to the output variables.
-if( SOFA_INCLUDE_DIR AND SOFA_INCLUDE_DIR_MODULES AND SOFA_INCLUDE_DIR_APP AND SOFA_INCLUDE_DIR_BOOST AND SOFA_INCLUDE_DIR_EIGEN AND SOFA_INCLUDE_DIR_TINYXML AND SOFA_LIBS_FOUND )
-  set( SOFA_FOUND 1 )
-  set( SOFA_LIBRARIES ${SOFA_LIBS_PATHS} ${SOFA_LIBS_DEBUG_PATHS} )
-  set( SOFA_INCLUDE_DIR ${SOFA_INCLUDE_DIR} ${SOFA_INCLUDE_DIR_MODULES} ${SOFA_INCLUDE_DIR_APP} ${SOFA_INCLUDE_DIR_BOOST} ${SOFA_INCLUDE_DIR_EIGEN} ${SOFA_INCLUDE_DIR_TINYXML} )
-else()
-  set( SOFA_FOUND 0 )
-  set( SOFA_LIBRARIES )
-  set( SOFA_INCLUDE_DIR )
-endif()
+set( SOFA_LIBRARIES ${sofa_libs_paths} ${sofa_libs_debug_paths} )
+set( SOFA_INCLUDE_DIR ${SOFA_INCLUDE_DIR} ${SOFA_INCLUDE_DIR_MODULES} ${SOFA_INCLUDE_DIR_APP} ${SOFA_INCLUDE_DIR_BOOST} ${SOFA_INCLUDE_DIR_EIGEN} ${SOFA_INCLUDE_DIR_TINYXML} )
 
-# Report the results.
-if( NOT SOFA_FOUND )
-  if( SOFA_INCLUDE_DIR AND SOFA_INCLUDE_DIR_MODULES AND SOFA_INCLUDE_DIR_APP AND SOFA_INCLUDE_DIR_BOOST AND SOFA_INCLUDE_DIR_EIGEN AND SOFA_INCLUDE_DIR_TINYXML )
-    set( SOFA_DIR_MESSAGE
-         "SOFA was not found. Could not find the: ${SOFA_LIBS_NOTFOUND} component(s)." )
-  else()
-    set( SOFA_DIR_MESSAGE
-         "SOFA was not found. Could not find the include files." )
-
-  endif()
-
-  set( SOFA_DIR_MESSAGE
-       "${SOFA_DIR_MESSAGE} Try setting SOFA_INSTALL_DIR to the root of the SOFA installation." )
-
-  if( SOFA_FIND_REQUIRED )
-    message( FATAL_ERROR "${SOFA_DIR_MESSAGE}" )
-  elseif( NOT SOFA_FIND_QUIETLY )
-    message( STATUS "${SOFA_DIR_MESSAGE}" )
-  endif()
-elseif( NOT SOFA_FOUND )
-  if( NOT SOFA_LIBS_DEBUG_FOUND )
-    message( STATUS "Warning: SOFA debug libraries not found. The debug build will not work." )
-    message( STATUS "Debug libraries for the following components were not found: ${SOFA_LIBS_DEBUG_NOTFOUND}" )
-  endif()
+if( SOFA_FOUND AND NOT sofa_libs_debug_found )
+  message( STATUS "Warning: SOFA debug libraries not found. The debug build will not work." )
+  message( STATUS "Debug libraries for the following components were not found: ${sofa_libs_debug_notfound}" )
 endif()

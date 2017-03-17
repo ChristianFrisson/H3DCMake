@@ -7,8 +7,8 @@
 #  PhysX_FLAGS        - Flags needed for ode to build
 
 include( H3DExternalSearchPath )
-handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES PhysX_PhysXLOADER_INCLUDE_DIR PhysX_PHYSICS_INCLUDE_DIR PhysX_FOUNDATION_INCLUDE_DIR PhysX_COOKING_INCLUDE_DIR PhysX_LIB_LOADER PhysX_LIB_CORE
-                                              OLD_VARIABLE_NAMES PHYSX_PHYSXLOADER_INCLUDE_DIR )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES PhysX_PhysXLoader_INCLUDE_DIR PhysX_Physics_INCLUDE_DIR PhysX_Foundation_INCLUDE_DIR PhysX_Cooking_INCLUDE_DIR PhysX_Loader_LIBRARY PhysX_Core_LIBRARY
+                                              OLD_VARIABLE_NAMES PHYSX_PHYSXLOADER_INCLUDE_DIR PHYSX_PHYSICS_INCLUDE_DIR PHYSX_FOUNDATION_INCLUDE_DIR PHYSX_COOKING_INCLUDE_DIR PHYSX_LIB_LOADER PHYSX_LIB_CORE)
 
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "PhysX/Physics" "PhysX/Foundation" "PhysX/PhysXLoader" "PhysX/Cooking" )
@@ -26,33 +26,33 @@ set( module_include_search_paths "C:/Program (x86)/NVIDIA Corporation/NVIDIA Phy
                                  ${module_include_search_paths} )
 
 # Look for the header file.
-find_path( PhysX_PHYSICS_INCLUDE_DIR NAMES NxPhysics.h
+find_path( PhysX_Physics_INCLUDE_DIR NAMES NxPhysics.h
            PATHS /usr/local/include
                  /usr/include/PhysX/v2.8.3/SDKs/Physics/include
                  ${module_include_search_paths} )
 
-mark_as_advanced( PhysX_PHYSICS_INCLUDE_DIR )
+mark_as_advanced( PhysX_Physics_INCLUDE_DIR )
 
-find_path( PhysX_FOUNDATION_INCLUDE_DIR NAMES NxFoundation.h
+find_path( PhysX_Foundation_INCLUDE_DIR NAMES NxFoundation.h
            PATHS /usr/local/include
                  /usr/include/PhysX/v2.8.3/SDKs/Foundation/include
                  ${module_include_search_paths} )
 
-mark_as_advanced( PhysX_FOUNDATION_INCLUDE_DIR )
+mark_as_advanced( PhysX_Foundation_INCLUDE_DIR )
 
-find_path( PhysX_PhysXLOADER_INCLUDE_DIR NAMES PhysXLoader.h
+find_path( PhysX_PhysXLoader_INCLUDE_DIR NAMES PhysXLoader.h
            PATHS /usr/local/include
                  /usr/include/PhysX/v2.8.3/SDKs/PhysXLoader/include
                  ${module_include_search_paths} )
 
-mark_as_advanced( PhysX_PhysXLOADER_INCLUDE_DIR )
+mark_as_advanced( PhysX_PhysXLoader_INCLUDE_DIR )
 
-find_path( PhysX_COOKING_INCLUDE_DIR NAMES NxCooking.h
+find_path( PhysX_Cooking_INCLUDE_DIR NAMES NxCooking.h
            PATHS /usr/local/include
                  /usr/include/PhysX/${version_string}/SDKs/Cooking/include
                  ${module_include_search_paths} )
 
-mark_as_advanced( PhysX_COOKING_INCLUDE_DIR )
+mark_as_advanced( PhysX_Cooking_INCLUDE_DIR )
 
 set( module_lib_search_paths "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${lib}"
                              "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${lib}"
@@ -60,23 +60,23 @@ set( module_lib_search_paths "C:/Program (x86)/NVIDIA Corporation/NVIDIA PhysX S
                              "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/lib/win${lib}"
                              ${module_lib_search_paths} )
 # Look for the library.
-find_library( PhysX_LIB_LOADER NAMES PhysXLoader PhysXLoader${lib}
+find_library( PhysX_Loader_LIBRARY NAMES PhysXLoader PhysXLoader${lib}
                 PATHS ${module_lib_search_paths} )
 
-find_library( PhysX_LIB_CORE NAMES PhysXCore PhysXCore${lib}
+find_library( PhysX_Core_LIBRARY NAMES PhysXCore PhysXCore${lib}
                 PATHS ${module_lib_search_paths} )
 
-mark_as_advanced( PhysX_LIB_LOADER )
-mark_as_advanced( PhysX_LIB_CORE )
+mark_as_advanced( PhysX_Loader_LIBRARY )
+mark_as_advanced( PhysX_Core_LIBRARY )
 
 include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set PhysX_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( PhysX DEFAULT_MSG
-                                   PhysX_PhysXLOADER_INCLUDE_DIR PhysX_PHYSICS_INCLUDE_DIR PhysX_FOUNDATION_INCLUDE_DIR PhysX_COOKING_INCLUDE_DIR PhysX_LIB_LOADER PhysX_LIB_CORE )
+                                   PhysX_PhysXLoader_INCLUDE_DIR PhysX_Physics_INCLUDE_DIR PhysX_Foundation_INCLUDE_DIR PhysX_Cooking_INCLUDE_DIR PhysX_Loader_LIBRARY PhysX_Core_LIBRARY )
 
-set( PhysX_LIBRARIES ${PhysX_LIB_LOADER} ${PhysX_LIB_CORE} )
-set( PhysX_INCLUDE_DIRS ${PhysX_PhysXLOADER_INCLUDE_DIR} ${PhysX_PHYSICS_INCLUDE_DIR} ${PhysX_FOUNDATION_INCLUDE_DIR} ${PhysX_COOKING_INCLUDE_DIR} )
+set( PhysX_LIBRARIES ${PhysX_Loader_LIBRARY} ${PhysX_Core_LIBRARY} )
+set( PhysX_INCLUDE_DIRS ${PhysX_PhysXLoader_INCLUDE_DIR} ${PhysX_Physics_INCLUDE_DIR} ${PhysX_Foundation_INCLUDE_DIR} ${PhysX_Cooking_INCLUDE_DIR} )
 
 # Backwards compatibility values set here.
 set( PHYSX_INCLUDE_DIR ${PhysX_INCLUDE_DIRS} )
