@@ -84,7 +84,7 @@ function( getExternalSearchPathsH3D arg1 arg2 arg3 )
     message( AUTHOR_WARNING "The variable 'CHECK_IF_H3D_EXTERNAL_MATCHES_VS_VERSION' is deprecated and no longer used. Please use the variable 'check_if_h3d_external_matches_vs_version' instead which is most likely set in ${CMAKE_PARENT_LIST_FILE}" )
   endif()
   if( WIN32 )
-    if( CMAKE_CL_64 )
+    if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
       set( lib "lib64" )
     else()
       set( lib "lib32" )
@@ -275,4 +275,79 @@ function( checkIfModuleFound _module_name )
   list( GET _check_if_module_found_REQUIRED_VARS 0 first_required_var )
   include( FindPackageMessage )
   find_package_message( ${_module_name} "Found ${_module_name}: ${${first_required_var}}" "${details}" )
+endfunction()
+
+# Will generate a library name using the naming scheme 
+function( getH3DLibraryNameToSearchFor output_var base_name  )
+  if( MSVC )
+    set( h3d_msvc_version 6 )
+    set( temp_msvc_version 1299 )
+    while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
+      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
+      # Increments one more time if MSVC version is 13 as it doesn't exist
+      if( ${h3d_msvc_version} EQUAL 13 )
+        math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
+      endif()
+      math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
+    endwhile()
+    set( ${output_var} "${base_name}_vc${h3d_msvc_version}" PARENT_SCOPE )
+  elseif( UNIX )
+    set( name_to_use ${base_name} )
+    if( ARGC GREATER 1 )
+      set( name_to_use ${ARGV1} PARENT_SCOPE )
+    endif()
+    set( ${output_var} ${name_to_use} PARENT_SCOPE )
+  else()
+    set( name_to_use ${base_name} )
+    if( ARGC GREATER 2 )
+      set( name_to_use ${ARGV2} PARENT_SCOPE )
+    endif()
+    set( ${output_var} ${name_to_use} PARENT_SCOPE )
+  endif()
+endfunction()
+
+# include_paths_output Will contain search path for the include directories.
+# lib_path_output Will contain search path for library directories.
+# module_path Should contain FindXX.cmake module path or empty
+# module_name Should contain the name of the module to search for.
+function( getSearchPathsH3DLibs include_paths_output lib_path_output module_path module_name )
+  set( ${include_paths_output} $ENV{H3D_ROOT}/include
+                               $ENV{H3D_ROOT}/../${module_name}/include
+                               ${module_path}/../../include
+                               ${module_path}/../../../include
+                               ${module_path}/../../../${module_name}/include
+                               ${module_path}/../../../../${module_name}/include
+                               ../../include
+                               ../../../include
+                               ../../../${module_name}/include
+                               ../../../../${module_name}/include
+                               PARENT_SCOPE )
+  set( default_lib_install "lib" )
+  if( WIN32 )
+    set( default_lib_install "lib32" )
+    if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+      set( default_lib_install "lib64" )
+    endif()
+  endif()
+  set( ${lib_path_output} $ENV{H3D_ROOT}/../${default_lib_install}
+                          $ENV{H3D_ROOT}/../${module_name}/${default_lib_install}
+                          $ENV{H3D_ROOT}/../../${default_lib_install}
+                          $ENV{H3D_ROOT}/../../${module_name}/${default_lib_install}
+                          $ENV{H3D_ROOT}/../../../${default_lib_install}
+                          $ENV{H3D_ROOT}/../../../${module_name}/${default_lib_install}
+                          ${module_path}/../../${default_lib_install}
+                          ${module_path}/../../${module_name}/${default_lib_install}
+                          ${module_path}/../../../${default_lib_install}
+                          ${module_path}/../../../${module_name}/${default_lib_install}
+                          ${module_path}/../../../../${default_lib_install}
+                          ${module_path}/../../../../${module_name}/${default_lib_install}
+                          ../../${default_lib_install}
+                          ../../${module_name}/${default_lib_install}
+                          ../../../${default_lib_install}
+                          ../../../${module_name}/${default_lib_install}
+                          ../../../../${default_lib_install}
+                          ../../../../${module_name}/${default_lib_install}
+                          ../../../support/H3D/${default_lib_install}
+                          ${module_file_path}/../../../../support/H3D/${default_lib_install}
+                          PARENT_SCOPE )
 endfunction()

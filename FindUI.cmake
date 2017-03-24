@@ -1,102 +1,64 @@
 # - Find UI
 # Find the native UI headers and libraries.
 #
-#  UI_INCLUDE_DIR -  where to find UI.h, etc.
+#  UI_INCLUDE_DIRS - Where to find UI.h, etc.
 #  UI_LIBRARIES    - List of libraries when using UI.
 #  UI_FOUND        - True if UI found.
+include( H3DCommonFunctions )
+if( MSVC )
+  getMSVCPostFix( msvc_postfix )
+  set( ui_name "UI${msvc_postfix}" )
+elseif( UNIX )
+  set( ui_name h3dui )
+else()
+  set( ui_name UI )
+endif()
 
-get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+
+include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES UI_LIBRARY_DEBUG
+                                              OLD_VARIABLE_NAMES UI_DEBUG_LIBRARY
+                                              DOC_STRINGS "Path to ${ui_name}_d library." )
+
+getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} UI )
 
 # Look for the header file.
 find_path( UI_INCLUDE_DIR NAMES H3D/UI/UI.h H3D/UI/UI.cmake
-           PATHS $ENV{H3D_ROOT}/../UI/include
-                 ../include
-                 ${module_file_path}/../../include
-                 ../../../UI/include
-                 ${module_file_path}/../../../UI/include
-           DOC "Path in which the file H3D/UI/UI.h is located." )
+                          PATHS ${module_include_search_paths}
+                          DOC "Path in which the file UI/UI.h is located." )
 mark_as_advanced( UI_INCLUDE_DIR )
 
-if( MSVC )
-  set( h3d_msvc_version 6 )
-  set( temp_msvc_version 1299 )
-  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
-    math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
-    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
-  endwhile()
-  set( UI_NAME "UI_vc${h3d_msvc_version}" )
-elseif( UNIX )
-  set( UI_NAME h3dui )
-else()
-  set( UI_NAME UI )
-endif()
+find_library( UI_LIBRARY_RELEASE NAMES ${ui_name}
+                                 PATHS ${module_lib_search_paths}
+                                 DOC "Path to ${ui_name} library." )
 
-set( default_lib_install "lib" )
-if( WIN32 )
-  set( default_lib_install "lib32" )
-  if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    set( default_lib_install "lib64" )
+find_library( UI_LIBRARY_DEBUG NAMES ${ui_name}_d
+                               PATHS ${module_lib_search_paths}
+                               DOC "Path to ${ui_name}_d library." )
+
+mark_as_advanced( UI_LIBRARY_RELEASE UI_LIBRARY_DEBUG )
+
+include( SelectLibraryConfigurations )
+select_library_configurations( UI )
+
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set UI_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( UI DEFAULT_MSG
+                                   UI_INCLUDE_DIR UI_LIBRARY )
+
+set( UI_LIBRARIES ${UI_LIBRARY} )
+set( UI_INCLUDE_DIRS ${UI_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( UI_INCLUDE_DIR ${UI_INCLUDE_DIRS} )
+
+# Additional message on MSVC
+if( UI_FOUND AND MSVC )
+  if( NOT UI_LIBRARY_RELEASE )
+    message( WARNING "UI release library not found. Release build might not work properly. To get rid of this warning set UI_LIBRARY_RELEASE." )
   endif()
-endif()
-
-# Look for the library.
-find_library( UI_LIBRARY NAMES ${UI_NAME}
-              PATHS $ENV{H3D_ROOT}/../UI/${default_lib_install}
-                    ../../${default_lib_install}
-                    ${module_file_path}/../../../${default_lib_install}
-                    ../../../${default_lib_install}
-                    $ENV{H3D_ROOT}/../${default_lib_install}
-              DOC "Path to ${UI_NAME} library." )
-
-find_library( UI_DEBUG_LIBRARY NAMES ${UI_NAME}_d
-              PATHS $ENV{H3D_ROOT}/../UI/${default_lib_install}
-                    ../../${default_lib_install}
-                    ${module_file_path}/../../../${default_lib_install}
-                    ../../../${default_lib_install}
-                    $ENV{H3D_ROOT}/../${default_lib_install}
-              DOC "Path to ${UI_NAME}_d library." )
-mark_as_advanced( UI_LIBRARY )
-mark_as_advanced( UI_DEBUG_LIBRARY )
-
-if( UI_LIBRARY OR UI_DEBUG_LIBRARY )
-  set( HAVE_UI_LIBRARY 1 )
-else()
-  set( HAVE_UI_LIBRARY 0 )
-endif()
-
-# Copy the results to the output variables.
-if( UI_INCLUDE_DIR AND HAVE_UI_LIBRARY )
-
-  set( UI_FOUND 1 )
-  if( UI_LIBRARY )
-    set( UI_LIBRARIES ${UI_LIBRARIES} optimized ${UI_LIBRARY} )
-  else()
-    set( UI_LIBRARIES ${UI_LIBRARIES} optimized ${UI_NAME} )
-    message( STATUS "UI release libraries not found. Release build might not work." )
-  endif()
-
-  if( UI_DEBUG_LIBRARY )
-    set( UI_LIBRARIES ${UI_LIBRARIES} debug ${UI_DEBUG_LIBRARY} )
-  else()
-    set( UI_LIBRARIES ${UI_LIBRARIES} debug ${UI_NAME}_d )
-    message( STATUS "UI debug libraries not found. Debug build might not work." )
-  endif()
-
-  set( UI_INCLUDE_DIR ${UI_INCLUDE_DIR} )
-  set( UI_LIBRARIES ${UI_LIBRARIES} )
-else()
-  set( UI_FOUND 0 )
-  set( UI_LIBRARIES )
-  set( UI_INCLUDE_DIR )
-endif()
-
-# Report the results.
-if( NOT UI_FOUND )
-  set( UI_DIR_MESSAGE
-       "UI was not found. Make sure UI_LIBRARY ( and/or UI_DEBUG_LIBRARY ) and UI_INCLUDE_DIR are set." )
-  if( UI_FIND_REQUIRED )
-    message( FATAL_ERROR "${UI_DIR_MESSAGE}" )
-  elseif( NOT UI_FIND_QUIETLY )
-    message( STATUS "${UI_DIR_MESSAGE}" )
+  if( NOT UI_LIBRARY_DEBUG )
+    message( WARNING "UI debug library not found. Debug build might not work properly. To get rid of this warning set UI_LIBRARY_DEBUG." )
   endif()
 endif()

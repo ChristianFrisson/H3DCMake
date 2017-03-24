@@ -1,103 +1,68 @@
-# - Find MEDX3D
-# Find the native MEDX3D headers and libraries.
+# - Find MedX3D
+# Find the native MedX3D headers and libraries.
 #
-#  MEDX3D_INCLUDE_DIR -  where to find MEDX3D.h, etc.
-#  MEDX3D_LIBRARIES    - List of libraries when using MEDX3D.
-#  MEDX3D_FOUND        - True if MEDX3D found.
+#  MedX3D_INCLUDE_DIRS - Where to find MedX3D.h, etc.
+#  MedX3D_LIBRARIES    - List of libraries when using MedX3D.
+#  MedX3D_FOUND        - True if MedX3D found.
+include( H3DCommonFunctions )
+if( MSVC )
+  getMSVCPostFix( msvc_postfix )
+  set( medx3d_name "MedX3D${msvc_postfix}" )
+elseif( UNIX )
+  set( medx3d_name h3dmedx3d )
+else()
+  set( medx3d_name MedX3D )
+endif()
 
-get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+
+include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES MedX3D_LIBRARY_RELEASE MedX3D_LIBRARY_DEBUG MedX3D_INCLUDE_DIR
+                                              OLD_VARIABLE_NAMES MEDX3D_LIBRARY MEDX3D_DEBUG_LIBRARY
+                                              DOC_STRINGS "Path to ${medx3d_name} library."
+                                                          "Path to ${medx3d_name}_d library."
+                                                          "Path in which the file MedX3D/MedX3D.h is located." )
+
+getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} MedX3D )
 
 # Look for the header file.
-find_path( MEDX3D_INCLUDE_DIR NAMES H3D/MedX3D/MedX3D.h H3D/MedX3D/MedX3D.cmake
-           PATHS $ENV{H3D_ROOT}/../MedX3D/include
-                 ../../../../MedX3D/include
-                 ${module_file_path}/../../../include
-                 ${module_file_path}/../../include
-                 ../../../MedX3D/include
-                 ${module_file_path}/../../../MedX3D/include )
+find_path( MedX3D_INCLUDE_DIR NAMES H3D/MedX3D/MedX3D.h H3D/MedX3D/MedX3D.cmake
+                              PATHS ${module_include_search_paths}
+                              DOC "Path in which the file MedX3D/MedX3D.h is located." )
+mark_as_advanced( MedX3D_INCLUDE_DIR )
 
-mark_as_advanced( MEDX3D_INCLUDE_DIR )
+find_library( MedX3D_LIBRARY_RELEASE NAMES ${medx3d_name}
+                                     PATHS ${module_lib_search_paths}
+                                     DOC "Path to ${medx3d_name} library." )
 
-# Look for the library.
-if( MSVC )
-  set( h3d_msvc_version 6 )
-  set( temp_msvc_version 1299 )
-  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
-    math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
-    # Increments one more time if MSVC version is 13 as it doesn't exist
-    if( ${h3d_msvc_version} EQUAL 13 )
-      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
-    endif()
-    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
-  endwhile()
-  set( MEDX3D_NAME "MedX3D_vc${h3d_msvc_version}" )
-elseif( UNIX )
-  set( MEDX3D_NAME h3dmedx3d )
-else()
-  set( MEDX3D_NAME MedX3D )
-endif()
+find_library( MedX3D_LIBRARY_DEBUG NAMES ${medx3d_name}_d
+                                   PATHS ${module_lib_search_paths}
+                                   DOC "Path to ${medx3d_name}_d library." )
 
-set( default_lib_install "lib" )
-if( WIN32 )
-  set( default_lib_install "lib32" )
-  if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    set( default_lib_install "lib64" )
+mark_as_advanced( MedX3D_LIBRARY_RELEASE MedX3D_LIBRARY_DEBUG )
+
+include( SelectLibraryConfigurations )
+select_library_configurations( MedX3D )
+
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set MedX3D_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( MedX3D DEFAULT_MSG
+                                   MedX3D_INCLUDE_DIR MedX3D_LIBRARY )
+
+set( MedX3D_LIBRARIES ${MedX3D_LIBRARY} )
+set( MedX3D_INCLUDE_DIRS ${MedX3D_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( MEDX3D_INCLUDE_DIR ${MedX3D_INCLUDE_DIRS} )
+set( MEDX3D_LIBRARIES ${MedX3D_LIBRARIES} )
+set( MedX3D_FOUND ${MEDX3D_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
+
+# Additional message on MSVC
+if( MedX3D_FOUND AND MSVC )
+  if( NOT MedX3D_LIBRARY_RELEASE )
+    message( WARNING "MedX3D release library not found. Release build might not work properly. To get rid of this warning set MedX3D_LIBRARY_RELEASE." )
   endif()
-endif()
-
-find_library( MEDX3D_LIBRARY NAMES ${MEDX3D_NAME}
-              PATHS $ENV{H3D_ROOT}/../${default_lib_install}
-                    $ENV{H3D_ROOT}/../MedX3D/${default_lib_install}
-                    ${module_file_path}/../../../${default_lib_install}
-                    ${module_file_path}/../../${default_lib_install}
-                    ${module_file_path}/../../../MedX3D/${default_lib_install} )
-
-find_library( MEDX3D_DEBUG_LIBRARY NAMES ${MEDX3D_NAME}_d
-              PATHS $ENV{H3D_ROOT}/../${default_lib_install}
-                    $ENV{H3D_ROOT}/../MedX3D/${default_lib_install}
-                    ${module_file_path}/../../../${default_lib_install}
-                    ${module_file_path}/../../${default_lib_install}
-                    ${module_file_path}/../../../MedX3D/${default_lib_install} )
-mark_as_advanced( MEDX3D_LIBRARY )
-mark_as_advanced( MEDX3D_DEBUG_LIBRARY )
-
-if( MEDX3D_LIBRARY OR MEDX3D_DEBUG_LIBRARY )
-  set( HAVE_MEDX3D_LIBRARY 1 )
-else()
-  set( HAVE_MEDX3D_LIBRARY 0 )
-endif()
-
-# Copy the results to the output variables.
-if( MEDX3D_INCLUDE_DIR AND HAVE_MEDX3D_LIBRARY )
-  set( MEDX3D_FOUND 1 )
-  if( MEDX3D_LIBRARY )
-    set( MEDX3D_LIBRARIES ${MEDX3D_LIBRARIES} optimized ${MEDX3D_LIBRARY} )
-  else()
-    set( MEDX3D_LIBRARIES ${MEDX3D_LIBRARIES} optimized ${MEDX3D_NAME} )
-    message( STATUS "MEDX3D release libraries not found. Release build might not work." )
-  endif()
-
-  if( MEDX3D_DEBUG_LIBRARY )
-    set( MEDX3D_LIBRARIES ${MEDX3D_LIBRARIES} debug ${MEDX3D_DEBUG_LIBRARY} )
-  else()
-    set( MEDX3D_LIBRARIES ${MEDX3D_LIBRARIES} debug ${MEDX3D_NAME}_d )
-    message( STATUS "MEDX3D debug libraries not found. Debug build might not work." )
-  endif()
-
-  set( MEDX3D_INCLUDE_DIRS ${MEDX3D_INCLUDE_DIR} )
-else()
-  set( MEDX3D_FOUND 0 )
-  set( MEDX3D_LIBRARIES )
-  set( MEDX3D_INCLUDE_DIRS )
-endif()
-
-# Report the results.
-if( NOT MEDX3D_FOUND )
-  set( MEDX3D_DIR_MESSAGE
-       "MEDX3D was not found. Make sure MEDX3D_LIBRARY ( and/or MEDX3D_DEBUG_LIBRARY ) and MEDX3D_INCLUDE_DIR are set." )
-  if( MedX3D_FIND_REQUIRED )
-    message( FATAL_ERROR "${MEDX3D_DIR_MESSAGE}" )
-  elseif( NOT MedX3D_FIND_QUIETLY )
-    message( STATUS "${MEDX3D_DIR_MESSAGE}" )
+  if( NOT MedX3D_LIBRARY_DEBUG )
+    message( WARNING "MedX3D debug library not found. Debug build might not work properly. To get rid of this warning set MedX3D_LIBRARY_DEBUG." )
   endif()
 endif()

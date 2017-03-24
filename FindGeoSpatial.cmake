@@ -1,91 +1,64 @@
 # - Find GeoSpatial
 # Find the native GeoSpatial headers and libraries.
 #
-#  GeoSpatial_INCLUDE_DIR -  where to find GeoSpatial.h, etc.
+#  GeoSpatial_INCLUDE_DIRS - Where to find GeoSpatial.h, etc.
 #  GeoSpatial_LIBRARIES    - List of libraries when using GeoSpatial.
 #  GeoSpatial_FOUND        - True if GeoSpatial found.
+include( H3DCommonFunctions )
+if( MSVC )
+  getMSVCPostFix( msvc_postfix )
+  set( geospatial_name "GeoSpatial${msvc_postfix}" )
+elseif( UNIX )
+  set( geospatial_name geospatial )
+else()
+  set( geospatial_name GeoSpatial )
+endif()
 
-get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+
+include( H3DExternalSearchPath )
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES GeoSpatial_LIBRARY_DEBUG
+                                              OLD_VARIABLE_NAMES GeoSpatial_DEBUG_LIBRARY
+                                              DOC_STRINGS "Path to ${geospatial_name}_d library." )
+
+getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} GeoSpatial )
 
 # Look for the header file.
-find_path( GeoSpatial_INCLUDE_DIR NAMES H3D/GeoSpatial/GeoSpatial.h
-           PATHS $ENV{H3D_ROOT}/../GeoSpatial/include
-                 ../../../GeoSpatial/include
-                 ${module_file_path}/../../../GeoSpatial/include )
+find_path( GeoSpatial_INCLUDE_DIR NAMES H3D/GeoSpatial/GeoSpatial.h H3D/GeoSpatial/GeoSpatial.cmake
+                                  PATHS ${module_include_search_paths}
+                                  DOC "Path in which the file GeoSpatial/GeoSpatial.h is located." )
 mark_as_advanced( GeoSpatial_INCLUDE_DIR )
 
-# Look for the library.
-if( MSVC )
-  set( h3d_msvc_version 6 )
-  set( temp_msvc_version 1299 )
-  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
-    math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
-    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
-  endwhile()
-  set( GeoSpatial_NAME "GeoSpatial_vc${h3d_msvc_version}" )
-elseif( UNIX )
-  set( GeoSpatial_NAME geospatial )
-else()
-  set( GeoSpatial_NAME GeoSpatial )
-endif()
+find_library( GeoSpatial_LIBRARY_RELEASE NAMES ${geospatial_name}
+                                         PATHS ${module_lib_search_paths}
+                                         DOC "Path to ${geospatial_name} library." )
 
-set( default_lib_install "lib" )
-if( WIN32 )
-  set( default_lib_install "lib32" )
-  if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    set( default_lib_install "lib64" )
+find_library( GeoSpatial_LIBRARY_DEBUG NAMES ${geospatial_name}_d
+                                       PATHS ${module_lib_search_paths}
+                                       DOC "Path to ${geospatial_name}_d library." )
+
+mark_as_advanced( GeoSpatial_LIBRARY_RELEASE GeoSpatial_LIBRARY_DEBUG )
+
+include( SelectLibraryConfigurations )
+select_library_configurations( GeoSpatial )
+
+include( FindPackageHandleStandardArgs )
+# handle the QUIETLY and REQUIRED arguments and set GeoSpatial_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args( GeoSpatial DEFAULT_MSG
+                                   GeoSpatial_INCLUDE_DIR GeoSpatial_LIBRARY )
+
+set( GeoSpatial_LIBRARIES ${GeoSpatial_LIBRARY} )
+set( GeoSpatial_INCLUDE_DIRS ${GeoSpatial_INCLUDE_DIR} )
+
+# Backwards compatibility values set here.
+set( GeoSpatial_INCLUDE_DIR ${GeoSpatial_INCLUDE_DIRS} )
+
+# Additional message on MSVC
+if( GeoSpatial_FOUND AND MSVC )
+  if( NOT GeoSpatial_LIBRARY_RELEASE )
+    message( WARNING "GeoSpatial release library not found. Release build might not work properly. To get rid of this warning set GeoSpatial_LIBRARY_RELEASE." )
   endif()
-endif()
-
-find_library( GeoSpatial_LIBRARY NAMES ${GeoSpatial_NAME}
-              PATHS $ENV{H3D_ROOT}/../GeoSpatial/${default_lib_install}
-                    ../../../${default_lib_install} )
-
-find_library( GeoSpatial_DEBUG_LIBRARY NAMES ${GeoSpatial_NAME}_d
-              PATHS $ENV{H3D_ROOT}/../GeoSpatial/${default_lib_install}
-                    ../../../${default_lib_install} )
-mark_as_advanced( GeoSpatial_LIBRARY )
-mark_as_advanced( GeoSpatial_DEBUG_LIBRARY )
-
-if( GeoSpatial_LIBRARY OR GeoSpatial_DEBUG_LIBRARY )
-  set( HAVE_GeoSpatial_LIBRARY 1 )
-else()
-  set( HAVE_GeoSpatial_LIBRARY 0 )
-endif()
-
-# Copy the results to the output variables.
-if( GeoSpatial_INCLUDE_DIR AND HAVE_GeoSpatial_LIBRARY )
-
-  set( GeoSpatial_FOUND 1 )
-  if( GeoSpatial_LIBRARY )
-    set( GeoSpatial_LIBRARIES ${GeoSpatial_LIBRARIES} optimized ${GeoSpatial_LIBRARY} )
-  else()
-    set( GeoSpatial_LIBRARIES ${GeoSpatial_LIBRARIES} optimized ${GeoSpatial_NAME} )
-    message( STATUS "GeoSpatial release libraries not found. Release build might not work." )
-  endif()
-
-  if( GeoSpatial_DEBUG_LIBRARY )
-    set( GeoSpatial_LIBRARIES ${GeoSpatial_LIBRARIES} debug ${GeoSpatial_DEBUG_LIBRARY} )
-  else()
-    set( GeoSpatial_LIBRARIES ${GeoSpatial_LIBRARIES} debug ${GeoSpatial_NAME}_d )
-    message( STATUS "GeoSpatial debug libraries not found. Debug build might not work." )
-  endif()
-
-  set( GeoSpatial_INCLUDE_DIR ${GeoSpatial_INCLUDE_DIR} )
-  set( GeoSpatial_LIBRARIES ${GeoSpatial_LIBRARIES} )
-else()
-  set( GeoSpatial_FOUND 0 )
-  set( GeoSpatial_LIBRARIES )
-  set( GeoSpatial_INCLUDE_DIR )
-endif()
-
-# Report the results.
-if( NOT GeoSpatial_FOUND )
-  set( GeoSpatial_DIR_MESSAGE
-    "GeoSpatial was not found. Make sure GeoSpatial_LIBRARY ( and/or GeoSpatial_DEBUG_LIBRARY ) and GeoSpatial_INCLUDE_DIR are set." )
-  if( GeoSpatial_FIND_REQUIRED )
-    message( FATAL_ERROR "${GeoSpatial_DIR_MESSAGE}" )
-  elseif( NOT GeoSpatial_FIND_QUIETLY )
-    message( STATUS "${GeoSpatial_DIR_MESSAGE}" )
+  if( NOT GeoSpatial_LIBRARY_DEBUG )
+    message( WARNING "GeoSpatial debug library not found. Debug build might not work properly. To get rid of this warning set GeoSpatial_LIBRARY_DEBUG." )
   endif()
 endif()
