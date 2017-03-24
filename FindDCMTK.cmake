@@ -38,13 +38,8 @@ getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths $
 
 set( dcmtk_library_postfix "" )
 if( msvc_before_vs2010 )
-  set( h3d_msvc_version 6 )
-  set( temp_msvc_version 1299 )
-  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
-    math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
-    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
-  endwhile()
-  set( dcmtk_library_postfix "_vc${h3d_msvc_version}" )
+  include( H3DCommonFunctions )
+  getMSVCPostFix( dcmtk_library_postfix )
 endif()
 
 if( NOT WIN32 )

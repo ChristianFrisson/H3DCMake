@@ -1,17 +1,23 @@
 # Contains common H3D functions that are used a bit here and there.
 
-set( h3d_msvc_version 6 )
-if( MSVC )
-  set( temp_msvc_version 1299 )
-  while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
-    math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
-    math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
-  endwhile()
+# Get the library/executable postfix commonly used by our library/executable names for MSVC.
+# post_fix_output Contains the variable which should be set to the generated postfix.
+# Only set if generator is MSVC.
+function( getMSVCPostFix post_fix_output )
+  if( MSVC )
+    set( h3d_msvc_version 6 )
+    set( temp_msvc_version 1299 )
+    while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
+      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
+      math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
+    endwhile()
 
-  if( ${h3d_msvc_version} GREATER 12 ) # MSVC skipped 13 in their numbering system.
-    math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
+    if( ${h3d_msvc_version} GREATER 12 ) # MSVC skipped 13 in their numbering system.
+      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
+    endif()
+    set( ${post_fix_output} _vc${h3d_msvc_version} PARENT_SCOPE )
   endif()
-endif()
+endfunction()
 
 # the_target Will contain search path for the include directories.
 # target_base_name Must be the base name for the target.
@@ -22,9 +28,10 @@ function( setH3DMSVCOutputName the_target target_base_name )
     # since they are not compatible with each other. 
     # the_target can not link incrementally on vc8 for some reason. We shut of incremental linking for
     # all visual studio versions.
-    set_target_properties( ${the_target} PROPERTIES OUTPUT_NAME ${target_base_name}_vc${h3d_msvc_version} )
+    getMSVCPostFix( msvc_post_fix )
+    set_target_properties( ${the_target} PROPERTIES OUTPUT_NAME ${target_base_name}${msvc_post_fix} )
     if( ARGC GREATER 2 )
-      set( ${ARGV2} _vc${h3d_msvc_version} PARENT_SCOPE )
+      set( ${ARGV2} ${msvc_post_fix} PARENT_SCOPE )
     endif()
   endif()
 endfunction()
@@ -80,4 +87,17 @@ function( addDelayLoadFlagsFromNames dll_names_list link_flags_container )
     endforeach()
     set( ${link_flags_container} "${${link_flags_container}} ${link_flags_container_internal}" PARENT_SCOPE )
   endif()
+endfunction()
+
+# Get the commonly used lib directory name for H3D 
+# default_lib_directory_output Contains the variable which should be set to the lib directory name.
+function( getDefaultH3DLibDirectory default_lib_directory_output )
+  set( default_lib_install "lib" )
+  if( WIN32 )
+    set( default_lib_install "lib32" )
+    if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+      set( default_lib_install "lib64" )
+    endif()
+  endif()
+  set( ${default_lib_directory_output} ${default_lib_install} PARENT_SCOPE )
 endfunction()
