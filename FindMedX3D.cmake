@@ -4,6 +4,16 @@
 #  MedX3D_INCLUDE_DIRS - Where to find MedX3D.h, etc.
 #  MedX3D_LIBRARIES    - List of libraries when using MedX3D.
 #  MedX3D_FOUND        - True if MedX3D found.
+#
+# If the COMPONENTS feature of MedX3D is not set then it is assumed that
+# the caller does not intend to use any of the supported components in the
+# library/executable code (i.e does not intend to explicitly or implicitly include any headers
+# or link against those libraries.)
+# The allowed values for the COMPONENTS feature of MedX3D are considered optional components:
+# SameComponentsAsInstalledLibrary - Will require all enabled features of the installed
+#   library to be found. Enabled features can be found by searching for HAVE_<Feature> in the
+#   installed header. This flag will be used as COMPONENTS to all H3D libraries that this library
+#   depend on.
 include( H3DCommonFunctions )
 if( MSVC )
   getMSVCPostFix( msvc_postfix )
@@ -25,7 +35,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES MedX3D_LIBRARY_
 getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} MedX3D )
 
 # Look for the header file.
-find_path( MedX3D_INCLUDE_DIR NAMES H3D/MedX3D/MedX3D.h H3D/MedX3D/MedX3D.cmake
+find_path( MedX3D_INCLUDE_DIR NAMES H3D/MedX3D/MedX3D.h
                               PATHS ${module_include_search_paths}
                               DOC "Path in which the file MedX3D/MedX3D.h is located." )
 mark_as_advanced( MedX3D_INCLUDE_DIR )
@@ -40,6 +50,15 @@ find_library( MedX3D_LIBRARY_DEBUG NAMES ${medx3d_name}_d
 
 mark_as_advanced( MedX3D_LIBRARY_RELEASE MedX3D_LIBRARY_DEBUG )
 
+if( MedX3D_INCLUDE_DIR )
+  handleComponentsForLib( MedX3D
+                          MODULE_HEADER ${MedX3D_INCLUDE_DIR}/H3D/MedX3D/MedX3D.h
+                          DESIRED ${MedX3D_FIND_COMPONENTS}
+                          REQUIRED H3DAPI
+                          OUTPUT found_vars component_libraries component_include_dirs
+                          H3D_MODULES H3DAPI )
+endif()
+
 include( SelectLibraryConfigurations )
 select_library_configurations( MedX3D )
 
@@ -47,10 +66,10 @@ include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set MedX3D_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( MedX3D DEFAULT_MSG
-                                   MedX3D_INCLUDE_DIR MedX3D_LIBRARY )
+                                   MedX3D_INCLUDE_DIR MedX3D_LIBRARY ${found_vars} )
 
-set( MedX3D_LIBRARIES ${MedX3D_LIBRARY} )
-set( MedX3D_INCLUDE_DIRS ${MedX3D_INCLUDE_DIR} )
+set( MedX3D_LIBRARIES ${MedX3D_LIBRARY} ${component_libraries} )
+set( MedX3D_INCLUDE_DIRS ${MedX3D_INCLUDE_DIR} ${component_include_dirs} )
 
 # Backwards compatibility values set here.
 set( MEDX3D_INCLUDE_DIR ${MedX3D_INCLUDE_DIRS} )

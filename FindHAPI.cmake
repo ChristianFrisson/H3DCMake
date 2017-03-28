@@ -7,15 +7,48 @@
 #
 # If the COMPONENTS feature of HAPI is not set then it is assumed that
 # the caller does not intend to use any of the supported components in the
+# library/executable code (i.e does not intend to explicitly or implicitly include any headers
+# or link against those libraries.)
+# Valid values for the COMPONENTS argument are:
+# SameComponentsAsInstalledLibrary - Will require all enabled features of the installed
+#   library to be found. Enabled features can be found by searching for HAVE_<Feature> in the
+#   installed header.
+# SofaHelper - Used to enable profiling.
+# VLD - Used to enable memory leak profiling.
+# ZLIB - Used to compress/uncompress files.
+# FreeImage - Used to add support for reading/writing to a number of image file formats.
+# Teem - Used to add support for the nrrd file format.
+# DCMTK - Used to add support for DICOM file format.
+# NvidiaToolsExt - Used for debugging with Nvidia Tools Extension Library.
+# OpenEXR - Used to add support for exr file format.
+#
+# If the COMPONENTS feature of HAPI is not set then it is assumed that
+# the caller does not intend to use any of the supported components in the
 # library/executable code (i.e does not intend to include any headers
 # or link against those libraries.)
-# The allowed values for the COMPONENTS feature of HAPI are:
-# SameAsHAPI - HAPI decides which renderers are required to link. I.e
-#              HAPI.h will be parsed and it is assumed that the library/executable that
-#              will use HAPI will use the defines from HAPI.h to disable/enable
-#              features regarding haptics renderers.
-# OpenHapticsRenderer - OpenHaptics header/libraries must exist on the system.
-# Chai3DRenderer - Chai3d header/libraries must exist on the system.
+# Required components will always be:
+# H3DUtil
+#
+# The allowed values for the COMPONENTS feature of HAPI are considered optional components:
+# SameComponentsAsInstalledLibrary - Will require all enabled features of the installed
+#   library to be found. Enabled features can be found by searching for HAVE_<Feature> in the
+#   installed header. This flag will be used as COMPONENTS to all H3D libraries that this library
+#   depend on.
+# OpenHaptics - Used to add support for haptics devices and haptics rendering using OpenHaptics.
+# Chai3D - Used to add support for haptics devices and haptics rendering using Chai3d.
+# EntactAPI - Used to add support for haptics devices using EntactAPI.
+# DHD - Used to add support for haptics devices using DHD and DRD api.
+# VirtuoseAPI - Used to add support for haptics devices using VirtuoseAPI.
+# FalconAPI - Used to add support for Falcon haptics device.
+# NiFalconAPI - Used to add support for haptics devices using open source drivers for Falcon haptics device.
+# fparser - Used to add support for some special haptics surfaces which can be defined by a function.
+# Haptik - Used to add support for haptics devices supported by the Haptik library.
+# SimballMedical - Used to add support for some semi haptics devices.
+# MLHI - Used to add support for some haptics devices.
+# OpenGL - Used to add support for some opengl features of HAPI used for example
+#          to automatically collect haptic triangles.
+# OpenHapticsRenderer - Deprecated, use OpenHaptics component instead.
+# Chai3DRenderer - Deprecated, use Chai3D component instead. Chai3d header/libraries must exist on the system.
 # 
 # The following features are deprecated and the COMPONENTS feature of find_package should be used instead.
 # HAPI_REQUIRED_RENDERERS
@@ -31,7 +64,7 @@ endif()
 
 include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES HAPI_LIBRARY_DEBUG HAPI_OpenHapticsRenderer_LIBRARY_DEBUG HAPI_Chai3DRenderer_LIBRARY_DEBUG
-                                              OLD_VARIABLE_NAMES HAPI_DEBUG_LIBRARY
+                                              OLD_VARIABLE_NAMES HAPI_DEBUG_LIBRARY HAPI_OpenHapticsRenderer_DEBUG_LIBRARY HAPI_Chai3DRenderer_DEBUG_LIBRARY
                                               DOC_STRINGS "Path to ${hapi_name}_d library."
                                                           "Path to OpenHapticsRenderer${hapi_library_suffix}_d library."
                                                           "Path to Chai3DRenderer${hapi_library_suffix}_d library." )
@@ -39,7 +72,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES HAPI_LIBRARY_DE
 getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} HAPI )
 
 # Look for the header file.
-find_path( HAPI_INCLUDE_DIR NAMES HAPI/HAPI.h HAPI/HAPI.cmake
+find_path( HAPI_INCLUDE_DIR NAMES HAPI/HAPI.h
                             PATHS ${module_include_search_paths}
                             DOC "Path in which the file HAPI/HAPI.h is located." )
 mark_as_advanced( HAPI_INCLUDE_DIR )
@@ -53,93 +86,56 @@ find_library( HAPI_LIBRARY_DEBUG NAMES ${hapi_name}_d
                     DOC "Path to ${hapi_name}_d library." )
 mark_as_advanced( HAPI_LIBRARY_RELEASE HAPI_LIBRARY_DEBUG )
 
-include( SelectLibraryConfigurations )
-select_library_configurations( HAPI )
+if( HAPI_DECIDES_RENDERER_SUPPORT )
+  message( AUTHOR_WARNING "The setting HAPI_DECIDES_RENDERER_SUPPORT is deprecated. Use the COMPONENTS feature of find_package instead." )
+endif()
 
-set( hapi_required_renderers_found YES )
-set( hapi_renderers_include_dir )
-set( hapi_renderers_libraries )
-set( hapi_openhaptics_support NO )
-set( hapi_chai3d_support NO )
-set( renderer_vars_to_check )
+if( HAPI_REQUIRED_RENDERERS )
+  message( AUTHOR_WARNING "The setting HAPI_REQUIRED_RENDERERS is deprecated. Use the COMPONENTS feature of find_package instead." )
+endif()
+
 set( hapi_release_lib_vars HAPI_LIBRARY_RELEASE )
 set( hapi_debug_lib_vars HAPI_LIBRARY_DEBUG )
 
-if( HAPI_LIBRARY AND HAPI_INCLUDE_DIR )
-  foreach( hapi_include_dir_tmp ${HAPI_INCLUDE_DIR} )
-    message( STATUS "${hapi_include_dir_tmp}")
-    if( EXISTS ${hapi_include_dir_tmp}/HAPI/HAPI.h )
-      set( regex_to_find "#define HAVE_OPENHAPTICS" )
-      file( STRINGS ${hapi_include_dir_tmp}/HAPI/HAPI.h list_of_defines REGEX ${regex_to_find} )
-      list( LENGTH list_of_defines list_of_defines_length )
-      if( list_of_defines_length )
-        set( hapi_openhaptics_support YES )
-      endif()
-    
-      set( regex_to_find "#define HAVE_CHAI3D" )
-      file( STRINGS ${hapi_include_dir_tmp}/HAPI/HAPI.h list_of_defines REGEX ${regex_to_find} )
-      list( LENGTH list_of_defines list_of_defines_length )
-      if( list_of_defines_length )
-        set( hapi_chai3d_support YES )
-      endif()
+if( HAPI_INCLUDE_DIR )
+  set( components_to_search_for )
+  foreach( component ${HAPI_FIND_COMPONENTS} )
+    if( "${component}" STREQUAL "OpenHapticsRenderer" )
+      message( AUTHOR_WARNING "The component OpenHapticsRenderer is deprecated. Use the OpenHaptics component instead." )
+      list( APPEND components_to_search_for OpenHaptics )
+    elseif( "${component}" STREQUAL "Chai3DRenderer" )
+      message( AUTHOR_WARNING "The component Chai3DRenderer is deprecated. Use the Chai3D component instead." )
+      list( APPEND components_to_search_for Chai3D )
+    else()
+      list( APPEND components_to_search_for ${component} )
     endif()
   endforeach()
-
-  if( HAPI_DECIDES_RENDERER_SUPPORT )
-    message( AUTHOR_WARNING "The setting HAPI_DECIDES_RENDERER_SUPPORT is deprecated. Use the COMPONENTS feature of find_package instead." )
-  endif()
-
-  if( HAPI_REQUIRED_RENDERERS )
-    message( AUTHOR_WARNING "The setting HAPI_REQUIRED_RENDERERS is deprecated. Use the COMPONENTS feature of find_package instead." )
-  endif()
+  handleComponentsForLib( HAPI
+                          MODULE_HEADER ${HAPI_INCLUDE_DIR}/HAPI/HAPI.h
+                          DESIRED ${components_to_search_for}
+                          REQUIRED H3DUtil
+                          OPTIONAL         OpenHaptics      Chai3D      EntactAPI      DHD         VirtuoseAPI      FalconAPI      NiFalconAPI       fparser      Haptik              SimballMedical          MLHI      OpenGL
+                          OPTIONAL_DEFINES HAVE_OPENHAPTICS HAVE_CHAI3D HAVE_ENTACTAPI HAVE_DHDAPI HAVE_VIRTUOSEAPI HAVE_FALCONAPI HAVE_NIFALCONAPI  HAVE_FPARSER HAVE_HAPTIK_LIBRARY HAVE_SIMBALLMEDICAL_API HAVE_MLHI HAVE_OPENGL
+                          OUTPUT extra_vars_to_check component_libraries component_include_dirs
+                          H3D_MODULES H3DUtil )
 
   set( hapi_renderers_to_use )
-  if( HAPI_FIND_COMPONENTS )
-    foreach( renderer ${HAPI_FIND_COMPONENTS} )
-      if( "${renderer}" STREQUAL "SameAsHAPI" )
-        if( hapi_openhaptics_support )
-          set( hapi_renderers_to_use "OpenHapticsRenderer" )
-        endif()
-        if( hapi_chai3d_support )
-          set( hapi_renderers_to_use ${hapi_renderers_to_use} "Chai3DRenderer" )
-        endif()
-        break()
-      endif()
-      set( hapi_renderers_to_use ${hapi_renderers_to_use} "${renderer}" )
-    endforeach()
-  else()
-    if( HAPI_DECIDES_RENDERER_SUPPORT )
-      if( hapi_openhaptics_support )
-        set( hapi_renderers_to_use "OpenHapticsRenderer" )
-      endif()
-      if( hapi_chai3d_support )
-        set( hapi_renderers_to_use ${hapi_renderers_to_use} "Chai3DRenderer" )
-      endif()
-    elseif( HAPI_REQUIRED_RENDERERS )
-      set( hapi_renderers_to_use ${HAPI_REQUIRED_RENDERERS} )
-    endif()
+  
+  # Check if OpenHaptics was desired, in that case add OpenHapticsRenderer to be searched for.
+  list( FIND extra_vars_to_check OpenHaptics_FOUND location )
+  if( OpenHaptics_FOUND AND NOT ( ${location} EQUAL -1 ) )
+    # Find 
+    set( hapi_renderers_to_use OpenHapticsRenderer )
   endif()
-
+  
+  # Check if Chai3D was desired, in that case add OpenHapticsRenderer to be searched for.
+  list( FIND extra_vars_to_check Chai3D_FOUND location )
+  if( Chai3D_FOUND AND NOT ( ${location} EQUAL -1 ) )
+    # Find 
+    set( hapi_renderers_to_use ${hapi_renderers_to_use} Chai3DRenderer )
+  endif()
+  
   foreach( renderer_name ${hapi_renderers_to_use} )
-    if( ( ${renderer_name} STREQUAL "OpenHapticsRenderer" ) AND NOT hapi_openhaptics_support )
-      set( hapi_compiled_with_support_message "The found version of HAPI is not compiled with support for OpenHapticsRenderer" )
-      if( HAPI_FIND_REQUIRED )
-        message( FATAL_ERROR "${hapi_compiled_with_support_message}" )
-      elseif( NOT HAPI_FIND_QUIETLY )
-        message( STATUS "${hapi_compiled_with_support_message}" )
-      endif()
-    endif()
-    
-    
-    if( ( ${renderer_name} STREQUAL "Chai3DRenderer" ) AND NOT hapi_chai3d_support )
-      set( hapi_compiled_with_support_message "The found version of HAPI is not compiled with support for Chai3DRenderer" )
-      if( HAPI_FIND_REQUIRED )
-        message( FATAL_ERROR "${hapi_compiled_with_support_message}" )
-      elseif( NOT HAPI_FIND_QUIETLY )
-        message( STATUS "${hapi_compiled_with_support_message}" )
-      endif()
-    endif()
-    
     getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} HAPI/${renderer_name} )
     find_path( HAPI_${renderer_name}_INCLUDE_DIR NAMES HAPI/${renderer_name}.h 
                                                  PATHS ${module_include_search_paths}
@@ -158,30 +154,26 @@ if( HAPI_LIBRARY AND HAPI_INCLUDE_DIR )
     endif()
     
     select_library_configurations( HAPI_${renderer_name} )
-    set( renderer_vars_to_check ${renderer_vars_to_check} HAPI_${renderer_name}_INCLUDE_DIR HAPI_${renderer_name}_LIBRARY )
-    set( hapi_renderers_include_dir ${hapi_renderers_include_dir} HAPI_${renderer_name}_INCLUDE_DIR )
-    set( hapi_renderers_libraries ${hapi_renderers_libraries} ${HAPI_${renderer_name}_LIBRARY} )
+    set( extra_vars_to_check ${extra_vars_to_check} HAPI_${renderer_name}_INCLUDE_DIR HAPI_${renderer_name}_LIBRARY )
+    set( component_include_dirs ${component_include_dirs} ${HAPI_${renderer_name}_INCLUDE_DIR} )
+    set( component_libraries ${component_libraries} ${HAPI_${renderer_name}_LIBRARY} )
     set( hapi_release_lib_vars ${hapi_release_lib_vars} HAPI_${renderer_name}_LIBRARY_RELEASE )
     set( hapi_debug_lib_vars ${hapi_debug_lib_vars} HAPI_${renderer_name}_LIBRARY_DEBUG )
-    
-    string( REGEX REPLACE "Renderer" "" renderer_name_stripped ${renderer_name} )
-    # OpenHapticsRenderer or Chai3DRenderer library is found. Check for OpenHaptics/Chai3D on the system. It must exist for the library
-    # using HAPI since it is assumed that the library using HAPI will include OpenHapticsRenderer.h/Chai3DRenderer.h.
-    find_package( ${renderer_name_stripped} )
-    set( renderer_vars_to_check ${renderer_vars_to_check} ${renderer_name_stripped}_FOUND )
-    set( hapi_renderers_include_dir ${hapi_renderers_include_dir} ${${renderer_name_stripped}_INCLUDE_DIRS} )
-    set( hapi_renderers_libraries ${hapi_renderers_libraries} ${${renderer_name_stripped}_LIBRARIES} )
   endforeach()
 endif()
+
+
+include( SelectLibraryConfigurations )
+select_library_configurations( HAPI )
 
 include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set HAPI_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( HAPI DEFAULT_MSG
-                                   HAPI_INCLUDE_DIR HAPI_LIBRARY ${renderer_vars_to_check} )
+                                   HAPI_INCLUDE_DIR HAPI_LIBRARY ${extra_vars_to_check} )
 
-set( HAPI_LIBRARIES ${HAPI_LIBRARY} ${hapi_renderers_libraries} )
-set( HAPI_INCLUDE_DIRS ${HAPI_INCLUDE_DIR} ${hapi_renderers_include_dir} )
+set( HAPI_LIBRARIES ${HAPI_LIBRARY} ${component_libraries} )
+set( HAPI_INCLUDE_DIRS ${HAPI_INCLUDE_DIR} ${component_include_dirs} )
 
 # Backwards compatibility values set here.
 set( HAPI_INCLUDE_DIR ${HAPI_INCLUDE_DIRS} )

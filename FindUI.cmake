@@ -4,6 +4,16 @@
 #  UI_INCLUDE_DIRS - Where to find UI.h, etc.
 #  UI_LIBRARIES    - List of libraries when using UI.
 #  UI_FOUND        - True if UI found.
+#
+# If the COMPONENTS feature of UI is not set then it is assumed that
+# the caller does not intend to use any of the supported components in the
+# library/executable code (i.e does not intend to explicitly or implicitly include any headers
+# or link against those libraries.)
+# The allowed values for the COMPONENTS feature of UI are considered optional components:
+# SameComponentsAsInstalledLibrary - Will require all enabled features of the installed
+#   library to be found. Enabled features can be found by searching for HAVE_<Feature> in the
+#   installed header. This flag will be used as COMPONENTS to all H3D libraries that this library
+#   depend on.
 include( H3DCommonFunctions )
 if( MSVC )
   getMSVCPostFix( msvc_postfix )
@@ -23,7 +33,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES UI_LIBRARY_DEBU
 getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} UI )
 
 # Look for the header file.
-find_path( UI_INCLUDE_DIR NAMES H3D/UI/UI.h H3D/UI/UI.cmake
+find_path( UI_INCLUDE_DIR NAMES H3D/UI/UI.h
                           PATHS ${module_include_search_paths}
                           DOC "Path in which the file UI/UI.h is located." )
 mark_as_advanced( UI_INCLUDE_DIR )
@@ -38,6 +48,15 @@ find_library( UI_LIBRARY_DEBUG NAMES ${ui_name}_d
 
 mark_as_advanced( UI_LIBRARY_RELEASE UI_LIBRARY_DEBUG )
 
+if( UI_INCLUDE_DIR )
+  handleComponentsForLib( UI
+                          MODULE_HEADER ${UI_INCLUDE_DIR}/H3D/UI/UI.h
+                          DESIRED ${UI_FIND_COMPONENTS}
+                          REQUIRED H3DAPI
+                          OUTPUT found_vars component_libraries component_include_dirs
+                          H3D_MODULES H3DAPI )
+endif()
+
 include( SelectLibraryConfigurations )
 select_library_configurations( UI )
 
@@ -45,10 +64,10 @@ include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set UI_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( UI DEFAULT_MSG
-                                   UI_INCLUDE_DIR UI_LIBRARY )
+                                   UI_INCLUDE_DIR UI_LIBRARY ${found_vars} )
 
-set( UI_LIBRARIES ${UI_LIBRARY} )
-set( UI_INCLUDE_DIRS ${UI_INCLUDE_DIR} )
+set( UI_LIBRARIES ${UI_LIBRARY} ${component_libraries} )
+set( UI_INCLUDE_DIRS ${UI_INCLUDE_DIR} ${component_include_dirs} )
 
 # Backwards compatibility values set here.
 set( UI_INCLUDE_DIR ${UI_INCLUDE_DIRS} )
