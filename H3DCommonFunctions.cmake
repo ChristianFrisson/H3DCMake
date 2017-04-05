@@ -170,7 +170,7 @@ endfunction()
 # UPDATERESOURCEFILE_EXE - The location of UpdateResourceFile executable.
 # UPDATERESOURCEFILE_EXE_EXTRA_ARGS - Extra arguments that should be given to UpdateResourceFile in those
 # cases when the resource file has more info than just version.
-function( setupResourceFile target_name  )
+function( setupResourceFile target_name )
   # Add a cache variable ENABLE_SVN_REVISION to have the choice of using
   # SubWCRev.exe to embed svn revision number in generated DLLs.
   # Default is YES for Visual Studio and NMake generators, NO otherwise.
@@ -183,7 +183,7 @@ function( setupResourceFile target_name  )
     
     foreach( required_arg ${oneValueArgs} )
       if( NOT DEFINED setup_resource_file_${required_arg} )
-        message( FATAL_ERROR "The required argument ${required_arg} is missing when calling setupResourceFile.")
+        message( FATAL_ERROR "The required argument ${required_arg} is missing when calling setupResourceFile." )
       endif()
     endforeach()
   
@@ -223,7 +223,7 @@ function( setupResourceFile target_name  )
                           ARGS ${setup_resource_file_VERSION_PREFIX} ${setup_resource_file_RESOURCE_FILE_OUTPUT_LOCATION} ${setup_resource_file_RESOURCE_FILE_CMAKE_TEMPLATE}
                           ${${setup_resource_file_VERSION_PREFIX}_MAJOR_VERSION} ${${setup_resource_file_VERSION_PREFIX}_MINOR_VERSION}
                           ${${setup_resource_file_VERSION_PREFIX}_BUILD_VERSION} "${${setup_resource_file_VERSION_PREFIX}_SVN_VERSION}"
-                          ${setup_resource_file_UPDATERESOURCEFILE_EXE_EXTRA_ARGS}  )
+                          ${setup_resource_file_UPDATERESOURCEFILE_EXE_EXTRA_ARGS} )
     endif()
 
     if( ENABLE_SVN_REVISION AND SubWCRev AND ${code_is_svn_working_copy} EQUAL 0 )
