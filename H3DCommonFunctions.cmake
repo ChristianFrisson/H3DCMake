@@ -133,6 +133,9 @@ function( handleCommonCacheVar )
   set( multiValueArgs )
   include( CMakeParseArguments )
   cmake_parse_arguments( setup_common_cache_var "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  if( setup_common_cache_var_UNPARSED_ARGUMENTS )
+    message( FATAL_ERROR "Unknown keywords given to handleCommonCacheVar(): \"${setup_common_cache_var_UNPARSED_ARGUMENTS}\"" )
+  endif()
   
   if( setup_common_cache_var_CMAKE_INSTALL_PREFIX )
     # set the install directory to the H3D directory on Windows
@@ -180,9 +183,12 @@ function( setupResourceFile target_name )
     set( multiValueArgs UPDATERESOURCEFILE_EXE_EXTRA_ARGS )
     include( CMakeParseArguments )
     cmake_parse_arguments( setup_resource_file "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    if( setup_resource_file_UNPARSED_ARGUMENTS )
+      message( FATAL_ERROR "Unknown keywords given to setupResourceFile(): \"${setup_resource_file_UNPARSED_ARGUMENTS}\"" )
+    endif()
     
     foreach( required_arg ${oneValueArgs} )
-      if( NOT DEFINED setup_resource_file_${required_arg} )
+      if( NOT setup_resource_file_${required_arg} )
         message( FATAL_ERROR "The required argument ${required_arg} is missing when calling setupResourceFile." )
       endif()
     endforeach()
@@ -234,6 +240,84 @@ function( setupResourceFile target_name )
                           PRE_BUILD 
                           COMMAND ${SubWCRev} 
                           ARGS ${setup_resource_file_SVN_DIR_CANDIDATE} ${setup_resource_file_RESOURCE_FILE_OUTPUT_LOCATION} ${setup_resource_file_RESOURCE_FILE_OUTPUT_LOCATION} )
+    endif()
+  endif()
+endfunction()
+
+# Set up unity build cache variables and optional compile flags and also handles
+# detection of cache changes.
+# PROJECT_NAME - The name of the project which calls this function. Used in warnings/errors and to
+#                create a cache variable for enabling/disabling per project.
+# SOURCE_FILES - The list of source files that should be included in the UnityBuild.cpp file.
+# OUTPUT_VARIABLE - The name of the variable in which to set the list of sources in case unity build should
+#                   be used.
+# SOURCE_PREFIX_PATH - Optional. A path used as prefix to the source files listed in SOURCE_FILES.
+# COMPILE_FLAGS_VARIABLE - Optional. If given it should contain the name of the variable in which to put
+#                          the /bigobj compile flags. It is an indication that the Unitybuild.cpp file
+#                          will end up being very large. Only used if compiler is MSVC.
+# UNITY_BUILD_SOURCES - Optional. A list of source files that should be given to the OUTPUT_VARIABLE if
+#                       unity build is enabled. If omitted then only UnityBuild.cpp will be given to OUTPUT_VARIABLE.
+function( handleUnityBuild )
+  set( options )
+  set( oneValueArgs PROJECT_NAME SOURCE_PREFIX_PATH COMPILE_FLAGS_VARIABLE OUTPUT_VARIABLE )
+  set( multiValueArgs SOURCE_FILES UNITY_BUILD_SOURCES )
+  include( CMakeParseArguments )
+  cmake_parse_arguments( handle_unity_build "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  if( handle_unity_build_UNPARSED_ARGUMENTS )
+    message( FATAL_ERROR "Unknown keywords given to handleUnityBuild(): \"${handle_unity_build_UNPARSED_ARGUMENTS}\"" )
+  endif()
+  
+  set( required_arguments PROJECT_NAME OUTPUT_VARIABLE SOURCE_FILES )
+  foreach( required_arg ${required_arguments} )
+    if( NOT handle_unity_build_${required_arg} )
+      message( FATAL_ERROR "The required argument ${required_arg} is missing when calling handleUnityBuild." )
+    endif()
+  endforeach()
+
+  # Add a cache variable GENERATE_UNITY_BUILD to have the choice of selecting
+  # a unity build project. Default is NO.
+  if( NOT DEFINED GENERATE_UNITY_BUILD )
+    set( GENERATE_UNITY_BUILD OFF CACHE BOOL "Decides if a the generated project files should build through a unity build instead of a normal build. A unity builds packs all .cpp files into a UnityBuild.cpp file and then only include this in the project. This greatly reduces build times." )
+  endif()
+
+  if( GENERATE_UNITY_BUILD )
+    if( NOT DEFINED UNITY_BUILD_${handle_unity_build_PROJECT_NAME} )
+      set( UNITY_BUILD_${handle_unity_build_PROJECT_NAME} ON CACHE BOOL "Decides if a the generated project files should build through a unity build instead of a normal build. A unity builds packs all .cpp files into a UnityBuild.cpp file and then only include this in the project. This greatly reduces build times." )
+    endif()
+
+    if( UNITY_BUILD_${handle_unity_build_PROJECT_NAME} )  
+      # Generate a unity build, by creating the UnityBuild.cpp and only including the required 
+      # source files.
+      set( UNITYBUILD_INCLUDES )
+
+      foreach( filename ${handle_unity_build_SOURCE_FILES} )
+        if( handle_unity_build_SOURCE_PREFIX_PATH )
+          set( filename ${handle_unity_build_SOURCE_PREFIX_PATH}${filename} )
+        endif()
+        set( UNITYBUILD_INCLUDES "${UNITYBUILD_INCLUDES}\n #include \"${filename}\"\n" )
+      endforeach()
+
+      # Using a cached variable with our string in it. Because cmake doesn't support multi-line strings we have to replace the newlines with a delimiter, so we arbitrarily use +=+.
+      string( REPLACE "
+  " "+=+" UnitybuildIncludesConverted ${UNITYBUILD_INCLUDES} ) # Convert the file we're going to write to use our delimiter instead of newlines
+      if( NOT ( UNITY_BUILD_CACHE_${handle_unity_build_PROJECT_NAME} ) OR NOT ( UnitybuildIncludesConverted STREQUAL UNITY_BUILD_CACHE_${handle_unity_build_PROJECT_NAME} )) # If we don't have the cache variable or if its contents don't match our new string then we write the unmodified new UnityBuild file and store the one with the swapped out delimiters in the cache variable
+        message( STATUS "Updating UnityBuild.cpp for " ${handle_unity_build_PROJECT_NAME} )
+        string( REPLACE "
+  " "+=+" unityBuildCacheNew ${UNITYBUILD_INCLUDES} )
+        set( UNITY_BUILD_CACHE_${handle_unity_build_PROJECT_NAME} ${unityBuildCacheNew} CACHE INTERNAL "Used for determining if UnityBuild.cpp should be updated or not." )
+        file( WRITE UnityBuild.cpp ${UNITYBUILD_INCLUDES} )
+      else()
+        message( STATUS "Unitybuild.cpp for ${handle_unity_build_PROJECT_NAME} already up to date" )
+      endif()
+      if( MSVC AND handle_unity_build_COMPILE_FLAGS_VARIABLE )
+        set( ${handle_unity_build_COMPILE_FLAGS_VARIABLE} "${${handle_unity_build_COMPILE_FLAGS_VARIABLE}} /bigobj" PARENT_SCOPE )
+      endif()
+
+      if( handle_unity_build_UNITY_BUILD_SOURCES )
+        set( ${handle_unity_build_OUTPUT_VARIABLE} ${${handle_unity_build_UNITY_BUILD_SOURCES}} PARENT_SCOPE )
+      else()
+        set( ${handle_unity_build_OUTPUT_VARIABLE} "UnityBuild.cpp" PARENT_SCOPE )
+      endif()
     endif()
   endif()
 endfunction()
