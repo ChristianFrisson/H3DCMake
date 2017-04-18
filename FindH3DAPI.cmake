@@ -65,7 +65,8 @@ mark_as_advanced( H3DAPI_LIBRARY_RELEASE H3DAPI_LIBRARY_DEBUG )
 
 if( H3DAPI_INCLUDE_DIR )
   handleComponentsForLib( H3DAPI
-                          MODULE_HEADER ${H3DAPI_INCLUDE_DIR}/H3D/H3DAPI.h
+                          MODULE_HEADER_DIRS ${H3DAPI_INCLUDE_DIR}
+                          MODULE_HEADER_SUFFIX /H3D/H3DApi.h
                           DESIRED ${H3DAPI_FIND_COMPONENTS}
                           REQUIRED HAPI OpenGL GLEW
                           OPTIONAL         XercesC OpenAL Vorbis Audiofile NvidiaCG LibOVR FTGL Freetype 3DXWARE PythonLibs CURL
@@ -87,6 +88,7 @@ find_package_handle_standard_args( H3DAPI DEFAULT_MSG
 
 set( H3DAPI_LIBRARIES ${H3DAPI_LIBRARY} ${component_libraries} )
 set( H3DAPI_INCLUDE_DIRS ${H3DAPI_INCLUDE_DIR} ${component_include_dirs} )
+list( REMOVE_DUPLICATES H3DAPI_INCLUDE_DIRS )
 
 # Backwards compatibility values set here.
 set( H3DAPI_INCLUDE_DIR ${H3DAPI_INCLUDE_DIRS} )

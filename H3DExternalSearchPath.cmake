@@ -353,7 +353,10 @@ function( getSearchPathsH3DLibs include_paths_output lib_path_output module_path
 endfunction()
 
 # Tries to handle all components for the given H3D module_name.
-# MODULE_HEADER - Should point to the header of the H3D module.
+# MODULE_HEADER - Should point to the header of the H3D module, if not set then MODULE_HEADER_SUFFIX and MODULE_HEADER_DIRS must be set.
+# MODULE_HEADER_SUFFIX - Will be appended to each path in MODULE_HEADER_DIRS to try to find a proper header file.
+#                        Only used if MODULE_HEADER is not set
+# MODULE_HEADER_DIRS - Used with MODULE_HEADER_SUFFIX. Only used if MODULE_HEADER is not set
 # REQUIRED - Required supported components.
 # OPTIONAL - OPTIONAL supported components, will only be checked if they are listed in DESIRED.
 # OPTIONAL_DEFINES - List the defines to search for in the MODULE_HEADER to know whether an optional
@@ -370,8 +373,8 @@ endfunction()
 #               special name.
 function( handleComponentsForLib module_name )
   set( options )
-  set( oneValueArgs MODULE_HEADER )
-  set( multiValueArgs REQUIRED OPTIONAL OPTIONAL_DEFINES DESIRED OUTPUT H3D_MODULES )
+  set( oneValueArgs MODULE_HEADER MODULE_HEADER_SUFFIX )
+  set( multiValueArgs REQUIRED OPTIONAL OPTIONAL_DEFINES DESIRED OUTPUT H3D_MODULES MODULE_HEADER_DIRS )
   include( CMakeParseArguments )
   cmake_parse_arguments( handle_components_for_lib "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
   if( handle_components_for_lib_UNPARSED_ARGUMENTS )
@@ -437,8 +440,17 @@ function( handleComponentsForLib module_name )
       set( components_to_search_for ${handle_components_for_lib_OPTIONAL} )
     endif()
     if( components_to_search_for )
-      if( ( NOT handle_components_for_lib_MODULE_HEADER ) OR NOT EXISTS ${handle_components_for_lib_MODULE_HEADER} )
-        message( FATAL_ERROR "Missing or invalid value for argument MODULE_HEADER of handleComponentsForLib. ${handle_components_for_lib_MODULE_HEADER}" )
+      set( module_header_to_use ${handle_components_for_lib_MODULE_HEADER} )
+      if( ( NOT module_header_to_use ) OR NOT EXISTS ${module_header_to_use} )
+        foreach( module_dir ${handle_components_for_lib_MODULE_HEADER_DIRS} )
+          if( EXISTS ${module_dir}${handle_components_for_lib_MODULE_HEADER_SUFFIX} )
+            set( module_header_to_use ${module_dir}${handle_components_for_lib_MODULE_HEADER_SUFFIX} )
+            break()
+          endif()
+        endforeach()
+        if( ( NOT module_header_to_use ) OR NOT EXISTS ${module_header_to_use} )
+          message( FATAL_ERROR "Missing or invalid value for finding a header. Use either argument MODULE_HEADER or both arguments MODULE_HEADER_SUFFIX and MODULE_HEADER_DIRS of handleComponentsForLib." )
+        endif()
       endif()
       if( NOT handle_components_for_lib_OPTIONAL_DEFINES )
         message( FATAL_ERROR "Missing or invalid value for argument OPTIONAL_DEFINES of handleComponentsForLib. It must exist and be of the same length as the argument OPTIONAL." )
@@ -456,7 +468,7 @@ function( handleComponentsForLib module_name )
         else()
           list( GET handle_components_for_lib_OPTIONAL_DEFINES ${optional_lib_index} optional_define )
           set( regex_to_find "#define[ ]+${optional_define}" )
-          file( STRINGS ${handle_components_for_lib_MODULE_HEADER} list_of_defines REGEX ${regex_to_find} )
+          file( STRINGS ${module_header_to_use} list_of_defines REGEX ${regex_to_find} )
           list( LENGTH list_of_defines list_of_defines_length )
           if( list_of_defines_length )
             set( extra_arg )

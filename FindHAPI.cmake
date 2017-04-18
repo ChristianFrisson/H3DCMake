@@ -111,7 +111,8 @@ if( HAPI_INCLUDE_DIR )
     endif()
   endforeach()
   handleComponentsForLib( HAPI
-                          MODULE_HEADER ${HAPI_INCLUDE_DIR}/HAPI/HAPI.h
+                          MODULE_HEADER_DIRS ${HAPI_INCLUDE_DIR}
+                          MODULE_HEADER_SUFFIX /HAPI/HAPI.h
                           DESIRED ${components_to_search_for}
                           REQUIRED H3DUtil
                           OPTIONAL         OpenHaptics      Chai3D      EntactAPI      DHD         VirtuoseAPI      FalconAPI      NiFalconAPI       fparser      Haptik              SimballMedical          MLHI      OpenGL
@@ -174,6 +175,7 @@ find_package_handle_standard_args( HAPI DEFAULT_MSG
 
 set( HAPI_LIBRARIES ${HAPI_LIBRARY} ${component_libraries} )
 set( HAPI_INCLUDE_DIRS ${HAPI_INCLUDE_DIR} ${component_include_dirs} )
+list( REMOVE_DUPLICATES HAPI_INCLUDE_DIRS )
 
 # Backwards compatibility values set here.
 set( HAPI_INCLUDE_DIR ${HAPI_INCLUDE_DIRS} )

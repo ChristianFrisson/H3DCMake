@@ -75,6 +75,7 @@ find_package_handle_standard_args( H3DUtil DEFAULT_MSG
 
 set( H3DUtil_LIBRARIES ${H3DUtil_LIBRARY} ${component_libraries} )
 set( H3DUtil_INCLUDE_DIRS ${H3DUtil_INCLUDE_DIR} ${component_include_dirs} )
+list( REMOVE_DUPLICATES H3DUtil_INCLUDE_DIRS )
 
 # Backwards compatibility values set here.
 set( H3DUTIL_INCLUDE_DIR ${H3DUtil_INCLUDE_DIRS} )

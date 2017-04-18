@@ -50,7 +50,8 @@ mark_as_advanced( UI_LIBRARY_RELEASE UI_LIBRARY_DEBUG )
 
 if( UI_INCLUDE_DIR )
   handleComponentsForLib( UI
-                          MODULE_HEADER ${UI_INCLUDE_DIR}/H3D/UI/UI.h
+                          MODULE_HEADER_DIRS ${UI_INCLUDE_DIR}
+                          MODULE_HEADER_SUFFIX /H3D/UI/UI.h
                           DESIRED ${UI_FIND_COMPONENTS}
                           REQUIRED H3DAPI
                           OUTPUT found_vars component_libraries component_include_dirs
@@ -68,6 +69,7 @@ find_package_handle_standard_args( UI DEFAULT_MSG
 
 set( UI_LIBRARIES ${UI_LIBRARY} ${component_libraries} )
 set( UI_INCLUDE_DIRS ${UI_INCLUDE_DIR} ${component_include_dirs} )
+list( REMOVE_DUPLICATES UI_INCLUDE_DIRS )
 
 # Backwards compatibility values set here.
 set( UI_INCLUDE_DIR ${UI_INCLUDE_DIRS} )

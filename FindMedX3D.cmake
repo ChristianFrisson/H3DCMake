@@ -70,6 +70,7 @@ find_package_handle_standard_args( MedX3D DEFAULT_MSG
 
 set( MedX3D_LIBRARIES ${MedX3D_LIBRARY} ${component_libraries} )
 set( MedX3D_INCLUDE_DIRS ${MedX3D_INCLUDE_DIR} ${component_include_dirs} )
+list( REMOVE_DUPLICATES MedX3D_INCLUDE_DIRS )
 
 # Backwards compatibility values set here.
 set( MEDX3D_INCLUDE_DIR ${MedX3D_INCLUDE_DIRS} )

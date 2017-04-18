@@ -57,7 +57,8 @@ mark_as_advanced( H3DPhysics_LIBRARY_RELEASE H3DPhysics_LIBRARY_DEBUG )
 
 if( H3DPhysics_INCLUDE_DIR )
   handleComponentsForLib( H3DPhysics
-                          MODULE_HEADER ${H3DPhysics_INCLUDE_DIR}/H3D/H3DPhysics/H3DPhysics.h
+                          MODULE_HEADER_DIRS ${H3DPhysics_INCLUDE_DIR}
+                          MODULE_HEADER_SUFFIX /H3D/H3DPhysics/H3DPhysics.h
                           DESIRED ${H3DPhysics_FIND_COMPONENTS}
                           REQUIRED H3DAPI
                           OPTIONAL         ODE      PhysX      PhysX3      HACD      Bullet      SOFA      PythonLibs
@@ -77,6 +78,7 @@ find_package_handle_standard_args( H3DPhysics DEFAULT_MSG
 
 set( H3DPhysics_LIBRARIES ${H3DPhysics_LIBRARY} ${component_libraries} )
 set( H3DPhysics_INCLUDE_DIRS ${H3DPhysics_INCLUDE_DIR} ${component_include_dirs} )
+list( REMOVE_DUPLICATES H3DPhysics_INCLUDE_DIRS )
 
 # Backwards compatibility values set here.
 set( H3DPhysics_INCLUDE_DIR ${H3DPhysics_INCLUDE_DIRS} )

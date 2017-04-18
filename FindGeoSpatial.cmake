@@ -50,7 +50,8 @@ mark_as_advanced( GeoSpatial_LIBRARY_RELEASE GeoSpatial_LIBRARY_DEBUG )
 
 if( GeoSpatial_INCLUDE_DIR )
   handleComponentsForLib( GeoSpatial
-                          MODULE_HEADER ${GeoSpatial_INCLUDE_DIR}/H3D/Geospatial/GeospatialConfig.h
+                          MODULE_HEADER_DIRS ${GeoSpatial_INCLUDE_DIR}
+                          MODULE_HEADER_SUFFIX /H3D/GeoSpatial/GeospatialConfig.h
                           DESIRED ${GeoSpatial_FIND_COMPONENTS}
                           REQUIRED H3DAPI
                           OUTPUT found_vars component_libraries component_include_dirs
@@ -71,6 +72,7 @@ set( GeoSpatial_INCLUDE_DIRS ${GeoSpatial_INCLUDE_DIR} ${component_include_dirs}
 
 # Backwards compatibility values set here.
 set( GeoSpatial_INCLUDE_DIR ${GeoSpatial_INCLUDE_DIRS} )
+list( REMOVE_DUPLICATES GeoSpatial_INCLUDE_DIRS )
 
 # Additional message on MSVC
 if( GeoSpatial_FOUND AND MSVC )
