@@ -320,3 +320,53 @@ function( handleUnityBuild )
     endif()
   endif()
 endfunction()
+
+# Set up precompiled headers. Will do nothing for non MSVC generators.
+# PROJECT_NAME - The name of the project which calls this function. Used in warnings/errors and to
+#                create a cache variable for enabling/disabling per project.
+# HEADERS_VARIABLE - The name of a variable which contain all the headers of the project.
+# SRCS_VARIABLE - The name of a variable which contain all the source files of the project.
+# STDAFX_HEADER_LOCATION - The location in which StdAfx.h should be created.
+# STDAFX_SOURCE_LOCATION - The location in which StdAfx.cpp should be created.
+function( handlePrecompiledHeaders )
+  set( options )
+  set( oneValueArgs PROJECT_NAME HEADERS_VARIABLE SRCS_VARIABLE STDAFX_HEADER_LOCATION STDAFX_SOURCE_LOCATION )
+  set( multiValueArgs )
+  include( CMakeParseArguments )
+  cmake_parse_arguments( handle_precompiled_headers "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  if( handle_precompiled_headers_UNPARSED_ARGUMENTS )
+    message( FATAL_ERROR "Unknown keywords given to handleUnityBuild(): \"${handle_precompiled_headers_UNPARSED_ARGUMENTS}\"" )
+  endif()
+  
+  foreach( required_arg ${oneValueArgs} )
+    if( NOT handle_precompiled_headers_${required_arg} )
+      message( FATAL_ERROR "The required argument ${required_arg} is missing when calling handlePrecompiledHeaders." )
+    endif()
+  endforeach()
+
+  set( PRECOMPILED_HEADERS_${handle_precompiled_headers_PROJECT_NAME} ON CACHE BOOL "Decides if a the generated project files should use precompiled headers. This greatly reduces build times after first build." )
+
+  # set up precompiled headers  
+  if( MSVC AND PRECOMPILED_HEADERS_${handle_precompiled_headers_PROJECT_NAME} )
+    list( APPEND ${handle_precompiled_headers_HEADERS_VARIABLE} ${handle_precompiled_headers_STDAFX_HEADER_LOCATION}StdAfx.h )
+    list( APPEND ${handle_precompiled_headers_SRCS_VARIABLE} ${handle_precompiled_headers_STDAFX_SOURCE_LOCATION}StdAfx.cpp )
+    # TODO, replace this with something that creates a path from the base of handle_precompiled_headers_STDAFX_SOURCE_LOCATION and handle_precompiled_headers_STDAFX_HEADER_LOCATION 
+    string( REGEX REPLACE ".*include/" "" stdafx_header_location_no_include ${handle_precompiled_headers_STDAFX_HEADER_LOCATION} )
+    if( stdafx_header_location_no_include STREQUAL ${handle_precompiled_headers_STDAFX_HEADER_LOCATION} )
+      set( stdafx_header_location_no_include )
+    endif()
+    if( ${MSVC_VERSION} LESS 1900 )
+      set_source_files_properties( ${${handle_precompiled_headers_SRCS_VARIABLE}}
+                                   PROPERTIES COMPILE_FLAGS "/Zm900 /FI${stdafx_header_location_no_include}StdAfx.h /Yu${stdafx_header_location_no_include}StdAfx.h" )
+      set_source_files_properties( ${handle_precompiled_headers_STDAFX_SOURCE_LOCATION}StdAfx.cpp 
+                                   PROPERTIES COMPILE_FLAGS "/Zm900 /Yc${stdafx_header_location_no_include}StdAfx.h" )
+    else()
+      set_source_files_properties( ${${handle_precompiled_headers_SRCS_VARIABLE}}
+                                   PROPERTIES COMPILE_FLAGS "/FI${stdafx_header_location_no_include}StdAfx.h /Yu${stdafx_header_location_no_include}StdAfx.h" )
+      set_source_files_properties( ${handle_precompiled_headers_STDAFX_SOURCE_LOCATION}StdAfx.cpp
+                                   PROPERTIES COMPILE_FLAGS "/Yc${stdafx_header_location_no_include}StdAfx.h" )
+    endif()
+    set( ${handle_precompiled_headers_HEADERS_VARIABLE} ${${handle_precompiled_headers_HEADERS_VARIABLE}} PARENT_SCOPE )
+    set( ${handle_precompiled_headers_SRCS_VARIABLE} ${${handle_precompiled_headers_SRCS_VARIABLE}} PARENT_SCOPE )
+  endif()
+endfunction()
