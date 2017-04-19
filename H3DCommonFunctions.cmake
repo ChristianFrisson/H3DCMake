@@ -122,14 +122,50 @@ function( setupRPathForLib )
   endif()
 endfunction()
 
+# Detects whether C++11 is required and in that case checks if the compiles has support for it.
+function( enableCpp11 )
+  set( options )
+  set( oneValueArgs FAIL_MESSAGE )
+  set( multiValueArgs )
+  include( CMakeParseArguments )
+  cmake_parse_arguments( enable_c++11 "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  if( enable_c++11_UNPARSED_ARGUMENTS )
+    message( FATAL_ERROR "Unknown keywords given to handleUnityBuild(): \"${enable_c++11_UNPARSED_ARGUMENTS}\"" )
+  endif()
+  
+  set( fail_message "Compiler does not support c++11.")
+  if( enable_c++11_FAIL_MESSAGE )
+    set( fail_message ${enable_c++11_FAIL_MESSAGE} )
+  endif()
+  
+  if( "${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" )
+    execute_process(
+        COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE gcc_version )
+    if( gcc_version VERSION_GREATER 4.7 OR gcc_version VERSION_EQUAL 4.7 )
+      add_definitions( "-std=gnu++11" )
+    elseif( gcc_version VERSION_GREATER 4.3 OR gcc_version VERSION_EQUAL 4.3 )
+      add_definitions( "-std=gnu++0x" )
+    else()
+      message( FATAL_ERROR ${fail_message} )
+    endif()
+  elseif( ${MSVC_VERSION} LESS 1600 )
+    message( FATAL_ERROR ${fail_message} )
+  endif()
+endfunction()
+
 # Handles common cache variables for H3D projects. Some of which might be CMAKE variables.
 # Arguments are:
 # GENERATE_CPACK_PROJECT - Will be initialized to OFF
 # PREFER_STATIC_LIBRARIES - Will be initialized to OFF
 # CMAKE_INSTALL_PREFIX <prefix_path> - Will set CMAKE_INSTALL_PREFIX to the given path if it was not already initialized. 
+# ENABLE_THREAD_LOCK_DEBUG - If not set to a false value then ENABLE_THREAD_LOCK_DEBUG is created and initialized to OFF
+#                            if it did not already exist. Otherwise the value is checked if it and the target H3DUtil exists
+#                            otherwise the file H3DUtil.h is looked for and if found will be parsed to see if
+#                            THREAD_LOCK_DEBUG is defined. If ENABLE_THREAD_LOCK_DEBUG is true or THREAD_LOCK_DEBUG is
+#                            defined in H3DUtil.h then C++11 functionality is required.
 function( handleCommonCacheVar )
   set( options GENERATE_CPACK_PROJECT PREFER_STATIC_LIBRARIES )
-  set( oneValueArgs CMAKE_INSTALL_PREFIX )
+  set( oneValueArgs CMAKE_INSTALL_PREFIX ENABLE_THREAD_LOCK_DEBUG )
   set( multiValueArgs )
   include( CMakeParseArguments )
   cmake_parse_arguments( setup_common_cache_var "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
@@ -160,6 +196,33 @@ function( handleCommonCacheVar )
 
     if( PREFER_STATIC_LIBRARIES )
       set( CMAKE_FIND_LIBRARY_SUFFIXES .a;${CMAKE_FIND_LIBRARY_SUFFIXES} PARENT_SCOPE )  
+    endif()
+  endif()
+  
+  if( DEFINED setup_common_cache_var_ENABLE_THREAD_LOCK_DEBUG )
+    if( setup_common_cache_var_ENABLE_THREAD_LOCK_DEBUG AND NOT DEFINED ENABLE_THREAD_LOCK_DEBUG )
+      set( ENABLE_THREAD_LOCK_DEBUG OFF CACHE BOOL "Switcher to control the thread lock debug collection." )
+    endif()
+    
+    set( check_for_c++11 OFF )
+    if( TARGET H3DUtil )
+      set( check_for_c++11 ${ENABLE_THREAD_LOCK_DEBUG} )
+    elseif( H3DUTIL_INCLUDE_DIR )
+      foreach( h3dutil_include_dir_tmp ${H3DUTIL_INCLUDE_DIR} )
+        if( EXISTS ${h3dutil_include_dir_tmp}/H3DUtil/H3DUtil.h )
+          file( STRINGS ${h3dutil_include_dir_tmp}/H3DUtil/H3DUtil.h list_of_defines REGEX "#define THREAD_LOCK_DEBUG" )
+          list( LENGTH list_of_defines list_of_defines_length )
+          if( list_of_defines_length )
+            set( check_for_c++11 ON )
+            break()
+          endif()
+        endif()
+      endforeach()
+    endif()
+    
+    if( check_for_c++11 )
+      enableCpp11( FAIL_MESSAGE "Enabling ENABLE_THREAD_LOCK_DEBUG requires C++11 support. This compiler lacks such support." )
+      set( THREAD_LOCK_DEBUG 1 PARENT_SCOPE )
     endif()
   endif()
 endfunction()
