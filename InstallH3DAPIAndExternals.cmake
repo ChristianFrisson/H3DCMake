@@ -66,15 +66,10 @@ set( H3DAPI_BINARIES_INSTALL "" CACHE INTERNAL "List of External binaries used b
 set( H3DAPI_NSIS_EXTRA_INSTALL_COMMANDS "\\n" CACHE INTERNAL "Extra install commands for installing with nsis." )
 set( H3DAPI_NSIS_EXTRA_UNINSTALL_COMMANDS "\\n" CACHE INTERNAL "Extra uninstall commands for installing with nsi." )
 
-
-set( h3dapi_bin "bin32" )
-set( h3dapi_lib "lib32" )
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  set( h3dapi_bin "bin64" )
-  set( h3dapi_lib "lib64" )
-endif()
-set( h3dapi_external_bin "${EXTERNAL_ROOT}/${h3dapi_bin}" )
-set( h3dapi_external_lib "${EXTERNAL_ROOT}/${h3dapi_lib}" )
+include( H3DCommonFunctions )
+getDefaultH3DOutputDirectoryName( default_bin_install default_lib_install )
+set( h3dapi_external_bin "${EXTERNAL_ROOT}/${default_bin_install}" )
+set( h3dapi_external_lib "${EXTERNAL_ROOT}/${default_lib_install}" )
 
 if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
   set( externals_to_look_for "" )
@@ -343,7 +338,7 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
               get_filename_component( h3dapi_release_filename_path ${h3dapi_release_filename_path} PATH )
               set( H3DAPI_LIBRARIES_INSTALL ${H3DAPI_LIBRARIES_INSTALL} ${h3dapi_release_filename_path}/${feature_to_look_for}_vc${h3d_msvc_version}.lib )
             elseif( H3DAPI_CMAKE_INSTALL_PREFIX )
-              set( dirs_to_test ${H3DAPI_CMAKE_INSTALL_PREFIX}/${h3dapi_lib}
+              set( dirs_to_test ${H3DAPI_CMAKE_INSTALL_PREFIX}/${default_lib_install}
                                 ${H3DAPI_CMAKE_INSTALL_PREFIX}/lib )
               if( dirs_to_test )
                 foreach( dir_to_test ${dirs_to_test} )
@@ -363,7 +358,7 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
               get_target_property( h3dapi_release_filename ${feature_to_look_for} LOCATION_RELEASE )
               set( H3DAPI_BINARIES_INSTALL ${H3DAPI_BINARIES_INSTALL} ${h3dapi_release_filename} )
             elseif( H3DAPI_CMAKE_INSTALL_PREFIX )
-              set( dirs_to_test ${H3DAPI_CMAKE_INSTALL_PREFIX}/${h3dapi_bin}
+              set( dirs_to_test ${H3DAPI_CMAKE_INSTALL_PREFIX}/${default_bin_install}
                                 ${H3DAPI_CMAKE_INSTALL_PREFIX}/bin )
               foreach( dir_to_test ${dirs_to_test} )
                 if( EXISTS ${dir_to_test}/${feature_to_look_for}_vc${h3d_msvc_version}.dll )

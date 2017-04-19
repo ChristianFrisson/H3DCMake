@@ -89,17 +89,22 @@ function( addDelayLoadFlagsFromNames dll_names_list link_flags_container )
   endif()
 endfunction()
 
-# Get the commonly used lib directory name for H3D 
-# default_lib_directory_output Contains the variable which should be set to the lib directory name.
-function( getDefaultH3DLibDirectory default_lib_directory_output )
-  set( default_lib_install "lib" )
+# Get the commonly used library and binary output directory name for H3D.
+# default_bin_directory_output should contain a variable which will be set to the bin directory name.
+# default_lib_directory_output should contain a variable which will be set to the lib directory name.
+function( getDefaultH3DOutputDirectoryName default_bin_directory_output default_lib_directory_output )
+  set( default_bin_install_internal "bin" )
+  set( default_lib_install_internal "lib" )
   if( WIN32 )
-    set( default_lib_install "lib32" )
+    set( default_bin_install_internal "bin32" )
+    set( default_lib_install_internal "lib32" )
     if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-      set( default_lib_install "lib64" )
+      set( default_bin_install_internal "bin64" )
+      set( default_lib_install_internal "lib64" )
     endif()
   endif()
-  set( ${default_lib_directory_output} ${default_lib_install} PARENT_SCOPE )
+  set( ${default_bin_directory_output} ${default_bin_install_internal} PARENT_SCOPE )
+  set( ${default_lib_directory_output} ${default_lib_install_internal} PARENT_SCOPE )
 endfunction()
 
 # Setup the desired RPath settings for H3D projects.

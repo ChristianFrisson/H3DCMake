@@ -63,15 +63,11 @@ set( H3DUTIL_INCLUDE_DIRECTORIES_INSTALL "" CACHE INTERNAL "List of External inc
 set( H3DUTIL_LIBRARIES_INSTALL "" CACHE INTERNAL "List of External libraries used by this compiled version of H3DUtil." )
 set( H3DUTIL_BINARIES_INSTALL "" CACHE INTERNAL "List of External binaries used by this compiled version of H3DUtil." )
 
+include( H3DCommonFunctions )
+getDefaultH3DOutputDirectoryName( default_bin_install default_lib_install )
 
-set( h3dutil_bin "bin32" )
-set( h3dutil_lib "lib32" )
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  set( h3dutil_bin "bin64" )
-  set( h3dutil_lib "lib64" )
-endif()
-set( h3dutil_external_bin "${EXTERNAL_ROOT}/${h3dutil_bin}" )
-set( h3dutil_external_lib "${EXTERNAL_ROOT}/${h3dutil_lib}" )
+set( h3dutil_external_bin "${EXTERNAL_ROOT}/${default_bin_install}" )
+set( h3dutil_external_lib "${EXTERNAL_ROOT}/${default_lib_install}" )
 
 if( H3DUTIL_INCLUDE_DIR AND EXTERNAL_ROOT )
   set( externals_to_look_for "" )
@@ -196,7 +192,7 @@ if( H3DUTIL_INCLUDE_DIR AND EXTERNAL_ROOT )
               get_filename_component( h3dutil_release_filename_path ${h3dutil_release_filename_path} PATH )
               set( H3DUTIL_LIBRARIES_INSTALL ${H3DUTIL_LIBRARIES_INSTALL} ${h3dutil_release_filename_path}/${feature_to_look_for}_vc${h3d_msvc_version}.lib )
             elseif( H3DUtil_CMAKE_INSTALL_PREFIX )
-              set( dirs_to_test ${H3DUtil_CMAKE_INSTALL_PREFIX}/${h3dutil_lib}
+              set( dirs_to_test ${H3DUtil_CMAKE_INSTALL_PREFIX}/${default_lib_install}
                                 ${H3DUtil_CMAKE_INSTALL_PREFIX}/lib )
               if( dirs_to_test )
                 foreach( dir_to_test ${dirs_to_test} )
@@ -216,7 +212,7 @@ if( H3DUTIL_INCLUDE_DIR AND EXTERNAL_ROOT )
               get_target_property( h3dutil_release_filename ${feature_to_look_for} LOCATION_RELEASE )
               set( H3DUTIL_BINARIES_INSTALL ${H3DUTIL_BINARIES_INSTALL} ${h3dutil_release_filename} )
             elseif( H3DUtil_CMAKE_INSTALL_PREFIX )
-              set( dirs_to_test ${H3DUtil_CMAKE_INSTALL_PREFIX}/${h3dutil_bin}
+              set( dirs_to_test ${H3DUtil_CMAKE_INSTALL_PREFIX}/${default_bin_install}
                                 ${H3DUtil_CMAKE_INSTALL_PREFIX}/bin )
               foreach( dir_to_test ${dirs_to_test} )
                 if( EXISTS ${dir_to_test}/${feature_to_look_for}_vc${h3d_msvc_version}.dll )

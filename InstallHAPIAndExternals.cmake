@@ -64,14 +64,11 @@ set( HAPI_INCLUDE_DIRECTORIES_INSTALL "" CACHE INTERNAL "List of External includ
 set( HAPI_LIBRARIES_INSTALL "" CACHE INTERNAL "List of External libraries used by this compiled version of HAPI." )
 set( HAPI_BINARIES_INSTALL "" CACHE INTERNAL "List of External binaries used by this compiled version of HAPI." )
 
-set( hapi_bin "bin32" )
-set( hapi_lib "lib32" )
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  set( hapi_bin "bin64" )
-  set( hapi_lib "lib64" )
-endif()
-set( hapi_external_bin "${EXTERNAL_ROOT}/${hapi_bin}" )
-set( hapi_external_lib "${EXTERNAL_ROOT}/${hapi_lib}" )
+include( H3DCommonFunctions )
+getDefaultH3DOutputDirectoryName( default_bin_install default_lib_install )
+
+set( hapi_external_bin "${EXTERNAL_ROOT}/${default_bin_install}" )
+set( hapi_external_lib "${EXTERNAL_ROOT}/${default_lib_install}" )
 
 if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
   set( externals_to_look_for "" )
@@ -222,7 +219,7 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
               get_filename_component( hapi_release_filename_path ${hapi_release_filename_path} PATH )
               set( HAPI_LIBRARIES_INSTALL ${HAPI_LIBRARIES_INSTALL} ${hapi_release_filename_path}/${feature_to_look_for}_vc${h3d_msvc_version}.lib )
             elseif( HAPI_CMAKE_INSTALL_PREFIX )
-              set( dirs_to_test ${HAPI_CMAKE_INSTALL_PREFIX}/${hapi_lib}
+              set( dirs_to_test ${HAPI_CMAKE_INSTALL_PREFIX}/${default_lib_install}
                                 ${HAPI_CMAKE_INSTALL_PREFIX}/lib )
               if( dirs_to_test )
                 foreach( dir_to_test ${dirs_to_test} )
@@ -242,7 +239,7 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
               get_target_property( hapi_release_filename ${feature_to_look_for} LOCATION_RELEASE )
               set( HAPI_BINARIES_INSTALL ${HAPI_BINARIES_INSTALL} ${hapi_release_filename} )
             elseif( HAPI_CMAKE_INSTALL_PREFIX )
-              set( dirs_to_test ${HAPI_CMAKE_INSTALL_PREFIX}/${hapi_bin}
+              set( dirs_to_test ${HAPI_CMAKE_INSTALL_PREFIX}/${default_bin_install}
                                 ${HAPI_CMAKE_INSTALL_PREFIX}/bin )
               foreach( dir_to_test ${dirs_to_test} )
                 if( EXISTS ${dir_to_test}/${feature_to_look_for}_vc${h3d_msvc_version}.dll )
