@@ -138,7 +138,7 @@ function( enableCpp11 )
     message( FATAL_ERROR "Unknown keywords given to handleUnityBuild(): \"${enable_c++11_UNPARSED_ARGUMENTS}\"" )
   endif()
   
-  set( fail_message "Compiler does not support c++11.")
+  set( fail_message "Compiler does not support c++11." )
   if( enable_c++11_FAIL_MESSAGE )
     set( fail_message ${enable_c++11_FAIL_MESSAGE} )
   endif()
