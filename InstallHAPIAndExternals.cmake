@@ -12,8 +12,10 @@
 # item in each pair should be a specific word. The second item in the
 # pair should be the directory to install into. The predefined words are:
 # "include" - Include directories should be installed.
-# "lib" - Release libraries should be installed.
-# "bin" - Debug binaries should be installed.
+# "lib" - Libraries should be installed.
+# "bin" - Binaries should be installed.
+# EXCLUDE_MAIN if true then the main features (HAPI) feature is excluded.
+# EXCLUDE_EXTERNAL if false then the externals are excluded.
 # Output variables are:
 # HAPI_INCLUDE_FILES_INSTALL - Contains a list of include files that
 # was used when the checked HAPI version was built.
@@ -27,6 +29,22 @@
 # IMPLEMENT for other than MSVC10.
 # GET INCLUDE_DIR AND LIBS FROM FIND_MODULES used by HAPI?
 # IMPLEMENT to HANDLE debug libs/bins and configure to include them or not.
+if( COMMAND cmake_policy )
+  if( POLICY CMP0026 )
+    cmake_policy( SET CMP0026 OLD )
+  endif()
+  if( POLICY CMP0054 )
+    cmake_policy( SET CMP0054 NEW )
+  endif()
+endif()
+
+if( NOT DEFINED EXCLUDE_MAIN )
+  set( EXCLUDE_MAIN OFF )
+endif()
+
+if( NOT DEFINED EXCLUDE_EXTERNAL )
+  set( EXCLUDE_EXTERNAL OFF )
+endif()
 
 include( InstallH3DUtilAndExternals )
 if( NOT h3d_release_only_warning )
@@ -71,7 +89,7 @@ set( hapi_external_bin "${EXTERNAL_ROOT}/${default_bin_install}" )
 set( hapi_external_lib "${EXTERNAL_ROOT}/${default_lib_install}" )
 
 if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
-  set( externals_to_look_for "" )
+  set( externals_to_look_for )
   if( MSVC )
     set( h3d_msvc_version 6 )
     set( temp_msvc_version 1299 )
@@ -80,85 +98,88 @@ if( HAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
       math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
     endwhile()
 
-    ## TODO: Somehow check if TEEM is compiled against BZPI2, PNG and/or ZLIB, probably have to use find modules.
-    # When the first item for an external entry is only "#define" then it will always be included.
-    set( externals_to_look_for "#define HAVE_OPENHAPTICS" )
-    if( NOT TARGET HAPI )
+    if( NOT EXCLUDE_EXTERNAL )
+      # When the first item for an external entry is only "#define" then it will always be included.
+      set( externals_to_look_for "#define HAVE_OPENHAPTICS" )
+      if( NOT TARGET HAPI )
+        set( externals_to_look_for ${externals_to_look_for}
+                                 "include" "../OpenHapticsRenderer/include/HAPI" )
+      endif()
       set( externals_to_look_for ${externals_to_look_for}
-                               "include" "../OpenHapticsRenderer/include/HAPI" )
-    endif()
-    set( externals_to_look_for ${externals_to_look_for}
-                               "lib" "OpenHapticsRenderer"
-                               "bin" "OpenHapticsRenderer"
-                               "warning" "NOTE: HAPI compiled with OpenHaptics support. Test that application starts on system without OpenHaptics before distributing package if you do not distribute it yourself."
+                                 "lib" "OpenHapticsRenderer"
+                                 "bin" "OpenHapticsRenderer"
+                                 "warning" "NOTE: HAPI compiled with OpenHaptics support. Test that application starts on system without OpenHaptics before distributing package if you do not distribute it yourself."
 
-                               "#define HAVE_CHAI3D" )
-    if( NOT TARGET HAPI )
+                                 "#define HAVE_CHAI3D" )
+      if( NOT TARGET HAPI )
+        set( externals_to_look_for ${externals_to_look_for}
+                                 "include" "../Chai3DRenderer/include/HAPI" )
+      endif()
       set( externals_to_look_for ${externals_to_look_for}
-                               "include" "../Chai3DRenderer/include/HAPI" )
+                                 "include" "chai3d"
+                                 "lib" "chai3d_complete_vc${h3d_msvc_version}" "Chai3DRenderer"
+                                 "bin" "Chai3DRenderer"
+
+                                 "#define HAVE_ENTACTAPI"
+                                 "include" "EntactAPI"
+                                 "lib" "EntactAPI"
+                                 "bin" "EntactAPI"
+
+                                 "#define HAVE_DHDAPI"
+                                 "include" "DHD-API"
+                                 "lib" "dhdms"
+
+                                 "#define HAVE_VIRTUOSEAPI"
+                                 "include" "virtuoseAPI"
+                                 "lib" "virtuoseDLL"
+
+                                 "#define HAVE_FALCONAPI"
+                                 "warning" "NOTE: HAPI compiled with Novint Falcon support. Test that application starts on system without Novint Falcon dlls before distributing package if you do not distribute it yourself."
+
+                                 "#define HAVE_NIFALCONAPI"
+                                 "warning" "NOTE: HAPI compiled with NiFalcon api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+
+                                 "#define NIFALCONAPI_LIBUSB"
+                                 "warning" "NOTE: HAPI compiled with NiFalcon api LIBUSB support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+
+                                 "#define NIFALCONAPI_LIBFTD2XX"
+                                 "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTD2XX api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+
+                                 "#define NIFALCONAPI_LIBFTDI"
+                                 "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTDI support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+
+                                 "#define HAVE_FPARSER"
+                                 "include" "fparser"
+                                 "lib" "fparser"
+                                 "bin" "fparser"
+
+                                 "#define HAVE_HAPTIK_LIBRARY"
+                                 "warning" "NOTE: HAPI compiled with HAPTIK library support. Test that application starts on system without HAPTIK dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+
+                                 "#define HAVE_SIMBALLMEDICAL_API"
+                                 "include" "Simball"
+                                 "lib" "SimballMedicalHID"
+                                 "bin" "SimballMedicalHID"
+
+                                 "#define HAVE_HAPTIC_MASTER_API"
+                                 "bin" "HapticAPI" "HapticMasterDriver"
+
+                                 "#define HAVE_QUANSERAPI"
+
+                                 "#define HAVE_MLHI"
+
+                                 "#define HAVE_OPENGL"
+                                 "include" "GL/freeglut" "GL/freeglut" "GL/freeglut_ext" "GL/freeglut_std" "GL/glew" "GL/glext" "GL/glut" "GL/wglew"
+                                 "lib" "glew32" "freeglut"
+                                 "bin" "glew32" "freeglut" )
     endif()
-    set( externals_to_look_for ${externals_to_look_for}
-                               "include" "chai3d"
-                               "lib" "chai3d_complete_vc${h3d_msvc_version}" "Chai3DRenderer"
-                               "bin" "Chai3DRenderer"
-
-                               "#define HAVE_ENTACTAPI"
-                               "include" "EntactAPI"
-                               "lib" "EntactAPI"
-                               "bin" "EntactAPI"
-
-                               "#define HAVE_DHDAPI"
-                               "include" "DHD-API"
-                               "lib" "dhdms"
-
-                               "#define HAVE_VIRTUOSEAPI"
-                               "include" "virtuoseAPI"
-                               "lib" "virtuoseDLL"
-
-                               "#define HAVE_FALCONAPI"
-                               "warning" "NOTE: HAPI compiled with Novint Falcon support. Test that application starts on system without Novint Falcon dlls before distributing package if you do not distribute it yourself."
-
-                               "#define HAVE_NIFALCONAPI"
-                               "warning" "NOTE: HAPI compiled with NiFalcon api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
-
-                               "#define NIFALCONAPI_LIBUSB"
-                               "warning" "NOTE: HAPI compiled with NiFalcon api LIBUSB support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
-
-                               "#define NIFALCONAPI_LIBFTD2XX"
-                               "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTD2XX api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
-
-                               "#define NIFALCONAPI_LIBFTDI"
-                               "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTDI support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
-
-                               "#define HAVE_FPARSER"
-                               "include" "fparser"
-                               "lib" "fparser"
-                               "bin" "fparser"
-
-                               "#define HAVE_HAPTIK_LIBRARY"
-                               "warning" "NOTE: HAPI compiled with HAPTIK library support. Test that application starts on system without HAPTIK dlls ( if there are any ) before distributing package if you do not distribute it yourself."
-
-                               "#define HAVE_SIMBALLMEDICAL_API"
-                               "include" "Simball"
-                               "lib" "SimballMedicalHID"
-                               "bin" "SimballMedicalHID"
-
-                               "#define HAVE_HAPTIC_MASTER_API"
-                               "bin" "HapticAPI" "HapticMasterDriver"
-
-                               "#define HAVE_QUANSERAPI"
-
-                               "#define HAVE_MLHI"
-
-                               "#define HAVE_OPENGL"
-                               "include" "GL/freeglut" "GL/freeglut" "GL/freeglut_ext" "GL/freeglut_std" "GL/glew" "GL/glext" "GL/glut" "GL/wglew"
-                               "lib" "glew32" "freeglut"
-                               "bin" "glew32" "freeglut"
-
-                               "#define"
-                               "include" "HAPI"
-                               "lib" "HAPI"
-                               "bin" "HAPI" )
+    if( NOT EXCLUDE_MAIN )
+      set( externals_to_look_for ${externals_to_look_for}
+                                 "#define"
+                                 "include" "HAPI"
+                                 "lib" "HAPI"
+                                 "bin" "HAPI" )
+    endif()
   endif()
 
   list( LENGTH FEATURES_TO_INSTALL features_to_install_length )

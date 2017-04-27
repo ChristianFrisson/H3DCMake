@@ -12,8 +12,10 @@
 # item in each pair should be a specific word. The second item in the
 # pair should be the directory to install into. The predefined words are:
 # "include" - Include directories should be installed.
-# "lib" - Release libraries should be installed.
-# "bin" - Debug binaries should be installed.
+# "lib" - Libraries should be installed.
+# "bin" - Binaries should be installed.
+# EXCLUDE_MAIN if true then the main features (H3DAPI) feature is excluded.
+# EXCLUDE_EXTERNAL if false then the externals are excluded.
 # Output variables are:
 # H3DAPI_INCLUDE_FILES_INSTALL - Contains a list of include files that
 # was used when the checked H3DAPI version was built.
@@ -23,10 +25,26 @@
 # was used when the checked H3DAPI version was built.
 # H3DAPI_BINARIES_INSTALL - Contains a list of binaries that
 # the built H3DAPI version needs.
-# TODO, IMPLEMENT FOR OTHER THAN WINDOWS if IT MAKES SENSE TO DO THAT.
+# TODO, IMPLEMENT FOR OTHER THAN WINDOWS IF IT MAKES SENSE TO DO THAT.
 # IMPLEMENT for other than MSVC10.
 # GET INCLUDE_DIR AND LIBS FROM FIND_MODULES used by H3DAPI?
 # IMPLEMENT to HANDLE debug libs/bins and configure to include them or not.
+if( COMMAND cmake_policy )
+  if( POLICY CMP0026 )
+    cmake_policy( SET CMP0026 OLD )
+  endif()
+  if( POLICY CMP0054 )
+    cmake_policy( SET CMP0054 NEW )
+  endif()
+endif()
+
+if( NOT DEFINED EXCLUDE_MAIN )
+  set( EXCLUDE_MAIN OFF )
+endif()
+
+if( NOT DEFINED EXCLUDE_EXTERNAL )
+  set( EXCLUDE_EXTERNAL OFF )
+endif()
 
 include( InstallHAPIAndExternals )
 if( NOT h3d_release_only_warning )
@@ -72,7 +90,7 @@ set( h3dapi_external_bin "${EXTERNAL_ROOT}/${default_bin_install}" )
 set( h3dapi_external_lib "${EXTERNAL_ROOT}/${default_lib_install}" )
 
 if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
-  set( externals_to_look_for "" )
+  set( externals_to_look_for )
   if( MSVC )
     set( h3d_msvc_version 6 )
     set( temp_msvc_version 1299 )
@@ -81,196 +99,205 @@ if( H3DAPI_INCLUDE_DIR AND EXTERNAL_ROOT )
       math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
     endwhile()
 
-    # Install OpenAL.
-    set( OpenAlInstallExe "" CACHE FILEPATH "Needs to be set to add openal installation to the package." )
-    mark_as_advanced( OpenAlInstallExe )
-    if( OpenAlInstallExe )
-      get_filename_component( openal_file_name ${OpenAlInstallExe} NAME )
-      string( REPLACE "/" "\\\\" openal_install_exe_tmp ${OpenAlInstallExe} )
-      set( openal_install_command_1 " Code to install OPENAL\\n  File \\\"${openal_install_exe_tmp}\\\"\\n" )
-      set( openal_install_command_2 " Wait a bit for system to unlock file.\\n  Sleep 1000\\n"
-                                    " Delete install file\\n  Delete \\\"$INSTDIR\\\\${openal_file_name}\\\"\\n" )
-      set( h3doal_nsis_extra_install_commands ${openal_install_command_1}
-                                              " Execute install file\\n  ExecWait '\\\"$INSTDIR\\\\${openal_file_name}\\\" /s'\\n"
-                                              ${openal_install_command_2} )
-      if( CMAKE_SIZEOF_VOID_P EQUAL 8 ) # check if the system is 64 bit
-        set( h3doal_nsis_extra_uninstall_commands "A comment\\n \\\${If} \\\${RunningX64}\\n"
-                                                  "A comment\\n   SetRegView 32\\n"
-                                                  "A comment\\n \\\${EndIf}\\n" )
-      endif()
-      set( h3doal_nsis_extra_uninstall_commands ${h3doal_nsis_extra_uninstall_commands}
-                                                " Get OpenAL uninstall registry string\\n  ReadRegStr $0 HKLM SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Uninstall\\\\OpenAL \\\"UninstallString\\\"\\n"
-                                                " Check if OpenAL is installed\\n  StrCmp $0 \\\"\\\" uninstall_openal_no 0\\n"
-                                                " Check if uninstall OpenAL \\n  MessageBox MB_YESNO \\\"Do you want to uninstall OpenAL? It is recommended if no other applications use it.\\\" IDYES uninstall_openal_yes IDNO uninstall_openal_no\\n"
-                                                " A comment \\n  uninstall_openal_yes:\\n"
-                                                ${openal_install_command_1}
-                                                " Execute install file\\n  ExecWait '\\\"$INSTDIR\\\\${openal_file_name}\\\" /u /s'\\n"
-                                                ${openal_install_command_2}
-                                                " A comment \\n  uninstall_openal_no:\\n\\n" )
-      if( CMAKE_SIZEOF_VOID_P EQUAL 8 ) # check if the system is 64 bit
-        set( h3doal_nsis_extra_uninstall_commands ${h3doal_nsis_extra_uninstall_commands}
-                                                  "A comment\\n \\\${If} \\\${RunningX64}\\n"
-                                                  "A comment\\n   SetRegView 64\\n"
-                                                  "A comment\\n \\\${EndIf}\\n" )
-      endif()
-    endif()
-
-    # Install python if not already installed
-    set( PythonInstallMSI "" CACHE FILEPATH "Needs to be set to add python installation to the package." )
-    mark_as_advanced( PythonInstallMSI )
-    if( PythonInstallMSI )
-      string( REGEX MATCH 2\\.[456789] CPACK_PYTHON_VERSION ${PythonInstallMSI} )
-      string( REGEX REPLACE \\. "" CPACK_PYTHON_VERSION_NO_DOT ${CPACK_PYTHON_VERSION} )
-      get_filename_component( python_file_name ${PythonInstallMSI} NAME )
-      string( REPLACE "/" "\\\\" python_install_msi_tmp ${PythonInstallMSI} )
-      set( python_install_command_1 " Code to install Python\\n  ReadRegStr $0 HKLM SOFTWARE\\\\Python\\\\PythonCore\\\\${CPACK_PYTHON_VERSION}\\\\InstallPath \\\"\\\"\\n" )
-      set( python_install_command_2 " Extract python installer\\n  File \\\"${python_install_msi_tmp}\\\"\\n" )
-      set( python_install_command_3 " Wait a bit for system to unlock file.\\n  Sleep 1000\\n"
-                                    " Delete python installer\\n  Delete \\\"$INSTDIR\\\\${python_file_name}\\\"\\n\\n" )
-
-      set( h3dpython_nsis_extra_uninstall_commands ${python_install_command_1}
-                                                   " Check if python is installed\\n  StrCmp $0 \\\"\\\" uninstall_python_no 0\\n"
-                                                   " Check if uninstall python \\n  MessageBox MB_YESNO \\\"Do you want to uninstall python? It is recommended if no other applications use python ${CPACK_PYTHON_VERSION}.\\\" IDYES uninstall_python_yes IDNO uninstall_python_no\\n"
-                                                   " A comment \\n  uninstall_python_yes:\\n"
-                                                   ${python_install_command_2}
-                                                   " Execute python installer, wait for completion\\n  ExecWait '\\\"msiexec\\\" /x \\\"$INSTDIR\\\\${python_file_name}\\\" /qn'\\n"
-                                                   ${python_install_command_3}
-                                                   " A comment \\n  uninstall_python_no:\\n" )
-      set( h3dpython_nsis_extra_install_commands ${python_install_command_1}
-                                                 " Check if python is installed\\n  StrCmp $0 \\\"\\\" 0 install_python_no\\n"
-                                                 ${python_install_command_2}
-                                                 "A comment \\n  ClearErrors\\n"
-                                                 "Check if python install path is free \\n  GetFullPathName $0 C:\\\\Python${CPACK_PYTHON_VERSION_NO_DOT}\\n"
-                                                 "If errors then path was not found, i.e. empty\\n  IfErrors 0 python_install_not_hidden \\n"
-                                                 "A comment \\n    ClearErrors\\n"
-                                                 " Execute python installer silent, wait for completion\\n  ExecWait '\\\"msiexec\\\" /i \\\"$INSTDIR\\\\${python_file_name}\\\" /qn ALLUSERS=1'\\n"
-                                                 "A comment \\n Goto python_end_install\\n"
-                                                 "A comment \\n python_install_not_hidden:\\n"
-                                                 " Execute python installer, wait for completion\\n  ExecWait '\\\"msiexec\\\" /i \\\"$INSTDIR\\\\${python_file_name}\\\"'\\n"
-                                                 " A comment \\n  python_end_install:\\n"
-                                                 ${python_install_command_3}
-                                                 "A comment \\n  install_python_no:\\n" )
-    endif()
-
-    # Extra install commands will be set to install python and OpenAL
-    set( redist_versions 8 9 10 )
-    foreach( redist_version ${redist_versions} )
-      # Add cache variable vc${redist_version}_redist which should be set to the install file
-      # for microsoft visual studio redistributables, they can be found in the
-      # installation folder for each visual studio installation.
-      if( NOT DEFINED vc${redist_version}_redist )
-        set( vc${redist_version}_redist CACHE FILEPATH "Set this to the exe installing microsoft visual studio redistributable for visual studio ${redist_version}" )
-        mark_as_advanced( vc${redist_version} )
-      endif()
-      if( vc${redist_version}_redist )
-        string( REPLACE "/" "\\\\" Temp_vc${redist_version}_redist ${vc${redist_version}_redist} )
-        get_filename_component( VC${redist_version}_FILE_NAME ${vc${redist_version}_redist} NAME )
-        set( ms_redist_install_command_1 " Set output Path\\n  SetOutPath \\\"$INSTDIR\\\\vc${redist_version}\\\"\\n"
-                                         " Code to install Visual studio redistributable\\n  File \\\"${Temp_vc${redist_version}_redist}\\\"\\n" )
-        set( h3dvs_nsis_extra_install_commands ${ms_redist_install_command_1} )
-        set( h3dvs_nsis_extra_uninstall_commands " Check if uninstall vc redist \\n  MessageBox MB_YESNO \\\"Do you want to uninstall Visual studio ${redist_version} redistributable? It is recommended if no other applications use it.\\\" IDYES uninstall_vcredist_yes IDNO uninstall_vcredist_no\\n"
-                                                 " A comment \\n  uninstall_vcredist_yes:\\n"
-                                                 ${ms_redist_install_command_1} )
-        if( ${redist_version} LESS 9 )
-          set( h3dvs_nsis_extra_install_commands ${h3dvs_nsis_extra_install_commands}
-                                                 " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q:a /norestart /c:\\\"msiexec /i vcredist.msi /qn\\\"'\\n" )
-          set( h3dvs_nsis_extra_uninstall_commands ${h3dvs_nsis_extra_uninstall_commands}
-                                                 " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q:a /norestart /c:\\\"msiexec /x vcredist.msi /qn\\\"'\\n" )
-        else()
-          set( h3dvs_nsis_extra_install_commands ${h3dvs_nsis_extra_install_commands}
-                                                 " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q /norestart \\\"'\\n" )
-          set( h3dvs_nsis_extra_uninstall_commands ${h3dvs_nsis_extra_uninstall_commands}
-                                                 " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q /uninstall \\\"'\\n" )
+    if( NOT EXCLUDE_EXTERNAL )
+      # Install OpenAL.
+      set( OpenAlInstallExe "" CACHE FILEPATH "Needs to be set to add openal installation to the package." )
+      mark_as_advanced( OpenAlInstallExe )
+      if( OpenAlInstallExe )
+        get_filename_component( openal_file_name ${OpenAlInstallExe} NAME )
+        string( REPLACE "/" "\\\\" openal_install_exe_tmp ${OpenAlInstallExe} )
+        set( openal_install_command_1 " Code to install OPENAL\\n  File \\\"${openal_install_exe_tmp}\\\"\\n" )
+        set( openal_install_command_2 " Wait a bit for system to unlock file.\\n  Sleep 1000\\n"
+                                      " Delete install file\\n  Delete \\\"$INSTDIR\\\\${openal_file_name}\\\"\\n" )
+        set( h3doal_nsis_extra_install_commands ${openal_install_command_1}
+                                                " Execute install file\\n  ExecWait '\\\"$INSTDIR\\\\${openal_file_name}\\\" /s'\\n"
+                                                ${openal_install_command_2} )
+        if( CMAKE_SIZEOF_VOID_P EQUAL 8 ) # check if the system is 64 bit
+          set( h3doal_nsis_extra_uninstall_commands "A comment\\n \\\${If} \\\${RunningX64}\\n"
+                                                    "A comment\\n   SetRegView 32\\n"
+                                                    "A comment\\n \\\${EndIf}\\n" )
         endif()
-        set( ms_redist_install_command_2 " Wait a bit for system to unlock file.\\n  Sleep 1000\\n"
-                                         " Delete file\\n  Delete \\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\"\\n"
-                                         " Reset output Path\\n  SetOutPath \\\"$INSTDIR\\\"\\n"
-                                         " Remove folder\\n  RMDir /r \\\"$INSTDIR\\\\vc${redist_version}\\\"\\n\\n" )
-        set( h3dvs_nsis_extra_install_commands ${h3dvs_nsis_extra_install_commands}
-                                               ${ms_redist_install_command_2} )
-        set( h3dvs_nsis_extra_uninstall_commands ${h3dvs_nsis_extra_uninstall_commands}
-                                                 ${ms_redist_install_command_2}
-                                                 " A comment \\n  uninstall_vcredist_no:\\n\\n" )
+        set( h3doal_nsis_extra_uninstall_commands ${h3doal_nsis_extra_uninstall_commands}
+                                                  " Get OpenAL uninstall registry string\\n  ReadRegStr $0 HKLM SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Uninstall\\\\OpenAL \\\"UninstallString\\\"\\n"
+                                                  " Check if OpenAL is installed\\n  StrCmp $0 \\\"\\\" uninstall_openal_no 0\\n"
+                                                  " Check if uninstall OpenAL \\n  MessageBox MB_YESNO \\\"Do you want to uninstall OpenAL? It is recommended if no other applications use it.\\\" IDYES uninstall_openal_yes IDNO uninstall_openal_no\\n"
+                                                  " A comment \\n  uninstall_openal_yes:\\n"
+                                                  ${openal_install_command_1}
+                                                  " Execute install file\\n  ExecWait '\\\"$INSTDIR\\\\${openal_file_name}\\\" /u /s'\\n"
+                                                  ${openal_install_command_2}
+                                                  " A comment \\n  uninstall_openal_no:\\n\\n" )
+        if( CMAKE_SIZEOF_VOID_P EQUAL 8 ) # check if the system is 64 bit
+          set( h3doal_nsis_extra_uninstall_commands ${h3doal_nsis_extra_uninstall_commands}
+                                                    "A comment\\n \\\${If} \\\${RunningX64}\\n"
+                                                    "A comment\\n   SetRegView 64\\n"
+                                                    "A comment\\n \\\${EndIf}\\n" )
+        endif()
       endif()
-    endforeach()
 
-    # When the first item for an external entry is only "#define" then it will always be included.
-    set( externals_to_look_for "#define HAVE_XERCES"
-                               "include" "xercesc"
-                               "lib" "xerces-c_3"
-                               "bin" "xerces-c_3_1"
+      # Install python if not already installed
+      set( PythonInstallMSI "" CACHE FILEPATH "Needs to be set to add python installation to the package." )
+      mark_as_advanced( PythonInstallMSI )
+      if( PythonInstallMSI )
+        string( REGEX MATCH 2\\.[456789] CPACK_PYTHON_VERSION ${PythonInstallMSI} )
+        string( REGEX REPLACE \\. "" CPACK_PYTHON_VERSION_NO_DOT ${CPACK_PYTHON_VERSION} )
+        get_filename_component( python_file_name ${PythonInstallMSI} NAME )
+        string( REPLACE "/" "\\\\" python_install_msi_tmp ${PythonInstallMSI} )
+        set( python_install_command_1 " Code to install Python\\n  ReadRegStr $0 HKLM SOFTWARE\\\\Python\\\\PythonCore\\\\${CPACK_PYTHON_VERSION}\\\\InstallPath \\\"\\\"\\n" )
+        set( python_install_command_2 " Extract python installer\\n  File \\\"${python_install_msi_tmp}\\\"\\n" )
+        set( python_install_command_3 " Wait a bit for system to unlock file.\\n  Sleep 1000\\n"
+                                      " Delete python installer\\n  Delete \\\"$INSTDIR\\\\${python_file_name}\\\"\\n\\n" )
 
-                               "#define HAVE_OPENAL"
-                               "include" "AL"
-                               "lib" "OpenAL32"
-                               "nsisextrainstall" ${h3doal_nsis_extra_install_commands}
-                               "nsisextrauninstall" ${h3doal_nsis_extra_uninstall_commands}
+        set( h3dpython_nsis_extra_uninstall_commands ${python_install_command_1}
+                                                     " Check if python is installed\\n  StrCmp $0 \\\"\\\" uninstall_python_no 0\\n"
+                                                     " Check if uninstall python \\n  MessageBox MB_YESNO \\\"Do you want to uninstall python? It is recommended if no other applications use python ${CPACK_PYTHON_VERSION}.\\\" IDYES uninstall_python_yes IDNO uninstall_python_no\\n"
+                                                     " A comment \\n  uninstall_python_yes:\\n"
+                                                     ${python_install_command_2}
+                                                     " Execute python installer, wait for completion\\n  ExecWait '\\\"msiexec\\\" /x \\\"$INSTDIR\\\\${python_file_name}\\\" /qn'\\n"
+                                                     ${python_install_command_3}
+                                                     " A comment \\n  uninstall_python_no:\\n" )
+        set( h3dpython_nsis_extra_install_commands ${python_install_command_1}
+                                                   " Check if python is installed\\n  StrCmp $0 \\\"\\\" 0 install_python_no\\n"
+                                                   ${python_install_command_2}
+                                                   "A comment \\n  ClearErrors\\n"
+                                                   "Check if python install path is free \\n  GetFullPathName $0 C:\\\\Python${CPACK_PYTHON_VERSION_NO_DOT}\\n"
+                                                   "If errors then path was not found, i.e. empty\\n  IfErrors 0 python_install_not_hidden \\n"
+                                                   "A comment \\n    ClearErrors\\n"
+                                                   " Execute python installer silent, wait for completion\\n  ExecWait '\\\"msiexec\\\" /i \\\"$INSTDIR\\\\${python_file_name}\\\" /qn ALLUSERS=1'\\n"
+                                                   "A comment \\n Goto python_end_install\\n"
+                                                   "A comment \\n python_install_not_hidden:\\n"
+                                                   " Execute python installer, wait for completion\\n  ExecWait '\\\"msiexec\\\" /i \\\"$INSTDIR\\\\${python_file_name}\\\"'\\n"
+                                                   " A comment \\n  python_end_install:\\n"
+                                                   ${python_install_command_3}
+                                                   "A comment \\n  install_python_no:\\n" )
+      endif()
 
-                               "#define HAVE_LIBVORBIS"
-                               "include" "vorbis" "ogg"
-                               "lib" "libvorbis" "libogg" "libvorbisfile"
-                               "bin" "libvorbis" "libogg" "libvorbisfile"
+      # Extra install commands will be set to install python and OpenAL
+      set( redist_versions 8 9 10 )
+      foreach( redist_version ${redist_versions} )
+        # Add cache variable vc${redist_version}_redist which should be set to the install file
+        # for microsoft visual studio redistributables, they can be found in the
+        # installation folder for each visual studio installation.
+        if( NOT DEFINED vc${redist_version}_redist )
+          set( vc${redist_version}_redist CACHE FILEPATH "Set this to the exe installing microsoft visual studio redistributable for visual studio ${redist_version}" )
+          mark_as_advanced( vc${redist_version} )
+        endif()
+        if( vc${redist_version}_redist )
+          string( REPLACE "/" "\\\\" Temp_vc${redist_version}_redist ${vc${redist_version}_redist} )
+          get_filename_component( VC${redist_version}_FILE_NAME ${vc${redist_version}_redist} NAME )
+          set( ms_redist_install_command_1 " Set output Path\\n  SetOutPath \\\"$INSTDIR\\\\vc${redist_version}\\\"\\n"
+                                           " Code to install Visual studio redistributable\\n  File \\\"${Temp_vc${redist_version}_redist}\\\"\\n" )
+          set( h3dvs_nsis_extra_install_commands ${ms_redist_install_command_1} )
+          set( h3dvs_nsis_extra_uninstall_commands " Check if uninstall vc redist \\n  MessageBox MB_YESNO \\\"Do you want to uninstall Visual studio ${redist_version} redistributable? It is recommended if no other applications use it.\\\" IDYES uninstall_vcredist_yes IDNO uninstall_vcredist_no\\n"
+                                                   " A comment \\n  uninstall_vcredist_yes:\\n"
+                                                   ${ms_redist_install_command_1} )
+          if( ${redist_version} LESS 9 )
+            set( h3dvs_nsis_extra_install_commands ${h3dvs_nsis_extra_install_commands}
+                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q:a /norestart /c:\\\"msiexec /i vcredist.msi /qn\\\"'\\n" )
+            set( h3dvs_nsis_extra_uninstall_commands ${h3dvs_nsis_extra_uninstall_commands}
+                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q:a /norestart /c:\\\"msiexec /x vcredist.msi /qn\\\"'\\n" )
+          else()
+            set( h3dvs_nsis_extra_install_commands ${h3dvs_nsis_extra_install_commands}
+                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q /norestart \\\"'\\n" )
+            set( h3dvs_nsis_extra_uninstall_commands ${h3dvs_nsis_extra_uninstall_commands}
+                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q /uninstall \\\"'\\n" )
+          endif()
+          set( ms_redist_install_command_2 " Wait a bit for system to unlock file.\\n  Sleep 1000\\n"
+                                           " Delete file\\n  Delete \\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\"\\n"
+                                           " Reset output Path\\n  SetOutPath \\\"$INSTDIR\\\"\\n"
+                                           " Remove folder\\n  RMDir /r \\\"$INSTDIR\\\\vc${redist_version}\\\"\\n\\n" )
+          set( h3dvs_nsis_extra_install_commands ${h3dvs_nsis_extra_install_commands}
+                                                 ${ms_redist_install_command_2} )
+          set( h3dvs_nsis_extra_uninstall_commands ${h3dvs_nsis_extra_uninstall_commands}
+                                                   ${ms_redist_install_command_2}
+                                                   " A comment \\n  uninstall_vcredist_no:\\n\\n" )
+        endif()
+      endforeach()
 
-                               "#define HAVE_LIBAUDIOFILE"
-                               "include" "libaudiofile"
-                               "lib" "audiofile"
-                               "bin" "audiofile"
+      # When the first item for an external entry is only "#define" then it will always be included.
+      set( externals_to_look_for "#define HAVE_XERCES"
+                                 "include" "xercesc"
+                                 "lib" "xerces-c_3"
+                                 "bin" "xerces-c_3_1"
 
-                               "#define HAVE_CG"
-                               "include" "Cg"
-                               "lib" "cgGL" "cg"
-                               "bin" "cg" "cgGL"
+                                 "#define HAVE_OPENAL"
+                                 "include" "AL"
+                                 "lib" "OpenAL32"
+                                 "nsisextrainstall" ${h3doal_nsis_extra_install_commands}
+                                 "nsisextrauninstall" ${h3doal_nsis_extra_uninstall_commands}
 
-                               "#define HAVE_FTGL"
-                               "include" "FTGL"
-                               "lib" "ftgl"
-                               "bin" "ftgl"
+                                 "#define HAVE_LIBVORBIS"
+                                 "include" "vorbis" "ogg"
+                                 "lib" "libvorbis" "libogg" "libvorbisfile"
+                                 "bin" "libvorbis" "libogg" "libvorbisfile"
 
-                               "#define HAVE_FTGL"
-                               "include" "FTGL"
-                               "lib" "ftgl"
-                               "bin" "ftgl"
+                                 "#define HAVE_LIBAUDIOFILE"
+                                 "include" "libaudiofile"
+                                 "lib" "audiofile"
+                                 "bin" "audiofile"
 
-                               "#define HAVE_FREETYPE"
-                               "include" "freetype"
-                               "lib" "freetype2312"
+                                 "#define HAVE_CG"
+                                 "include" "Cg"
+                                 "lib" "cgGL" "cg"
+                                 "bin" "cg" "cgGL"
 
-                               "#define HAVE_FONTCONFIG"
-                               "warning" "NOTE: H3DAPI compiled with font config support. Make sure font config features are included."
+                                 "#define HAVE_FTGL"
+                                 "include" "FTGL"
+                                 "lib" "ftgl"
+                                 "bin" "ftgl"
 
-                               "#define HAVE_3DXWARE"
-                               "warning" "NOTE: H3DAPI compiled with 3DXWare support. Test that application starts on system without 3DConnection drivers installed before distributing package if you do not distribute it yourself."
+                                 "#define HAVE_FTGL"
+                                 "include" "FTGL"
+                                 "lib" "ftgl"
+                                 "bin" "ftgl"
 
-                               "#define HAVE_PYTHON"
-                               "nsisextrainstall" ${h3dpython_nsis_extra_install_commands}
-                               "nsisextrauninstall" ${h3dpython_nsis_extra_uninstall_commands}
+                                 "#define HAVE_FREETYPE"
+                                 "include" "freetype"
+                                 "lib" "freetype2312"
 
-                               "#define HAVE_LIBCURL"
-                               "include" "curl"
-                               "lib" "libcurl"
-                               "bin" "libcurl"
+                                 "#define HAVE_FONTCONFIG"
+                                 "warning" "NOTE: H3DAPI compiled with font config support. Make sure font config features are included."
 
-                               "#define HAVE_SPIDERMONKEY"
-                               "include" "js"
-                               "lib" "js32"
-                               "bin" "js32"
+                                 "#define HAVE_3DXWARE"
+                                 "warning" "NOTE: H3DAPI compiled with 3DXWare support. Test that application starts on system without 3DConnection drivers installed before distributing package if you do not distribute it yourself."
 
-                               "#define HAVE_DSHOW"
-                               "include" "DirectShow"
-                               "lib" "strmbase"
+                                 "#define HAVE_PYTHON"
+                                 "nsisextrainstall" ${h3dpython_nsis_extra_install_commands}
+                                 "nsisextrauninstall" ${h3dpython_nsis_extra_uninstall_commands}
 
-                               "#define HAVE_FFMPEG"
-                               "warning" "NOTE: H3DAPI compiled with ffmpeg support. Make sure fmpeg features are included."
+                                 "#define HAVE_LIBCURL"
+                                 "include" "curl"
+                                 "lib" "libcurl"
+                                 "bin" "libcurl"
 
-                               "#define HAVE_VIRTUAL_HAND_SDK"
-                               "warning" "NOTE: H3DAPI compiled with Virtual Hand support. Test that application starts on system without Virtual hand installed before distributing package if you do not distribute it yourself."
+                                 "#define HAVE_SPIDERMONKEY"
+                                 "include" "js"
+                                 "lib" "js32"
+                                 "bin" "js32"
 
-                               "#define"
-                               "include" "GL/freeglut" "GL/freeglut" "GL/freeglut_ext" "GL/freeglut_std" "GL/glew" "GL/glext" "GL/glut" "GL/wglew" "H3D"
-                               "lib" "glew32" "freeglut" "H3DAPI"
-                               "bin" "glew32" "freeglut" "H3DAPI"
-                               "nsisextrainstall" ${h3dvs_nsis_extra_install_commands}
-                               "nsisextrauninstall" ${h3dvs_nsis_extra_uninstall_commands} )
+                                 "#define HAVE_DSHOW"
+                                 "include" "DirectShow"
+                                 "lib" "strmbase"
+
+                                 "#define HAVE_FFMPEG"
+                                 "warning" "NOTE: H3DAPI compiled with ffmpeg support. Make sure fmpeg features are included."
+
+                                 "#define HAVE_VIRTUAL_HAND_SDK"
+                                 "warning" "NOTE: H3DAPI compiled with Virtual Hand support. Test that application starts on system without Virtual hand installed before distributing package if you do not distribute it yourself."
+
+                                 "#define"
+                                 "include" "GL/freeglut" "GL/freeglut" "GL/freeglut_ext" "GL/freeglut_std" "GL/glew" "GL/glext" "GL/glut" "GL/wglew" "H3D"
+                                 "lib" "glew32" "freeglut"
+                                 "bin" "glew32" "freeglut"
+                                 "nsisextrainstall" ${h3dvs_nsis_extra_install_commands}
+                                 "nsisextrauninstall" ${h3dvs_nsis_extra_uninstall_commands} )
+    endif()
+    if( NOT EXCLUDE_MAIN )
+      set( externals_to_look_for ${externals_to_look_for}
+                                 "#define"
+                                 "include" "H3D"
+                                 "lib" "H3DAPI"
+                                 "bin" "H3DAPI" )
+    endif()
   endif()
 
   list( LENGTH FEATURES_TO_INSTALL features_to_install_length )

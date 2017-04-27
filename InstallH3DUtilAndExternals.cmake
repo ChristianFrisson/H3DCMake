@@ -12,8 +12,10 @@
 # item in each pair should be a specific word. The second item in the
 # pair should be the directory to install into. The predefined words are:
 # "include" - Include directories should be installed.
-# "lib" - Release libraries should be installed.
-# "bin" - Debug binaries should be installed.
+# "lib" - Libraries should be installed.
+# "bin" - Binaries should be installed.
+# EXCLUDE_MAIN if true then the main features (H3DUtil) feature is excluded.
+# EXCLUDE_EXTERNAL if false then the externals are excluded.
 # Output variables are:
 # H3DUTIL_INCLUDE_FILES_INSTALL - Contains a list of include files that
 # was used when the checked H3DUTIL version was built.
@@ -27,6 +29,22 @@
 # IMPLEMENT for other than MSVC10.
 # GET INCLUDE_DIR AND LIBS FROM FIND_MODULES used by H3DUTIL?
 # IMPLEMENT to HANDLE debug libs/bins and configure to include them or not.
+if( COMMAND cmake_policy )
+  if( POLICY CMP0026 )
+    cmake_policy( SET CMP0026 OLD )
+  endif()
+  if( POLICY CMP0054 )
+    cmake_policy( SET CMP0054 NEW )
+  endif()
+endif()
+
+if( NOT DEFINED EXCLUDE_MAIN )
+  set( EXCLUDE_MAIN OFF )
+endif()
+
+if( NOT DEFINED EXCLUDE_EXTERNAL )
+  set( EXCLUDE_EXTERNAL OFF )
+endif()
 
 if( NOT h3d_release_only_warning )
   set( h3d_release_only_warning TRUE )
@@ -70,7 +88,7 @@ set( h3dutil_external_bin "${EXTERNAL_ROOT}/${default_bin_install}" )
 set( h3dutil_external_lib "${EXTERNAL_ROOT}/${default_lib_install}" )
 
 if( H3DUTIL_INCLUDE_DIR AND EXTERNAL_ROOT )
-  set( externals_to_look_for "" )
+  set( externals_to_look_for )
   if( MSVC )
     set( h3d_msvc_version 6 )
     set( temp_msvc_version 1299 )
@@ -81,57 +99,66 @@ if( H3DUTIL_INCLUDE_DIR AND EXTERNAL_ROOT )
 
     ## TODO: Somehow check if TEEM is compiled against BZPI2, PNG and/or ZLIB, probably have to use find modules.
     # When the first item for an external entry is only "#define" then it will always be included.
-    set( externals_to_look_for "#define HAVE_ZLIB"
-                               "include" "zlib"
-                               "lib" "zlib"
-                               "bin" "zlib1"
+    if( NOT EXCLUDE_EXTERNAL )
+      set( externals_to_look_for "#define HAVE_ZLIB"
+                                 "include" "zlib"
+                                 "lib" "zlib"
+                                 "bin" "zlib1"
 
-                               "#define HAVE_FREEIMAGE"
-                               "include" "FreeImage"
-                               "lib" "FreeImage"
-                               "bin" "FreeImage"
+                                 "#define HAVE_FREEIMAGE"
+                                 "include" "FreeImage"
+                                 "lib" "FreeImage"
+                                 "bin" "FreeImage"
 
-                               "#define HAVE_OPENEXR"
-                               "include" "OpenEXR"
-                               "lib" "IlmImf" "IlmThread" "Imath" "Half" "Iex"
-                               "bin" "IlmImf" "IlmThread" "Imath" "Half" "Iex"
+                                 "#define HAVE_OPENEXR"
+                                 "include" "OpenEXR"
+                                 "lib" "IlmImf" "IlmThread" "Imath" "Half" "Iex"
+                                 "bin" "IlmImf" "IlmThread" "Imath" "Half" "Iex"
 
-                               "#define HAVE_TEEM"
-                               "include" "teem" )
-    if( Teem_BZIP2 )
-      set( externals_to_look_for ${externals_to_look_for} "Bzip2" )
-    endif()
+                                 "#define HAVE_TEEM"
+                                 "include" "teem" )
+      if( Teem_BZIP2 )
+        set( externals_to_look_for ${externals_to_look_for} "Bzip2" )
+      endif()
 
-    set( externals_to_look_for ${externals_to_look_for}
-                               "lib" "teem" )
-    if( Teem_BZIP2 )
-      set( externals_to_look_for ${externals_to_look_for} "libbz2" )
-    endif()
+      set( externals_to_look_for ${externals_to_look_for}
+                                 "lib" "teem" )
+      if( Teem_BZIP2 )
+        set( externals_to_look_for ${externals_to_look_for} "libbz2" )
+      endif()
 
-    set( externals_to_look_for ${externals_to_look_for}
-                               "bin" "teem" )
-    if( Teem_BZIP2 )
-      set( externals_to_look_for ${externals_to_look_for} "libbz2" )
-    endif()
+      set( externals_to_look_for ${externals_to_look_for}
+                                 "bin" "teem" )
+      if( Teem_BZIP2 )
+        set( externals_to_look_for ${externals_to_look_for} "libbz2" )
+      endif()
 
-    set( externals_to_look_for ${externals_to_look_for}
-                               "#define"
-                               "include" "pthread" "H3DUtil"
-                               "lib" "pthreadVC2" "H3DUtil"
-                               "bin" "pthreadVC2" "H3DUtil"
+      set( externals_to_look_for ${externals_to_look_for}
+                                 "#define"
+                                 "include" "pthread"
+                                 "lib" "pthreadVC2"
+                                 "bin" "pthreadVC2"
 
-                               "#define HAVE_DCMTK"
-                               "include" "dcmtk"
-                               "lib" )
-    # It seems like we do not distribute oflog at the moment even though it is searched for.
-    #set( teem_libraries "ofstd" "oflog" "dcmjpeg" "ijg8" "ijg12" "ijg16" "dcmdata" "dcmimgle" "dcmimage" )
-    set( teem_libraries "ofstd" "dcmjpeg" "ijg8" "ijg12" "ijg16" "dcmdata" "dcmimgle" "dcmimage" )
-    #foreach( post_fix "" "_d" )
-    foreach( post_fix "" )
-      foreach( teem_library ${teem_libraries} )
-        set( externals_to_look_for ${externals_to_look_for} "${teem_library}_vc${h3d_msvc_version}${post_fix}" )
+                                 "#define HAVE_DCMTK"
+                                 "include" "dcmtk"
+                                 "lib" )
+      # It seems like we do not distribute oflog at the moment even though it is searched for.
+      #set( teem_libraries "ofstd" "oflog" "dcmjpeg" "ijg8" "ijg12" "ijg16" "dcmdata" "dcmimgle" "dcmimage" )
+      set( teem_libraries "ofstd" "dcmjpeg" "ijg8" "ijg12" "ijg16" "dcmdata" "dcmimgle" "dcmimage" )
+      #foreach( post_fix "" "_d" )
+      foreach( post_fix "" )
+        foreach( teem_library ${teem_libraries} )
+          set( externals_to_look_for ${externals_to_look_for} "${teem_library}_vc${h3d_msvc_version}${post_fix}" )
+        endforeach()
       endforeach()
-    endforeach()
+    endif()
+    if( NOT EXCLUDE_MAIN )
+      set( externals_to_look_for ${externals_to_look_for}
+                                 "#define"
+                                 "include" "H3DUtil"
+                                 "lib" "H3DUtil"
+                                 "bin" "H3DUtil" )
+    endif()
   endif()
 
   list( LENGTH FEATURES_TO_INSTALL features_to_install_length )
