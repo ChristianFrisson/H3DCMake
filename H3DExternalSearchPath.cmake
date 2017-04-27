@@ -256,7 +256,7 @@ function( checkIfModuleFound _module_name )
   include( CMakeParseArguments )
   cmake_parse_arguments( _check_if_module_found "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
   if( _check_if_module_found_UNPARSED_ARGUMENTS )
-    message( FATAL_ERROR "Unknown keywords given to checkCMakeInternalModule(): \"${_check_if_module_found_UNPARSED_ARGUMENTS}\"" )
+    message( FATAL_ERROR "Unknown keywords given to checkIfModuleFound(): \"${_check_if_module_found_UNPARSED_ARGUMENTS}\"" )
   endif()
 
   string( TOUPPER ${_module_name} _module_name_upper )
