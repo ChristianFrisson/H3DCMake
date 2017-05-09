@@ -139,7 +139,8 @@ if( HAPI_INCLUDE_DIR )
   foreach( renderer_name ${hapi_renderers_to_use} )
     getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} HAPI/${renderer_name} )
     find_path( HAPI_${renderer_name}_INCLUDE_DIR NAMES HAPI/${renderer_name}.h 
-                                                 PATHS ${module_include_search_paths}
+                                                 PATHS ${HAPI_INCLUDE_DIR}/../${renderer_name}/include
+                                                       ${module_include_search_paths}
                                                  DOC "Path in which the file HAPI/${renderer_name}.h is located." )
     mark_as_advanced( HAPI_${renderer_name}_INCLUDE_DIR )
 
