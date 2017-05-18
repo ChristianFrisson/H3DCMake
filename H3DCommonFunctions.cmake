@@ -266,7 +266,7 @@ function( setupResourceFile target_name )
       if( CMAKE_GENERATOR MATCHES "Visual Studio|NMake" )
         set( enable_svn_revision_default ON )
       endif()
-      set( ENABLE_SVN_REVISION ${enable_svn_revision_default} CACHE BOOL "Use SubWCRev.exe to embed svn revision number in generated DLLs." )
+      set( ENABLE_SVN_REVISION ${enable_svn_revision_default} CACHE BOOL "Use SubWCRev.exe ( if found ) to embed svn revision number in generated DLLs." )
     endif()
     
     set( ${setup_resource_file_VERSION_PREFIX}_SVN_VERSION "0" )

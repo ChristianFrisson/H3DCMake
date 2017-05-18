@@ -53,7 +53,7 @@ if( NOT h3d_release_only_warning )
 endif()
 
 if( NOT DEFINED H3DAPI_INCLUDE_DIRS )
-  set( H3DAPI_INCLUDE_DIRS "" CACHE BOOL "Path to H3DAPI/include. Used to detect externals to install for H3DAPI." )
+  set( H3DAPI_INCLUDE_DIRS "" CACHE PATH "Path to H3DAPI/include. Used to detect externals to install for H3DAPI." )
 endif()
 
 if( WIN32 )
@@ -73,7 +73,7 @@ if( NOT DEFINED H3DAPI_CMAKE_INSTALL_PREFIX )
   elseif( NOT "${H3D_ROOT_CMAKE_PATH}" STREQUAL  "" )
     set( h3dapi_cmake_install_prefix_default "${H3D_ROOT_CMAKE_PATH}/.." )
   endif()
-  set( H3DAPI_CMAKE_INSTALL_PREFIX ${h3dapi_cmake_install_prefix_default} CACHE PATH "Set this to the CMAKE_INSTALL_PREFIX directory used when installing H3DUtil. It is assumed that H3DUtil is installed in bin32/bin64 and lib32/lib64." )
+  set( H3DAPI_CMAKE_INSTALL_PREFIX ${h3dapi_cmake_install_prefix_default} CACHE PATH "Set this to the CMAKE_INSTALL_PREFIX directory used when installing H3DAPI. It is assumed that H3DAPI is installed in bin32/bin64 and lib32/lib64." )
   mark_as_advanced( H3DAPI_CMAKE_INSTALL_PREFIX )
 endif()
 

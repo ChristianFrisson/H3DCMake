@@ -52,7 +52,7 @@ if( NOT h3d_release_only_warning )
 endif()
 
 if( NOT DEFINED H3DUtil_INCLUDE_DIRS )
-  set( H3DUtil_INCLUDE_DIRS "" CACHE BOOL "Path to H3DUtil/include." )
+  set( H3DUtil_INCLUDE_DIRS "" CACHE PATH "Path to H3DUtil/include." )
 endif()
 
 if( WIN32 )

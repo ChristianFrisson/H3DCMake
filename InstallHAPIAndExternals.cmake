@@ -53,7 +53,7 @@ if( NOT h3d_release_only_warning )
 endif()
 
 if( NOT DEFINED HAPI_INCLUDE_DIRS )
-  set( HAPI_INCLUDE_DIRS "" CACHE BOOL "Path to HAPI/include." )
+  set( HAPI_INCLUDE_DIRS "" CACHE PATH "Path to HAPI/include." )
 endif()
 
 if( WIN32 )
