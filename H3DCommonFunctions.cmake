@@ -1,4 +1,5 @@
 # Contains common H3D functions that are used by CMakeLists.txt to setup projects.
+include( H3DUtilityFunctions )
 
 # Set the output name of a H3D target to handle proper postfix depending on compiler version.
 # the_target Will contain search path for the include directories.
