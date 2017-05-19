@@ -19,6 +19,7 @@ function( getMSVCPostFix post_fix_output )
   endif()
 endfunction()
 
+# Set the output name of a H3D target to handle proper postfix depending on compiler version.
 # the_target Will contain search path for the include directories.
 # target_base_name Must be the base name for the target.
 # Optional argument can be given which will be set to the postfix appended to the name.
@@ -36,6 +37,7 @@ function( setH3DMSVCOutputName the_target target_base_name )
   endif()
 endfunction()
 
+# Add common compile flags that are used by MSVC compilers for H3D projects.
 # compile_flags_container Compile flags will be added here.
 function( addCommonH3DMSVCCompileFlags compile_flags_container )
   if( MSVC )
@@ -67,7 +69,7 @@ function( addCommonH3DMSVCCompileFlags compile_flags_container )
   endif()
 endfunction()
 
-# goes through a list of libraries and adds them to be delayloaded
+# Iterates through a list of libraries and adds them to be delayloaded
 function( addDelayLoadFlags libraries_list link_flags_container )
   if( MSVC )
     set( link_flags_container_internal "" )
@@ -79,6 +81,7 @@ function( addDelayLoadFlags libraries_list link_flags_container )
   endif()
 endfunction()
 
+# Iterates through a list of dll names and adds them to be delayloaded
 function( addDelayLoadFlagsFromNames dll_names_list link_flags_container )
   if( MSVC )
     set( link_flags_container_internal "" )
@@ -127,13 +130,13 @@ function( setupRPathForLib )
   endif()
 endfunction()
 
-# Detects whether C++11 is required and in that case checks if the compiles has support for it.
+# Checks if the compiler has support for c++11, or at least the features H3D uses ( MVSC 2010 supported ones ).
 function( enableCpp11 )
   set( options )
-  set( oneValueArgs FAIL_MESSAGE )
-  set( multiValueArgs )
+  set( one_value_args FAIL_MESSAGE )
+  set( multi_value_args )
   include( CMakeParseArguments )
-  cmake_parse_arguments( enable_c++11 "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( enable_c++11 "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( enable_c++11_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to enableCpp11(): \"${enable_c++11_UNPARSED_ARGUMENTS}\"" )
   endif()
@@ -170,10 +173,10 @@ endfunction()
 #                            defined in H3DUtil.h then C++11 functionality is required.
 function( handleCommonCacheVar )
   set( options GENERATE_CPACK_PROJECT PREFER_STATIC_LIBRARIES )
-  set( oneValueArgs CMAKE_INSTALL_PREFIX ENABLE_THREAD_LOCK_DEBUG )
-  set( multiValueArgs )
+  set( one_value_args CMAKE_INSTALL_PREFIX ENABLE_THREAD_LOCK_DEBUG )
+  set( multi_value_args )
   include( CMakeParseArguments )
-  cmake_parse_arguments( setup_common_cache_var "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( setup_common_cache_var "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( setup_common_cache_var_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to handleCommonCacheVar(): \"${setup_common_cache_var_UNPARSED_ARGUMENTS}\"" )
   endif()
@@ -327,10 +330,10 @@ endfunction()
 #                       unity build is enabled. If omitted then only UnityBuild.cpp will be given to OUTPUT_VARIABLE.
 function( handleUnityBuild )
   set( options )
-  set( oneValueArgs PROJECT_NAME SOURCE_PREFIX_PATH COMPILE_FLAGS_VARIABLE OUTPUT_VARIABLE )
-  set( multiValueArgs SOURCE_FILES UNITY_BUILD_SOURCES )
+  set( one_value_args PROJECT_NAME SOURCE_PREFIX_PATH COMPILE_FLAGS_VARIABLE OUTPUT_VARIABLE )
+  set( multi_value_args SOURCE_FILES UNITY_BUILD_SOURCES )
   include( CMakeParseArguments )
-  cmake_parse_arguments( handle_unity_build "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( handle_unity_build "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( handle_unity_build_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to handleUnityBuild(): \"${handle_unity_build_UNPARSED_ARGUMENTS}\"" )
   endif()
@@ -398,15 +401,15 @@ endfunction()
 # STDAFX_SOURCE_LOCATION - The location in which StdAfx.cpp should be created.
 function( handlePrecompiledHeaders )
   set( options )
-  set( oneValueArgs PROJECT_NAME HEADERS_VARIABLE SRCS_VARIABLE STDAFX_HEADER_LOCATION STDAFX_SOURCE_LOCATION )
-  set( multiValueArgs )
+  set( one_value_args PROJECT_NAME HEADERS_VARIABLE SRCS_VARIABLE STDAFX_HEADER_LOCATION STDAFX_SOURCE_LOCATION )
+  set( multi_value_args )
   include( CMakeParseArguments )
-  cmake_parse_arguments( handle_precompiled_headers "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( handle_precompiled_headers "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( handle_precompiled_headers_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to handlePrecompiledHeaders(): \"${handle_precompiled_headers_UNPARSED_ARGUMENTS}\"" )
   endif()
   
-  foreach( required_arg ${oneValueArgs} )
+  foreach( required_arg ${one_value_args} )
     if( NOT handle_precompiled_headers_${required_arg} )
       message( FATAL_ERROR "The required argument ${required_arg} is missing when calling handlePrecompiledHeaders." )
     endif()
@@ -452,10 +455,10 @@ endfunction()
 #                                and ComponentName is the name of the component for that project.
 function( findIncludeDirsAndLibrariesForH3DProjects )
   set( options )
-  set( oneValueArgs )
-  set( multiValueArgs PROJECT_NAMES INCLUDE_DIRS_OUTPUT_VAR LIBRARIES_OUTPUT_VAR REQUIRED_PROJECTS REQUIRED_PROJECTS_COMPONENTS )
+  set( one_value_args )
+  set( multi_value_args PROJECT_NAMES INCLUDE_DIRS_OUTPUT_VAR LIBRARIES_OUTPUT_VAR REQUIRED_PROJECTS REQUIRED_PROJECTS_COMPONENTS )
   include( CMakeParseArguments )
-  cmake_parse_arguments( find_h3d_projects_dirs_libs "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( find_h3d_projects_dirs_libs "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( find_h3d_projects_dirs_libs_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to findIncludeDirsAndLibrariesForH3DProjects (): \"${find_h3d_projects_dirs_libs_UNPARSED_ARGUMENTS}\"" )
   endif()
@@ -523,8 +526,8 @@ function( findIncludeDirsAndLibrariesForH3DProjects )
   endif()
 endfunction()
 
-# Use this function to setup an internal cache variable which contains the include directories for the
-# current cmakelists.txt. Note that this function should be called just before creating targets.
+# Setups an internal cache variable which contains the include directories for the
+# current CMakeLists.txt. Note that this function should be called just before creating targets.
 # If H3D ever changes the required cmake system to be one that has INCLUDE_DIRECTORIES property
 # on targets then we can update this function.
 # VARIABLE_NAME - The name of the internal cache variable.
@@ -532,10 +535,10 @@ endfunction()
 # and which will also be set to handle backwards compatiblity.
 function( populateProjectIncludeDirectoriesCacheVar )
   set( options )
-  set( oneValueArgs VARIABLE_NAME )
-  set( multiValueArgs DEPRECATED_VARIABLE_NAMES )
+  set( one_value_args VARIABLE_NAME )
+  set( multi_value_args DEPRECATED_VARIABLE_NAMES )
   include( CMakeParseArguments )
-  cmake_parse_arguments( populate_project_include_dirs_cache_var "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( populate_project_include_dirs_cache_var "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( populate_project_include_dirs_cache_var_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to populateProjectIncludeDirectoriesCacheVar(): \"${populate_project_include_dirs_cache_var_UNPARSED_ARGUMENTS}\"" )
   endif()

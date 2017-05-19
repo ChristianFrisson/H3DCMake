@@ -54,6 +54,8 @@ if( MSVC )
   endif()
 endif()
 
+# Check the ACKNOWLEDGMENTS file of the given External directory for a specific string to know if the directory contains
+# libraries that are built for the current compiler.
 function( checkIfValidH3DWinExternal arg1 arg2 )
   set( ${arg1} ON PARENT_SCOPE )
   if( check_if_h3d_external_matches_vs_version )
@@ -74,6 +76,7 @@ function( check_if_valid_H3D_Win_External arg1 arg2 )
   set( ${arg1} ${${arg1}} PARENT_SCOPE )
 endfunction()
 
+# Set up search paths to libraries and include files for external features.
 # arg1 Will contain search path for the include directories.
 # arg2 Will contain search path for library directories.
 # arg3 Should contain FindXX.cmake module path or empty,
@@ -140,6 +143,7 @@ function( get_external_search_paths_h3d arg1 arg2 arg3 )
   set( ${arg2} ${${arg2}} PARENT_SCOPE )
 endfunction()
 
+# Can be used to call an already existing find modules in CMake.
 # module_name Should contain the name of the module to check for.
 # REQUIRED_CMAKE_VERSION - A one value argument which will contain a version string
 # which will be compared against the current CMake version. If the cmake version is
@@ -147,10 +151,10 @@ endfunction()
 # the find module is expected to not exist.
 function( checkCMakeInternalModule module_name )
   set( options )
-  set( oneValueArgs REQUIRED_CMAKE_VERSION OUTPUT_AS_UPPER_CASE )
-  set( multiValueArgs )
+  set( one_value_args REQUIRED_CMAKE_VERSION OUTPUT_AS_UPPER_CASE )
+  set( multi_value_args )
   include( CMakeParseArguments )
-  cmake_parse_arguments( check_cmake_internal_module "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( check_cmake_internal_module "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( check_cmake_internal_module_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to checkCMakeInternalModule(): \"${check_cmake_internal_module_UNPARSED_ARGUMENTS}\"" )
   endif()
@@ -204,10 +208,10 @@ endfunction()
 # This function is only meant for cache variables.
 function( handleRenamingVariablesBackwardCompatibility )
   set( options )
-  set( oneValueArgs )
-  set( multiValueArgs NEW_VARIABLE_NAMES OLD_VARIABLE_NAMES DOC_STRINGS )
+  set( one_value_args )
+  set( multi_value_args NEW_VARIABLE_NAMES OLD_VARIABLE_NAMES DOC_STRINGS )
   include( CMakeParseArguments )
-  cmake_parse_arguments( handle_old_upper_case_input "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( handle_old_upper_case_input "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( handle_old_upper_case_input_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to handleOldUppercaseCacheVariables(): \"${handle_old_upper_case_input_UNPARSED_ARGUMENTS}\"" )
   endif()
@@ -243,7 +247,7 @@ function( handleRenamingVariablesBackwardCompatibility )
   endforeach()
 endfunction()
 
-# This function can be used to check the given variables and output a proper
+# This function can be used by find modules to check the given variables and output a proper
 # message in the case of everything being ok as well as setting a
 # _module_name_FOUND variable to true or false
 # _module_name Should contain the name of the module to check for.
@@ -251,10 +255,10 @@ endfunction()
 # function to set _module_name_FOUND to true.
 function( checkIfModuleFound _module_name )
   set( options )
-  set( oneValueArgs )
-  set( multiValueArgs REQUIRED_VARS )
+  set( one_value_args )
+  set( multi_value_args REQUIRED_VARS )
   include( CMakeParseArguments )
-  cmake_parse_arguments( _check_if_module_found "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( _check_if_module_found "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( _check_if_module_found_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to checkIfModuleFound(): \"${_check_if_module_found_UNPARSED_ARGUMENTS}\"" )
   endif()
@@ -277,7 +281,7 @@ function( checkIfModuleFound _module_name )
   find_package_message( ${_module_name} "Found ${_module_name}: ${${first_required_var}}" "${details}" )
 endfunction()
 
-# Will generate a library name using the naming scheme 
+# Will generate a library name using the naming scheme of H3D.
 function( getH3DLibraryNameToSearchFor output_var base_name )
   if( MSVC )
     set( h3d_msvc_version 6 )
@@ -306,6 +310,7 @@ function( getH3DLibraryNameToSearchFor output_var base_name )
   endif()
 endfunction()
 
+# Get search paths for H3D libraries.
 # include_paths_output Will contain search path for the include directories.
 # lib_path_output Will contain search path for library directories.
 # module_path Should contain FindXX.cmake module path or empty
@@ -373,10 +378,10 @@ endfunction()
 #               special name.
 function( handleComponentsForLib module_name )
   set( options )
-  set( oneValueArgs MODULE_HEADER MODULE_HEADER_SUFFIX )
-  set( multiValueArgs REQUIRED OPTIONAL OPTIONAL_DEFINES DESIRED OUTPUT H3D_MODULES MODULE_HEADER_DIRS )
+  set( one_value_args MODULE_HEADER MODULE_HEADER_SUFFIX )
+  set( multi_value_args REQUIRED OPTIONAL OPTIONAL_DEFINES DESIRED OUTPUT H3D_MODULES MODULE_HEADER_DIRS )
   include( CMakeParseArguments )
-  cmake_parse_arguments( handle_components_for_lib "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments( handle_components_for_lib "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( handle_components_for_lib_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to handleComponentsForLib(): \"${handle_components_for_lib_UNPARSED_ARGUMENTS}\"" )
   endif()
