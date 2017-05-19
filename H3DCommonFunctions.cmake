@@ -1,23 +1,4 @@
-# Contains common H3D functions that are used a bit here and there.
-
-# Get the library/executable postfix commonly used by our library/executable names for MSVC.
-# post_fix_output Contains the variable which should be set to the generated postfix.
-# Only set if generator is MSVC.
-function( getMSVCPostFix post_fix_output )
-  if( MSVC )
-    set( h3d_msvc_version 6 )
-    set( temp_msvc_version 1299 )
-    while( ${MSVC_VERSION} GREATER ${temp_msvc_version} )
-      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
-      math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
-    endwhile()
-
-    if( ${h3d_msvc_version} GREATER 12 ) # MSVC skipped 13 in their numbering system.
-      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
-    endif()
-    set( ${post_fix_output} _vc${h3d_msvc_version} PARENT_SCOPE )
-  endif()
-endfunction()
+# Contains common H3D functions that are used by CMakeLists.txt to setup projects.
 
 # Set the output name of a H3D target to handle proper postfix depending on compiler version.
 # the_target Will contain search path for the include directories.
@@ -92,24 +73,6 @@ function( addDelayLoadFlagsFromNames dll_names_list link_flags_container )
   endif()
 endfunction()
 
-# Get the commonly used library and binary output directory name for H3D.
-# default_bin_directory_output should contain a variable which will be set to the bin directory name.
-# default_lib_directory_output should contain a variable which will be set to the lib directory name.
-function( getDefaultH3DOutputDirectoryName default_bin_directory_output default_lib_directory_output )
-  set( default_bin_install_internal "bin" )
-  set( default_lib_install_internal "lib" )
-  if( WIN32 )
-    set( default_bin_install_internal "bin32" )
-    set( default_lib_install_internal "lib32" )
-    if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-      set( default_bin_install_internal "bin64" )
-      set( default_lib_install_internal "lib64" )
-    endif()
-  endif()
-  set( ${default_bin_directory_output} ${default_bin_install_internal} PARENT_SCOPE )
-  set( ${default_lib_directory_output} ${default_lib_install_internal} PARENT_SCOPE )
-endfunction()
-
 # Setup the desired RPath settings for H3D projects.
 function( setupRPathForLib )
   # use, i.e. don't skip the full RPATH for the build tree
@@ -127,37 +90,6 @@ function( setupRPathForLib )
   list( FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" is_system_dir )
   if( "${is_system_dir}" STREQUAL "-1" )
      set( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib" )
-  endif()
-endfunction()
-
-# Checks if the compiler has support for c++11, or at least the features H3D uses ( MVSC 2010 supported ones ).
-function( enableCpp11 )
-  set( options )
-  set( one_value_args FAIL_MESSAGE )
-  set( multi_value_args )
-  include( CMakeParseArguments )
-  cmake_parse_arguments( enable_c++11 "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
-  if( enable_c++11_UNPARSED_ARGUMENTS )
-    message( FATAL_ERROR "Unknown keywords given to enableCpp11(): \"${enable_c++11_UNPARSED_ARGUMENTS}\"" )
-  endif()
-  
-  set( fail_message "Compiler does not support c++11." )
-  if( enable_c++11_FAIL_MESSAGE )
-    set( fail_message ${enable_c++11_FAIL_MESSAGE} )
-  endif()
-  
-  if( "${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" )
-    execute_process(
-        COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE gcc_version )
-    if( gcc_version VERSION_GREATER 4.7 OR gcc_version VERSION_EQUAL 4.7 )
-      add_definitions( "-std=gnu++11" )
-    elseif( gcc_version VERSION_GREATER 4.3 OR gcc_version VERSION_EQUAL 4.3 )
-      add_definitions( "-std=gnu++0x" )
-    else()
-      message( FATAL_ERROR ${fail_message} )
-    endif()
-  elseif( ${MSVC_VERSION} LESS 1600 )
-    message( FATAL_ERROR ${fail_message} )
   endif()
 endfunction()
 

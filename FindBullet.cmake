@@ -5,7 +5,7 @@
 #  BULLET_LIBRARIES    - List of libraries when using BULLET.
 #  BULLET_FOUND        - True if BULLET found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 set( bullet_cache_var_names BULLET_COLLISION_LIBRARY BULLET_DYNAMICS_LIBRARY BULLET_MATH_LIBRARY BULLET_SOFTBODY_LIBRARY )
 
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${bullet_cache_var_names}
@@ -15,6 +15,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${bullet_cache_
                                                                  BULLET_H3D_COLLISION_DEBUG_LIBRARY BULLET_H3D_DYNAMICS_DEBUG_LIBRARY BULLET_H3D_MATH_DEBUG_LIBRARY
                                                                  BULLET_H3D_SOFTBODY_DEBUG_LIBRARY BULLET_H3D_COLLISION_OBJECT_WRAPPER_H )
 
+include( H3DCommonFindModuleFunctions )
 set( BULLET_INSTALL_DIR "" CACHE PATH "Path to bullet installation" )
 mark_as_advanced( BULLET_INSTALL_DIR )
 

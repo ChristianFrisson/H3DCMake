@@ -5,7 +5,7 @@
 #  VirtuoseAPI_LIBRARIES    - List of libraries when using VirtuoseAPI.
 #  VirtuoseAPI_FOUND        - True if VirtuoseAPI found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES VirtuoseAPI_INCLUDE_DIR VirtuoseAPI_LIBRARY
                                               OLD_VARIABLE_NAMES VIRTUOSE_INCLUDE_DIR VIRTUOSE_LIBRARY
                                               DOC_STRINGS "Path in which the file VirtuoseAPI.h is located. Needed to support Haption haptics device such as the Virtuose series."
@@ -16,6 +16,7 @@ get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 set( virtuoseapi_include_search_paths "" )
 set( virtuoseapi_lib_search_paths "" )
 if( NOT MSVC14 )
+  include( H3DCommonFindModuleFunctions )
   getExternalSearchPathsH3D( virtuoseapi_include_search_paths virtuoseapi_lib_search_paths ${module_file_path} )
 endif()
 

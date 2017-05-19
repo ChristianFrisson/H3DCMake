@@ -5,12 +5,13 @@
 #  FreeImage_LIBRARIES    - List of libraries when using FreeImage.
 #  FreeImage_FOUND        - True if FreeImage found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FreeImage_INCLUDE_DIR FreeImage_LIBRARY
                                               DOC_STRINGS "Path in which the file FreeImage.h is located."
                                                           "Path to freeimage library." )
 
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "FreeImage/Dist" "static" )
 

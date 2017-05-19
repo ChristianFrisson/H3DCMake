@@ -14,7 +14,7 @@
 #   library to be found. Enabled features can be found by searching for HAVE_<Feature> in the
 #   installed header. This flag will be used as COMPONENTS to all H3D libraries that this library
 #   depend on.
-include( H3DCommonFunctions )
+include( H3DUtilityFunctions )
 if( MSVC )
   getMSVCPostFix( msvc_postfix )
   set( geospatial_name "GeoSpatial${msvc_postfix}" )
@@ -24,12 +24,11 @@ else()
   set( geospatial_name GeoSpatial )
 endif()
 
-
-include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES GeoSpatial_LIBRARY_DEBUG
                                               OLD_VARIABLE_NAMES GeoSpatial_DEBUG_LIBRARY
                                               DOC_STRINGS "Path to ${geospatial_name}_d library." )
 
+include( H3DCommonFindModuleFunctions )
 getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} GeoSpatial )
 
 # Look for the header file.

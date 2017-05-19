@@ -5,7 +5,7 @@
 #  SixenseSDK_LIBRARIES    - List of libraries when using SixenseSDK.
 #  SixenseSDK_FOUND        - True if SixenseSDK found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SixenseSDK_INCLUDE_DIR SixenseSDK_LIBRARY SixenseSDK_INSTALL_DIR
                                               OLD_VARIABLE_NAMES SIXENSE_INCLUDE_DIR SIXENSE_LIBRARY SIXENSE_INSTALL_DIR
@@ -13,6 +13,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SixenseSDK_INCL
                                                           "Path to sixense library. Required to use the HydraSensor."
                                                           "Path to external Sixense SDK installation" )
 
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 

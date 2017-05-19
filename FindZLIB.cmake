@@ -6,7 +6,7 @@
 #  ZLIB_LIBRARIES    - List of libraries when using zlib.
 #  ZLIB_FOUND        - True if zlib found.
 
-include( H3DExternalSearchPath )
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "zlib" )
 

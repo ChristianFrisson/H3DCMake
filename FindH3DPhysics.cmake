@@ -21,7 +21,7 @@
 # Bullet - Used to enable support for Bullet physics engine.
 # SOFA - Used to enable support for SOFA physics engine.
 # PythonLibs - Used to enable support for H3DPhysicsInterface python module.
-include( H3DCommonFunctions )
+include( H3DUtilityFunctions )
 if( MSVC )
   getMSVCPostFix( msvc_postfix )
   set( h3dphysics_name "H3DPhysics${msvc_postfix}" )
@@ -31,12 +31,11 @@ else()
   set( h3dphysics_name H3DPhysics )
 endif()
 
-
-include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES H3DPhysics_LIBRARY_DEBUG
                                               OLD_VARIABLE_NAMES H3DPhysics_DEBUG_LIBRARY
                                               DOC_STRINGS "Path to ${h3dphysics_name}_d library." )
 
+include( H3DCommonFindModuleFunctions )
 getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} H3DPhysics )
 
 # Look for the header file.

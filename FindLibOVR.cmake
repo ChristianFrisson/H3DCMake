@@ -5,11 +5,12 @@
 #  LibOVR_LIBRARIES    - List of libraries when using LibOVR.
 #  LibOVR_FOUND        - True if LibOVR found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES LibOVR_INCLUDE_DIR LibOVR_LIBRARY
                                               DOC_STRINGS "Path in which the file OVR_CAPI_GL.h is located. Needed to support the OCULUS_RIFT stereo mode."
                                                           "Path to LibOVR library. Needed to support the OCULUS_RIFT stereo mode." )
-                                                          
+
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "LibOVR" "static" )
 

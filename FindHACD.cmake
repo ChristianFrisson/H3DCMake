@@ -5,11 +5,12 @@
 #  HACD_LIBRARIES    - List of libraries when using HACD.
 #  HACD_FOUND        - True if HACD found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES HACD_LIBRARY_RELEASE HACD_LIBRARY_DEBUG
                                               OLD_VARIABLE_NAMES HACD_LIB HACD_DEBUG_LIB )
 
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "hacd" "static" )
 

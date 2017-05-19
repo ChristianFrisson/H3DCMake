@@ -5,7 +5,7 @@
 #  OpenEXR_LIBRARIES    - List of libraries when using OpenEXR.
 #  OpenEXR_FOUND        - True if OpenEXR found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 set( open_exr_partial_var_names IMF THREAD MATH HALF EX )
 set( open_exr_var_names )
 set( open_exr_var_names_debug )
@@ -30,6 +30,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${open_exr_var_
                                               OLD_VARIABLE_NAMES ${open_exr_old_var_names} ${open_exr_old_var_names_debug}
                                               DOC_STRINGS ${doc_strings} ${doc_strings_debug} )
 
+include( H3DCommonFindModuleFunctions )
 set( openexr_include_search_path "" )
 set( openexr_library_search_path "" )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )

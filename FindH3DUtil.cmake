@@ -22,7 +22,7 @@
 # DCMTK - Used to add support for DICOM file format.
 # NvidiaToolsExt - Used for debugging with Nvidia Tools Extension Library.
 # OpenEXR - Used to add support for exr file format.
-include( H3DCommonFunctions )
+include( H3DUtilityFunctions )
 if( MSVC )
   getMSVCPostFix( msvc_postfix )
   set( h3dutil_name "H3DUtil${msvc_postfix}" )
@@ -30,12 +30,12 @@ else()
   set( h3dutil_name h3dutil )
 endif()
 
-include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES H3DUtil_LIBRARY_RELEASE H3DUtil_LIBRARY_DEBUG
                                               OLD_VARIABLE_NAMES H3DUTIL_LIBRARY H3DUTIL_DEBUG_LIBRARY
                                               DOC_STRINGS "Path to ${h3dutil_name} library."
                                                           "Path to ${h3dutil_name}_d library." )
 
+include( H3DCommonFindModuleFunctions )
 getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} H3DUtil )
 
 # Look for the header file.

@@ -5,7 +5,7 @@
 #  Vorbis_LIBRARIES    - List of libraries when using Vorbis.
 #  Vorbis_FOUND        - True if Vorbis found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES Vorbis_INCLUDE_DIR Vorbis_ogg_INCLUDE_DIR Vorbis_vorbisfile_LIBRARY Vorbis_LIBRARY Vorbis_ogg_LIBRARY Vorbis_vorbisfile_STATIC_LIBRARY Vorbis_ogg_STATIC_LIBRARY
                                               OLD_VARIABLE_NAMES VORBIS_INCLUDE_DIR VORBIS_OGG_INCLUDE_DIR VORBIS_VORBISFILE_LIBRARY VORBIS_LIBRARY VORBIS_OGG_LIBRARY VORBIS_VORBISFILE_STATIC_LIBRARY VORBIS_OGG_STATIC_LIBRARY
                                               DOC_STRINGS "Path in which the file vorbis/vorbisfile.h is located."
@@ -16,6 +16,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES Vorbis_INCLUDE_
                                                           "Path to vorbisfile static library. Needed to support vorbis and ogg sound files."
                                                           "Path to ogg static library. Needed to support vorbis and ogg sound files." )
 
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 

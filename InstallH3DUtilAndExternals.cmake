@@ -81,7 +81,7 @@ set( H3DUTIL_INCLUDE_DIRECTORIES_INSTALL "" CACHE INTERNAL "List of External inc
 set( H3DUTIL_LIBRARIES_INSTALL "" CACHE INTERNAL "List of External libraries used by this compiled version of H3DUtil." )
 set( H3DUTIL_BINARIES_INSTALL "" CACHE INTERNAL "List of External binaries used by this compiled version of H3DUtil." )
 
-include( H3DCommonFunctions )
+include( H3DUtilityFunctions )
 getDefaultH3DOutputDirectoryName( default_bin_install default_lib_install )
 
 set( h3dutil_external_bin "${EXTERNAL_ROOT}/${default_bin_install}" )

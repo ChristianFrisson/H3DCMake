@@ -4,13 +4,14 @@
 #  NvidiaCG_LIBRARIES    - List of libraries when using NVIDIA CG Toolkit.
 #  NvidiaCG_FOUND        - True if the NVIDIA CG Toolkit is found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES NvidiaCG_INCLUDE_DIR NvidiaCG_LIBRARY NvidiaCG_cgGL_LIBRARY
                                               OLD_VARIABLE_NAMES NVIDIACG_INCLUDE_DIR NVIDIACG_LIBRARY NVIDIACG_CGGL_LIBRARY
                                               DOC_STRINGS "Path in which the file cg.h and cgGL.h are located."
                                                           "Path to cg library."
                                                           "Path to cgGL library." )
 
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "Cg" "cg" )
 

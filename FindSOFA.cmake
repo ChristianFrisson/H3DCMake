@@ -58,7 +58,7 @@ set( sofa_lib_suffix "_${sofa_lib_version_major}_${sofa_lib_version_minor}" )
 
 set( SOFA_LIBRARY_NAMES "" CACHE INTERNAL "Internal sofa library list variable. Can be used to setup delayload." FORCE )
 
-include( H3DExternalSearchPath )
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 

@@ -5,7 +5,7 @@
 #  NiFalconAPI_LIBRARIES    - List of libraries when using NiFalconAPI.
 #  NiFalconAPI_FOUND        - True if NiFalconAPI found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES NiFalconAPI_INCLUDE_DIR NiFalconAPI_comm_ftdi_LIBRARY NiFalconAPI_comm_usb_LIBRARY NiFalconAPI_comm_ftd2xx_LIBRARY NiFalconAPI_ftd2xx_LIBRARY
                                               OLD_VARIABLE_NAMES NIFALCONAPI_INCLUDE_DIR NIFALCONAPI_COMM_FTDI_LIBRARY NIFALCONAPI_COMM_USB_LIBRARY NIFALCONAPI_COMM_FTD2XX_LIBRARY NIFALCONAPI_LIBFTD2XX_LIBRARY
                                               DOC_STRINGS "Path in which the files falcon/comm/FalconCommLibFTDI.h, falcon/firmware/FalconFirmwareNovintSDK.h, falcon/kinematic/FalconKinematicStamper.h, falcon/util/FalconFirmwareBinaryNvent.h, falcon/core/FalconDevice.h are located."

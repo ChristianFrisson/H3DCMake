@@ -4,13 +4,15 @@
 #  fparser_INCLUDE_DIRS - Where to find fparser headers
 #  fparser_LIBRARIES    - List of libraries when using fparser.
 #  fparser_FOUND        - True if fparser found.
-include( H3DExternalSearchPath )
-get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "fparser" )
+include( H3DUtilityFunctions )
 
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES fparser_LIBRARY_DEBUG
                                               OLD_VARIABLE_NAMES fparser_DEBUG_LIBRARY
                                               DOC_STRINGS "Path to fparser debug library." )
+
+include( H3DCommonFindModuleFunctions )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "fparser" )
 
 # Look for the header file.
 find_path( fparser_INCLUDE_DIR NAMES fparser.hh

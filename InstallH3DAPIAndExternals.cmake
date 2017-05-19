@@ -84,7 +84,7 @@ set( H3DAPI_BINARIES_INSTALL "" CACHE INTERNAL "List of External binaries used b
 set( H3DAPI_NSIS_EXTRA_INSTALL_COMMANDS "\\n" CACHE INTERNAL "Extra install commands for installing with nsis." )
 set( H3DAPI_NSIS_EXTRA_UNINSTALL_COMMANDS "\\n" CACHE INTERNAL "Extra uninstall commands for installing with nsi." )
 
-include( H3DCommonFunctions )
+include( H3DUtilityFunctions )
 getDefaultH3DOutputDirectoryName( default_bin_install default_lib_install )
 set( h3dapi_external_bin "${EXTERNAL_ROOT}/${default_bin_install}" )
 set( h3dapi_external_lib "${EXTERNAL_ROOT}/${default_lib_install}" )

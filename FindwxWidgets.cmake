@@ -8,7 +8,7 @@
 # The following features are deprecated and the COMPONENTS feature of find_package should be used instead.
 # wxWidgets_USE_LIBS (deprecated) - Can be used to specify which libs to search for.
 
-include( H3DExternalSearchPath )
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 
 set( wxwidgets_library_search_paths "" )

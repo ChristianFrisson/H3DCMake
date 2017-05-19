@@ -5,7 +5,7 @@
 #  FalconAPI_LIBRARIES    - List of libraries when using FalconAPI.
 #  FalconAPI_FOUND        - True if FalconAPI found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FalconAPI_INCLUDE_DIR FalconAPI_hdl_LIBRARY
                                               OLD_VARIABLE_NAMES FALCONAPI_INCLUDE_DIR FALCONAPI_HDL_LIBRARY

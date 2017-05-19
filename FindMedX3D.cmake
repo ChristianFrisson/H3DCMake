@@ -14,7 +14,7 @@
 #   library to be found. Enabled features can be found by searching for HAVE_<Feature> in the
 #   installed header. This flag will be used as COMPONENTS to all H3D libraries that this library
 #   depend on.
-include( H3DCommonFunctions )
+include( H3DUtilityFunctions )
 if( MSVC )
   getMSVCPostFix( msvc_postfix )
   set( medx3d_name "MedX3D${msvc_postfix}" )
@@ -25,13 +25,13 @@ else()
 endif()
 
 
-include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES MedX3D_LIBRARY_RELEASE MedX3D_LIBRARY_DEBUG MedX3D_INCLUDE_DIR
                                               OLD_VARIABLE_NAMES MEDX3D_LIBRARY MEDX3D_DEBUG_LIBRARY
                                               DOC_STRINGS "Path to ${medx3d_name} library."
                                                           "Path to ${medx3d_name}_d library."
                                                           "Path in which the file MedX3D/MedX3D.h is located." )
 
+include( H3DCommonFindModuleFunctions )
 getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} MedX3D )
 
 # Look for the header file.

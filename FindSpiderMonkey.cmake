@@ -5,11 +5,12 @@
 #  SpiderMonkey_LIBRARIES    - List of libraries when using SpiderMonkey.
 #  SpiderMonkey_FOUND        - True if SpiderMonkey found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SpiderMonkey_INCLUDE_DIR SpiderMonkey_LIBRARY
                                               DOC_STRINGS "Path in which the file jsapi.h is located."
                                                           "Path to js32 or mozjs library." )
 
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "js" )
 

@@ -6,7 +6,7 @@
 #  FTGL_FOUND        - True if FTGL found.
 #  FTGL_INCLUDE_IS_UPPER - True if the include file to use is FTGL.h.
 
-include( H3DExternalSearchPath )
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "FTGL" )
 
@@ -47,7 +47,8 @@ if( WIN32 AND PREFER_STATIC_LIBRARIES )
   elseif( MSVC90 )
     set( ftgl_static_library_name ftgl_static_MTD_vc9 )
   endif()
-  
+
+  include( H3DUtilityFunctions )
   handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FTGL_STATIC_LIBRARY_RELEASE FTGL_STATIC_LIBRARY_DEBUG
                                                 OLD_VARIABLE_NAMES FTGL_STATIC_LIBRARY FTGL_STATIC_DEBUG_LIBRARY
                                                 DOC_STRINGS "Path to ftgl static library."

@@ -6,9 +6,7 @@
 #  SofaHelper_FOUND        - True if sofa helper found.
 
 
-include( H3DExternalSearchPath )
-get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
-getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "sofahelper" "sofahelper/framework" )
+include( H3DUtilityFunctions )
 
 if( WIN32 )
   set( SOFA_LIBRARY_POSTFIX "_16_08" )
@@ -20,7 +18,9 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SofaHelper_INCL
                                                           "Path to SofaHelper${SOFA_LIBRARY_POSTFIX} library."
                                                           "Path to SofaHelper${SOFA_LIBRARY_POSTFIX}d library." )
 
-
+include( H3DCommonFindModuleFunctions )
+get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
+getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "sofahelper" "sofahelper/framework" )
 
 # Look for the header file.
 find_path( SofaHelper_INCLUDE_DIR NAMES   sofa/helper/AdvancedTimer.h

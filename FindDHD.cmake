@@ -6,7 +6,7 @@
 #  DHD_FOUND        - True if DHD found.
 #  DHD_drd_FOUND    - True if drd header/library was actually found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES DHD_drd_INCLUDE_DIR DHD_drd_LIBRARY DHD_IOKit_LIBRARY DHD_CoreFoundation_LIBRARY DHD_usb_LIBRARY DHD_pciscan_LIBRARY
                                               OLD_VARIABLE_NAMES DHD_DRD_INCLUDE_DIR DHD_DRD_LIBRARY DHD_IOKIT_LIBRARY DHD_COREFOUNDATION_LIBRARY DHD_USB_LIBRARY DHD_PCISCAN_LIBRARY
                                               DOC_STRINGS "Path in which the file drdc.h is located, not needed if DHD_INCLUDE_DIR and DHD_LIBRARY is set."
@@ -16,6 +16,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES DHD_drd_INCLUDE
                                                           "Path to usb library."
                                                           "Path to pciscan library." )
 
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "DHD-API" )
 

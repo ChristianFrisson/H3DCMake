@@ -38,7 +38,7 @@ else()
   endif()
 endif()
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 
 set( old_lib_names )
 set( new_lib_names )
@@ -50,6 +50,7 @@ endforeach()
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${new_lib_names} PhysX3_INCLUDE_DIR PhysX3_INSTALL_DIR PhysX3_LIB_TYPE
                                               OLD_VARIABLE_NAMES ${old_lib_names} )
 
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "physx3" )
 

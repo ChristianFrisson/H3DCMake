@@ -11,7 +11,7 @@ endif()
 # This module starts with calling CMakes internal find module, which does not exist but
 # a config file is found on some systems. If that config file is used (Teem_USE_FILE)
 # then this version is used instead.
-include( H3DExternalSearchPath )
+include( H3DCommonFindModuleFunctions )
 set( teem_find_quietly_old ${Teem_FIND_QUIETLY} )
 set( teem_find_required_old ${Teem_FIND_REQUIRED} )
 set( Teem_FIND_QUIETLY TRUE )
@@ -52,7 +52,6 @@ else()
   mark_as_advanced( Teem_PNG )
   mark_as_advanced( Teem_ZLIB )
 
-  include( H3DExternalSearchPath )
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
   getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "teem" )
 

@@ -5,7 +5,7 @@
 #  FontConfig_LIBRARIES    - List of libraries when using FontConfig.
 #  FontConfig_FOUND        - True if FontConfig found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES FontConfig_INCLUDE_DIR FontConfig_LIBRARY
                                               DOC_STRINGS "Path in which the file fontconfig/fontconfig.h is located."

@@ -82,7 +82,7 @@ set( HAPI_INCLUDE_DIRECTORIES_INSTALL "" CACHE INTERNAL "List of External includ
 set( HAPI_LIBRARIES_INSTALL "" CACHE INTERNAL "List of External libraries used by this compiled version of HAPI." )
 set( HAPI_BINARIES_INSTALL "" CACHE INTERNAL "List of External binaries used by this compiled version of HAPI." )
 
-include( H3DCommonFunctions )
+include( H3DUtilityFunctions )
 getDefaultH3DOutputDirectoryName( default_bin_install default_lib_install )
 
 set( hapi_external_bin "${EXTERNAL_ROOT}/${default_bin_install}" )

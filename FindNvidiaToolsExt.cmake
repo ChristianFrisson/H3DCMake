@@ -8,7 +8,7 @@
 #   https://developer.nvidia.com/nvidia-nsight-visual-studio-edition
 #
 # Tested with v4.0.0
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES NvidiaToolsExt_INCLUDE_DIR NvidiaToolsExt_LIBRARY
                                               OLD_VARIABLE_NAMES NVIDIATX_INCLUDE_DIR NVIDIATX_LIBRARY
                                               DOC_STRINGS "Path in which the file nvToolsExt.h and nvToolsExt.h are located."

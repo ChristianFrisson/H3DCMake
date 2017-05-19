@@ -23,7 +23,7 @@
 set( DCMTK_DIR "" CACHE PATH "Set this to the root of the installed dcmtk files to find include files and libraries." )
 mark_as_advanced( DCMTK_DIR )
 
-include( H3DExternalSearchPath )
+include( H3DCommonFindModuleFunctions )
 set( msvc_before_vs2010 OFF )
 if( MSVC )
   if( ${MSVC_VERSION} LESS 1600 )
@@ -38,7 +38,7 @@ getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths $
 
 set( dcmtk_library_postfix "" )
 if( msvc_before_vs2010 )
-  include( H3DCommonFunctions )
+  include( H3DUtilityFunctions )
   getMSVCPostFix( dcmtk_library_postfix )
 endif()
 

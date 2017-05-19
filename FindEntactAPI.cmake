@@ -5,7 +5,7 @@
 #  EntactAPI_LIBRARIES    - List of libraries when using EntactAPI.
 #  EntactAPI_FOUND        - True if EntactAPI found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES EntactAPI_INCLUDE_DIR EntactAPI_LIBRARY
                                               DOC_STRINGS "Path in which the file EntactAPI.h is located. Needed to support Entact haptics device."
@@ -14,6 +14,7 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES EntactAPI_INCLU
 set( entact_include_search_paths "" )
 set( entact_lib_search_paths "" )
 if( CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_SYSTEM_VERSION VERSION_GREATER "5.9999" )
+  include( H3DCommonFindModuleFunctions )
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
   getExternalSearchPathsH3D( entact_include_search_paths entact_lib_search_paths ${module_file_path} )
 endif()

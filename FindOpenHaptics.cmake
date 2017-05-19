@@ -5,7 +5,7 @@
 #  OpenHaptics_LIBRARIES    - List of libraries when using OpenHaptics.
 #  OpenHaptics_FOUND        - True if OpenHaptics found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES OpenHaptics_INCLUDE_DIR OpenHaptics_HL_LIBRARY OpenHaptics_HD_LIBRARY
                                               DOC_STRINGS "Path in which the files HL/hl.h, HD/hd.h and HDU/hdu.h are located. Comes with OpenHaptics installation, needed for PhantomDevice to work."
                                                           "Path to hl library. Comes with OpenHaptics installation, needed for PhantomDevice to work."

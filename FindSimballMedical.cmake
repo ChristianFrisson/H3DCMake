@@ -5,11 +5,12 @@
 #  SimballMedical_LIBRARIES    - List of libraries when using SimballMedical.
 #  SimballMedical_FOUND        - True if SimballMedical found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SimballMedical_INCLUDE_DIR SimballMedical_LIBRARY
                                               DOC_STRINGS "Path in which the file Simball/SimballMedicalHID.h is located. Needed to support Simball device."
                                                           "Path to SimballMedicalHID library. Needed to support Simball device." )
 
+include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 

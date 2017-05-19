@@ -5,7 +5,7 @@
 #  Haptik_LIBRARIES    - List of libraries when using Haptik.
 #  Haptik_FOUND        - True if Haptik found.
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES Haptik_INCLUDE_DIR Haptik_LIBRARY
                                               DOC_STRINGS "Path in which the file RSLib/Haptik.hpp is located. Needed to support the haptik device."
                                                           "Path to Haptik.Library library. Needed to support the haptik device." )

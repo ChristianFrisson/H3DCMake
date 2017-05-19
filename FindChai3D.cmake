@@ -19,7 +19,7 @@ else()
 
 endif()
 
-include( H3DExternalSearchPath )
+include( H3DUtilityFunctions )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES Chai3D_INCLUDE_DIR Chai3D_LIBRARY_RELEASE Chai3D_LIBRARY_DEBUG
                                               OLD_VARIABLE_NAMES CHAI3D_INCLUDE_DIR CHAI3D_LIBRARY CHAI3D_DEBUG_LIBRARY
                                               DOC_STRINGS "Path to include files for chai3d. The path is to where chai3d.h ( cWorld.h for chai3d versions earlier than 2.0 ) is located."
@@ -37,6 +37,7 @@ if( MSVC )
 endif()
 
 if( search_for_chai3d )
+  include( H3DCommonFindModuleFunctions )
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
   getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "chai3d/include" "static" )
   # Look for the header file.

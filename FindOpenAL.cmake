@@ -8,7 +8,7 @@
 # NOTE the upper case on the values is because the cmake find module uses upper case and we do not want to
 # break that.
 
-include( H3DExternalSearchPath )
+include( H3DCommonFindModuleFunctions )
 
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )

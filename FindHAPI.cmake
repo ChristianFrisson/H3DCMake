@@ -53,7 +53,7 @@
 # The following features are deprecated and the COMPONENTS feature of find_package should be used instead.
 # HAPI_REQUIRED_RENDERERS
 # HAPI_DECIDES_RENDERER_SUPPORT
-include( H3DCommonFunctions )
+include( H3DUtilityFunctions )
 set( hapi_library_suffix "" )
 if( MSVC )
   getMSVCPostFix( hapi_library_suffix )
@@ -62,13 +62,13 @@ else()
   set( hapi_name hapi )
 endif()
 
-include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES HAPI_LIBRARY_DEBUG HAPI_OpenHapticsRenderer_LIBRARY_DEBUG HAPI_Chai3DRenderer_LIBRARY_DEBUG
                                               OLD_VARIABLE_NAMES HAPI_DEBUG_LIBRARY HAPI_OpenHapticsRenderer_DEBUG_LIBRARY HAPI_Chai3DRenderer_DEBUG_LIBRARY
                                               DOC_STRINGS "Path to ${hapi_name}_d library."
                                                           "Path to OpenHapticsRenderer${hapi_library_suffix}_d library."
                                                           "Path to Chai3DRenderer${hapi_library_suffix}_d library." )
 
+include( H3DCommonFindModuleFunctions )
 getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} HAPI )
 
 # Look for the header file.

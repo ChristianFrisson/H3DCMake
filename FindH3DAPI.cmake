@@ -32,7 +32,7 @@
 # VirtualHand - Used to support some haptic hand devices.
 # GLUT - Used for graphics rendering.
 # OpenEXR - Used to handle .exr files.
-include( H3DCommonFunctions )
+include( H3DUtilityFunctions )
 if( MSVC )
   getMSVCPostFix( msvc_postfix )
   set( h3dapi_name "H3DAPI${msvc_postfix}" )
@@ -40,11 +40,11 @@ else()
   set( h3dapi_name h3dapi )
 endif()
 
-include( H3DExternalSearchPath )
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES H3DAPI_LIBRARY_DEBUG
                                               OLD_VARIABLE_NAMES H3DAPI_DEBUG_LIBRARY
                                               DOC_STRINGS "Path to ${h3dapi_name}_d library." )
 
+include( H3DCommonFindModuleFunctions )
 getSearchPathsH3DLibs( module_include_search_paths module_lib_search_paths ${CMAKE_CURRENT_LIST_DIR} H3DAPI )
 
 # Look for the header file.
