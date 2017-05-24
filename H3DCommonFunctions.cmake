@@ -96,23 +96,32 @@ endfunction()
 
 # Handles common cache variables for H3D projects. Some of which might be CMAKE variables.
 # Arguments are:
-# GENERATE_CPACK_PROJECT - Will be initialized to OFF
-# PREFER_STATIC_LIBRARIES - Will be initialized to OFF
+# GENERATE_H3D_PACKAGE_PROJECT - Will be initialized to OFF
+# H3D_PREFER_STATIC_LIBRARIES - Will be initialized to OFF
 # CMAKE_INSTALL_PREFIX <prefix_path> - Will set CMAKE_INSTALL_PREFIX to the given path if it was not already initialized. 
-# ENABLE_THREAD_LOCK_DEBUG - If not set to a false value then ENABLE_THREAD_LOCK_DEBUG is created and initialized to OFF
+# USE_thread_lock_debug - If not set to a false value then USE_thread_lock_debug is created and initialized to OFF
 #                            if it did not already exist. Otherwise the value is checked if it and the target H3DUtil exists
 #                            otherwise the file H3DUtil.h is looked for and if found will be parsed to see if
-#                            THREAD_LOCK_DEBUG is defined. If ENABLE_THREAD_LOCK_DEBUG is true or THREAD_LOCK_DEBUG is
+#                            THREAD_LOCK_DEBUG is defined. If USE_thread_lock_debug is true or THREAD_LOCK_DEBUG is
 #                            defined in H3DUtil.h then C++11 functionality is required.
+# Deprecated arguments:
+# GENERATE_CPACK_PROJECT - replaced with GENERATE_H3D_PACKAGE_PROJECT
+# PREFER_STATIC_LIBRARIES - replaced with H3D_PREFER_STATIC_LIBRARIES
+# ENABLE_THREAD_LOCK_DEBUG - replaced with USE_thread_lock_debug
 function( handleCommonCacheVar )
-  set( options GENERATE_CPACK_PROJECT PREFER_STATIC_LIBRARIES )
-  set( one_value_args CMAKE_INSTALL_PREFIX ENABLE_THREAD_LOCK_DEBUG )
+  set( options GENERATE_H3D_PACKAGE_PROJECT H3D_PREFER_STATIC_LIBRARIES GENERATE_CPACK_PROJECT PREFER_STATIC_LIBRARIES )
+  set( one_value_args CMAKE_INSTALL_PREFIX ENABLE_THREAD_LOCK_DEBUG USE_thread_lock_debug )
   set( multi_value_args )
   include( CMakeParseArguments )
   cmake_parse_arguments( setup_common_cache_var "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( setup_common_cache_var_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to handleCommonCacheVar(): \"${setup_common_cache_var_UNPARSED_ARGUMENTS}\"" )
   endif()
+  
+  handleDeprecatedArguments( ARGUMENT_PREFIX setup_common_cache_var_
+                             FUNCTION_NAME handleCommonCacheVar
+                             OLD_ARGUMENTS GENERATE_CPACK_PROJECT PREFER_STATIC_LIBRARIES ENABLE_THREAD_LOCK_DEBUG
+                             NEW_ARGUMENTS GENERATE_H3D_PACKAGE_PROJECT H3D_PREFER_STATIC_LIBRARIES USE_thread_lock_debug )
   
   if( setup_common_cache_var_CMAKE_INSTALL_PREFIX )
     # set the install directory to the H3D directory on Windows
@@ -122,32 +131,51 @@ function( handleCommonCacheVar )
     endif()
   endif()
 
-  if( setup_common_cache_var_GENERATE_CPACK_PROJECT AND NOT DEFINED GENERATE_CPACK_PROJECT )
-    # Add a cache variable GENERATE_CPACK_PROJECT to have the choice of generating a project
-    # for packagin the library. Default is OFF since most people will not use this.
-    set( GENERATE_CPACK_PROJECT OFF CACHE BOOL "Decides if a cpack project should be generated. The project in the first loaded CMakeLists will configure CPack." )
-    mark_as_advanced( GENERATE_CPACK_PROJECT )
-  endif()
-  
-  if( setup_common_cache_var_PREFER_STATIC_LIBRARIES AND NOT DEFINED PREFER_STATIC_LIBRARIES )
-    # Add a cache variable PREFER_STATIC_LIBRARIES to have the choice of generating a project
-    # linking against static libraries if they exist. Default is OFF since most people will not use this.
-    set( PREFER_STATIC_LIBRARIES OFF CACHE BOOL "Decides if CMake should prefer static libraries to dynamic libraries when both exist." )
-    mark_as_advanced( PREFER_STATIC_LIBRARIES )
-
-    if( PREFER_STATIC_LIBRARIES )
-      set( CMAKE_FIND_LIBRARY_SUFFIXES .a;${CMAKE_FIND_LIBRARY_SUFFIXES} PARENT_SCOPE )  
+  if( setup_common_cache_var_GENERATE_H3D_PACKAGE_PROJECT )
+    handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES GENERATE_H3D_PACKAGE_PROJECT
+                                                  OLD_VARIABLE_NAMES GENERATE_CPACK_PROJECT
+                                                  DOC_STRINGS "Decides if a cpack project should be generated. The project in the first loaded CMakeLists will configure CPack." )
+    if( NOT DEFINED GENERATE_H3D_PACKAGE_PROJECT )
+      # Add a cache variable GENERATE_H3D_PACKAGE_PROJECT to have the choice of generating a project
+      # for packagin the library. Default is OFF since most people will not use this.
+      set( GENERATE_H3D_PACKAGE_PROJECT OFF CACHE BOOL "Decides if a cpack project should be generated. The project in the first loaded CMakeLists will configure CPack." )
+      mark_as_advanced( GENERATE_H3D_PACKAGE_PROJECT )
+      createCacheVariablesMarkedAsDeprecated( NEW_VARIABLE_NAMES GENERATE_H3D_PACKAGE_PROJECT
+                                              OLD_VARIABLE_NAMES GENERATE_CPACK_PROJECT )
     endif()
   endif()
   
-  if( DEFINED setup_common_cache_var_ENABLE_THREAD_LOCK_DEBUG )
-    if( setup_common_cache_var_ENABLE_THREAD_LOCK_DEBUG AND NOT DEFINED ENABLE_THREAD_LOCK_DEBUG )
-      set( ENABLE_THREAD_LOCK_DEBUG OFF CACHE BOOL "Switcher to control the thread lock debug collection." )
+  if( setup_common_cache_var_H3D_PREFER_STATIC_LIBRARIES )
+    handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES H3D_PREFER_STATIC_LIBRARIES
+                                                  OLD_VARIABLE_NAMES PREFER_STATIC_LIBRARIES
+                                                  DOC_STRINGS "Decides if CMake should prefer static libraries to dynamic libraries when both exist." )
+    if( NOT DEFINED H3D_PREFER_STATIC_LIBRARIES )
+      # Add a cache variable H3D_PREFER_STATIC_LIBRARIES to have the choice of generating a project
+      # linking against static libraries if they exist. Default is OFF since most people will not use this.
+      set( H3D_PREFER_STATIC_LIBRARIES OFF CACHE BOOL "Decides if CMake should prefer static libraries to dynamic libraries when both exist." )
+      mark_as_advanced( H3D_PREFER_STATIC_LIBRARIES )
+      createCacheVariablesMarkedAsDeprecated( NEW_VARIABLE_NAMES H3D_PREFER_STATIC_LIBRARIES
+                                              OLD_VARIABLE_NAMES PREFER_STATIC_LIBRARIES )
+
+      if( H3D_PREFER_STATIC_LIBRARIES )
+        set( CMAKE_FIND_LIBRARY_SUFFIXES .a;${CMAKE_FIND_LIBRARY_SUFFIXES} PARENT_SCOPE )  
+      endif()
+    endif()
+  endif()
+  
+  if( DEFINED setup_common_cache_var_USE_thread_lock_debug )
+    handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES USE_thread_lock_debug
+                                                  OLD_VARIABLE_NAMES ENABLE_THREAD_LOCK_DEBUG
+                                                  DOC_STRINGS "Switcher to control the thread lock debug collection." )
+    if( setup_common_cache_var_USE_thread_lock_debug AND NOT DEFINED USE_thread_lock_debug )
+      set( USE_thread_lock_debug OFF CACHE BOOL "Switcher to control the thread lock debug collection." )
+      createCacheVariablesMarkedAsDeprecated( NEW_VARIABLE_NAMES USE_thread_lock_debug
+                                              OLD_VARIABLE_NAMES ENABLE_THREAD_LOCK_DEBUG )
     endif()
     
     set( check_for_c++11 OFF )
     if( TARGET H3DUtil )
-      set( check_for_c++11 ${ENABLE_THREAD_LOCK_DEBUG} )
+      set( check_for_c++11 ${USE_thread_lock_debug} )
     elseif( H3DUtil_INCLUDE_DIR )
       foreach( h3dutil_include_dir_tmp ${H3DUtil_INCLUDE_DIR} )
         if( EXISTS ${h3dutil_include_dir_tmp}/H3DUtil/H3DUtil.h )
@@ -162,7 +190,7 @@ function( handleCommonCacheVar )
     endif()
     
     if( check_for_c++11 )
-      enableCpp11( FAIL_MESSAGE "Enabling ENABLE_THREAD_LOCK_DEBUG requires C++11 support. This compiler lacks such support." )
+      enableCpp11( FAIL_MESSAGE "Enabling USE_thread_lock_debug requires C++11 support. This compiler lacks such support." )
       set( THREAD_LOCK_DEBUG 1 PARENT_SCOPE )
     endif()
   endif()
@@ -178,35 +206,41 @@ endfunction()
 # UPDATERESOURCEFILE_EXE_EXTRA_ARGS - Extra arguments that should be given to UpdateResourceFile in those
 # cases when the resource file has more info than just version.
 function( setupResourceFile target_name )
-  # Add a cache variable ENABLE_SVN_REVISION to have the choice of using
+  # Add a cache variable USE_svn_info to have the choice of using
   # SubWCRev.exe to embed svn revision number in generated DLLs.
   # Default is YES for Visual Studio and NMake generators, NO otherwise.
   if( MSVC )
     set( options )
-    set( oneValueArgs VERSION_PREFIX SVN_DIR_CANDIDATE RESOURCE_FILE_CMAKE_TEMPLATE RESOURCE_FILE_OUTPUT_LOCATION UPDATERESOURCEFILE_EXE )
-    set( multiValueArgs UPDATERESOURCEFILE_EXE_EXTRA_ARGS )
+    set( one_value_args VERSION_PREFIX SVN_DIR_CANDIDATE RESOURCE_FILE_CMAKE_TEMPLATE RESOURCE_FILE_OUTPUT_LOCATION UPDATERESOURCEFILE_EXE )
+    set( multi_value_args UPDATERESOURCEFILE_EXE_EXTRA_ARGS )
     include( CMakeParseArguments )
-    cmake_parse_arguments( setup_resource_file "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments( setup_resource_file "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
     if( setup_resource_file_UNPARSED_ARGUMENTS )
       message( FATAL_ERROR "Unknown keywords given to setupResourceFile(): \"${setup_resource_file_UNPARSED_ARGUMENTS}\"" )
     endif()
     
-    foreach( required_arg ${oneValueArgs} )
+    foreach( required_arg ${one_value_args} )
       if( NOT setup_resource_file_${required_arg} )
         message( FATAL_ERROR "The required argument ${required_arg} is missing when calling setupResourceFile." )
       endif()
     endforeach()
+
+    handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES USE_svn_info
+                                                  OLD_VARIABLE_NAMES ENABLE_SVN_REVISION
+                                                  DOC_STRINGS "Use SubWCRev.exe ( if found ) to embed svn revision number in generated DLLs." )
   
-    if( NOT DEFINED ENABLE_SVN_REVISION )
+    if( NOT DEFINED USE_svn_info )
       set( enable_svn_revision_default OFF )
       if( CMAKE_GENERATOR MATCHES "Visual Studio|NMake" )
         set( enable_svn_revision_default ON )
       endif()
-      set( ENABLE_SVN_REVISION ${enable_svn_revision_default} CACHE BOOL "Use SubWCRev.exe ( if found ) to embed svn revision number in generated DLLs." )
+      set( USE_svn_info ${enable_svn_revision_default} CACHE BOOL "Use SubWCRev.exe ( if found ) to embed svn revision number in generated DLLs." )
+      createCacheVariablesMarkedAsDeprecated( NEW_VARIABLE_NAMES USE_svn_info
+                                              OLD_VARIABLE_NAMES ENABLE_SVN_REVISION )
     endif()
     
     set( ${setup_resource_file_VERSION_PREFIX}_SVN_VERSION "0" )
-    if( ENABLE_SVN_REVISION )
+    if( USE_svn_info )
       # Find SubWCRev.exe
       find_file( SubWCRev
                  NAMES "SubWCRev.exe"
@@ -215,7 +249,7 @@ function( setupResourceFile target_name )
     endif()
 
     set( code_is_svn_working_copy 10 )
-    if( ENABLE_SVN_REVISION AND SubWCRev )
+    if( USE_svn_info AND SubWCRev )
       execute_process( COMMAND ${SubWCRev} ${setup_resource_file_SVN_DIR_CANDIDATE}
                        RESULT_VARIABLE code_is_svn_working_copy )
       if( ${code_is_svn_working_copy} EQUAL 0 )
@@ -226,7 +260,7 @@ function( setupResourceFile target_name )
     # autogenerate the resource file depending on the version
     configure_file( ${setup_resource_file_RESOURCE_FILE_CMAKE_TEMPLATE} ${setup_resource_file_RESOURCE_FILE_OUTPUT_LOCATION} )
     
-    if( ENABLE_SVN_REVISION )
+    if( USE_svn_info )
       add_custom_command( TARGET ${target_name}
                           PRE_BUILD
                           COMMAND ${setup_resource_file_UPDATERESOURCEFILE_EXE}
@@ -236,7 +270,7 @@ function( setupResourceFile target_name )
                           ${setup_resource_file_UPDATERESOURCEFILE_EXE_EXTRA_ARGS} )
     endif()
 
-    if( ENABLE_SVN_REVISION AND SubWCRev AND ${code_is_svn_working_copy} EQUAL 0 )
+    if( USE_svn_info AND SubWCRev AND ${code_is_svn_working_copy} EQUAL 0 )
       # Update SVN revision in file.
       execute_process( COMMAND ${SubWCRev} ${setup_resource_file_SVN_DIR_CANDIDATE} ${setup_resource_file_RESOURCE_FILE_OUTPUT_LOCATION} ${setup_resource_file_RESOURCE_FILE_OUTPUT_LOCATION} )
 

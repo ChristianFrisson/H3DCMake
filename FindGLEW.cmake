@@ -34,7 +34,7 @@ find_library( GLEW_LIBRARY NAMES GLEW glew32
                                  NO_SYSTEM_ENVIRONMENT_PATH )
 mark_as_advanced( GLEW_LIBRARY )
 
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   set( module_include_search_paths "" )
   set( module_lib_search_paths "" )
   getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
@@ -48,7 +48,7 @@ if( WIN32 AND PREFER_STATIC_LIBRARIES )
 endif()
 
 set( glew_static_libraries_found )
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   checkIfModuleFound( GLEW
                       REQUIRED_VARS GLEW_INCLUDE_DIR GLEW_STATIC_LIBRARY )
   set( GLEW_LIBRARIES ${GLEW_STATIC_LIBRARY} )

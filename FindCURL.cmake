@@ -19,7 +19,7 @@ find_library( CURL_LIBRARY NAMES libcurl
               PATHS ${module_lib_search_paths}
               DOC "Path to libcurl library." )
 
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   set( module_include_search_paths "" )
   set( module_lib_search_paths "" )
   getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
@@ -32,7 +32,7 @@ endif()
 set( curl_staticlib 0 )
 # handle the QUIETLY and REQUIRED arguments and set CURL_FOUND to TRUE
 # if all listed variables are TRUE
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   checkIfModuleFound( CURL
                       REQUIRED_VARS CURL_INCLUDE_DIR CURL_STATIC_LIBRARY )
   set( CURL_LIBRARIES ${CURL_STATIC_LIBRARY} )

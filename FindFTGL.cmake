@@ -40,7 +40,7 @@ find_library( FTGL_LIBRARY NAMES ftgl ftgl_dynamic_213rc5 ftgl_dynamic_MTD
                            DOC "Path to ftgl library." )
 mark_as_advanced( FTGL_LIBRARY )
 
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   set( ftgl_static_library_name ftgl_static_MTD )
   if( MSVC80 )
     set( ftgl_static_library_name ftgl_static_MTD_vc8 )
@@ -75,7 +75,7 @@ set( ftgl_static_lib 0 )
 
 # handle the QUIETLY and REQUIRED arguments and set FTGL_FOUND to TRUE
 # if all listed variables are TRUE
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   select_library_configurations( FTGL_STATIC )
   find_package_handle_standard_args( FTGL DEFAULT_MSG
                                      FTGL_STATIC_LIBRARY FTGL_INCLUDE_DIR )

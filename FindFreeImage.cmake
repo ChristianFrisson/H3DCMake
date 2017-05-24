@@ -28,7 +28,7 @@ find_library( FreeImage_LIBRARY NAMES freeimage
                                 DOC "Path to freeimage library." )
 mark_as_advanced( FreeImage_LIBRARY )
 
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   set( freeimage_static_library_name FreeImage_vc7 )
 
   if( MSVC80 )
@@ -61,7 +61,7 @@ set( freeimage_static_lib 0 )
 
 # handle the QUIETLY and REQUIRED arguments and set FreeImage_FOUND to TRUE
 # if all listed variables are TRUE
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   select_library_configurations( FreeImage_STATIC )
   find_package_handle_standard_args( FreeImage DEFAULT_MSG
                                      FreeImage_STATIC_LIBRARY FreeImage_INCLUDE_DIR )

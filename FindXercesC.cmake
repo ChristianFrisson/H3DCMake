@@ -34,7 +34,7 @@ mark_as_advanced( XercesC_LIBRARY )
 
 set( XercesC_LIBRARIES_FOUND 0 )
 
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   set( xercesc_static_library_name xerces-c_static_3 xerces-c_static_2 )
   if( MSVC80 )
     set( xercesc_static_library_name xerces-c_static_3_vc8 xerces-c_static_2_vc8 )
@@ -63,7 +63,7 @@ select_library_configurations( fparser )
 set( xercesc_staticlib 0 )
 # handle the QUIETLY and REQUIRED arguments and set XercesC_FOUND to TRUE
 # if all listed variables are TRUE
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   include( SelectLibraryConfigurations )
   select_library_configurations( XercesC_STATIC )
   checkIfModuleFound( XercesC

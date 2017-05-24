@@ -47,7 +47,7 @@ find_library( Vorbis_ogg_LIBRARY NAMES libogg ogg
                                  DOC "Path to ogg library. Needed to support vorbis and ogg sound files." )
 mark_as_advanced( Vorbis_ogg_LIBRARY )
 
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   set( module_include_search_paths "" )
   set( module_lib_search_paths "" )
   getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
@@ -66,7 +66,7 @@ include( FindPackageHandleStandardArgs )
 set( vorbis_staticlib 0 )
 # handle the QUIETLY and REQUIRED arguments and set Vorbis_FOUND to TRUE
 # if all listed variables are TRUE
-if( WIN32 AND PREFER_STATIC_LIBRARIES )
+if( WIN32 AND H3D_PREFER_STATIC_LIBRARIES )
   find_package_handle_standard_args( Vorbis DEFAULT_MSG
                                      Vorbis_vorbisfile_STATIC_LIBRARY Vorbis_ogg_STATIC_LIBRARY Vorbis_INCLUDE_DIR )
   set( Vorbis_LIBRARIES ${Vorbis_STATIC_LIBRARY} )
