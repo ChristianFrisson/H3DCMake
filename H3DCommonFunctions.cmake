@@ -104,13 +104,14 @@ endfunction()
 #                            otherwise the file H3DUtil.h is looked for and if found will be parsed to see if
 #                            THREAD_LOCK_DEBUG is defined. If USE_thread_lock_debug is true or THREAD_LOCK_DEBUG is
 #                            defined in H3DUtil.h then C++11 functionality is required.
+# GENERATE_NodeRoutesToDotFile_BUILD - Will be initialized to OFF.
 # Deprecated arguments:
 # GENERATE_CPACK_PROJECT - replaced with GENERATE_H3D_PACKAGE_PROJECT
 # PREFER_STATIC_LIBRARIES - replaced with H3D_PREFER_STATIC_LIBRARIES
 # ENABLE_THREAD_LOCK_DEBUG - replaced with USE_thread_lock_debug
 function( handleCommonCacheVar )
   set( options GENERATE_H3D_PACKAGE_PROJECT H3D_PREFER_STATIC_LIBRARIES GENERATE_CPACK_PROJECT PREFER_STATIC_LIBRARIES )
-  set( one_value_args CMAKE_INSTALL_PREFIX ENABLE_THREAD_LOCK_DEBUG USE_thread_lock_debug )
+  set( one_value_args CMAKE_INSTALL_PREFIX ENABLE_THREAD_LOCK_DEBUG USE_thread_lock_debug GENERATE_NodeRoutesToDotFile_BUILD )
   set( multi_value_args )
   include( CMakeParseArguments )
   cmake_parse_arguments( setup_common_cache_var "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
@@ -192,6 +193,20 @@ function( handleCommonCacheVar )
     if( check_for_c++11 )
       enableCpp11( FAIL_MESSAGE "Enabling USE_thread_lock_debug requires C++11 support. This compiler lacks such support." )
       set( THREAD_LOCK_DEBUG 1 PARENT_SCOPE )
+    endif()
+  endif()
+
+  if( DEFINED setup_common_cache_var_GENERATE_NodeRoutesToDotFile_BUILD )
+    handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES GENERATE_NodeRoutesToDotFile_BUILD
+                                                  OLD_VARIABLE_NAMES GENERATE_NODEROUTESTODOTFILE_BUILD
+                                                  DOC_STRINGS "Breaks H3D for normal use but this flag must be set to yes when using the NodeRoutesToDotFile project, located in H3DAPI/Util/NodeRoutesToDotFile." )
+
+    # Add a cache variable GENERATE_NodeRoutesToDotFile_BUILD that should be
+    # set to yes if NodeRoutesToDotFile project should be run using this
+    # build of H3D.
+    if( NOT DEFINED GENERATE_NodeRoutesToDotFile_BUILD )
+      set( GENERATE_NodeRoutesToDotFile_BUILD OFF CACHE BOOL "Breaks H3D for normal use but this flag must be set to yes when using the NodeRoutesToDotFile project, located in H3DAPI/Util/NodeRoutesToDotFile." )
+      mark_as_advanced( GENERATE_NodeRoutesToDotFile_BUILD )
     endif()
   endif()
 endfunction()
