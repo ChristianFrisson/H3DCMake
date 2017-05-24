@@ -210,7 +210,13 @@ function( getH3DLibraryNameToSearchFor output_var base_name )
   endif()
 endfunction()
 
-function( handleDeprecatedArguments )
+# Can be used to handle deprecated function arguments
+# Must be called after cmake_parse_arguments but before checking handle_deprecated_arguments_UNPARSED_ARGUMENTS.
+# FUNCTION_NAME - the name of the function which should be checked.
+# ARGUMENT_PREFIX - The argument prefix used with cmake_parse_arguments of the function named by FUNCTION_NAME
+# OLD_ARGUMENTS - A list of old argument names.
+# OLD_ARGUMENTS - A list of replacement argument names.
+function( handleDeprecatedFunctionArguments )
   set( options )
   set( one_value_args FUNCTION_NAME ARGUMENT_PREFIX )
   set( multi_value_args OLD_ARGUMENTS NEW_ARGUMENTS )
@@ -233,13 +239,17 @@ function( handleDeprecatedArguments )
     message( FATAL_ERROR "The number of entries in OLD_ARGUMENTS and NEW_ARGUMENTS does not match.")
   endif()
 
+  set( tmp_unparsed_list ${${handle_deprecated_arguments_ARGUMENT_PREFIX}UNPARSED_ARGUMENTS} )
   foreach( _var ${handle_deprecated_arguments_NEW_ARGUMENTS} )
     list( GET handle_deprecated_arguments_OLD_ARGUMENTS ${i} _old_arg_name )
+    list( FIND tmp_unparsed_list ${_old_arg_name} old_arg_pos )
 
-    if( DEFINED ${handle_deprecated_arguments_ARGUMENT_PREFIX}${_old_arg_name} )
+    if( ${old_arg_pos} GREATER -1 )
       message( AUTHOR_WARNING "The argument ${_old_arg_name} to function ${handle_deprecated_arguments_FUNCTION_NAME} is deprecated. Please use argument ${_var} instead.")
       set( ${handle_deprecated_arguments_ARGUMENT_PREFIX}${_var} ${${handle_deprecated_arguments_ARGUMENT_PREFIX}${_old_arg_name}} PARENT_SCOPE )
+      list( REMOVE_AT tmp_unparsed_list ${old_arg_pos} )
     endif()
     math( EXPR i "${i} + 1" )
   endforeach()
+  set( ${handle_deprecated_arguments_ARGUMENT_PREFIX}UNPARSED_ARGUMENTS ${tmp_unparsed_list} PARENT_SCOPE )
 endfunction()

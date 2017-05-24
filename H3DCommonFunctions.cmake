@@ -110,20 +110,20 @@ endfunction()
 # PREFER_STATIC_LIBRARIES - replaced with H3D_PREFER_STATIC_LIBRARIES
 # ENABLE_THREAD_LOCK_DEBUG - replaced with USE_thread_lock_debug
 function( handleCommonCacheVar )
-  set( options GENERATE_H3D_PACKAGE_PROJECT H3D_PREFER_STATIC_LIBRARIES GENERATE_CPACK_PROJECT PREFER_STATIC_LIBRARIES )
-  set( one_value_args CMAKE_INSTALL_PREFIX ENABLE_THREAD_LOCK_DEBUG USE_thread_lock_debug GENERATE_NodeRoutesToDotFile_BUILD )
+  set( options GENERATE_H3D_PACKAGE_PROJECT H3D_PREFER_STATIC_LIBRARIES GENERATE_NodeRoutesToDotFile_BUILD )
+  set( one_value_args CMAKE_INSTALL_PREFIX USE_thread_lock_debug )
   set( multi_value_args )
   include( CMakeParseArguments )
   cmake_parse_arguments( setup_common_cache_var "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
+  handleDeprecatedFunctionArguments( ARGUMENT_PREFIX setup_common_cache_var_
+                                     FUNCTION_NAME handleCommonCacheVar
+                                     OLD_ARGUMENTS GENERATE_CPACK_PROJECT PREFER_STATIC_LIBRARIES ENABLE_THREAD_LOCK_DEBUG
+                                     NEW_ARGUMENTS GENERATE_H3D_PACKAGE_PROJECT H3D_PREFER_STATIC_LIBRARIES USE_thread_lock_debug )
+
   if( setup_common_cache_var_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to handleCommonCacheVar(): \"${setup_common_cache_var_UNPARSED_ARGUMENTS}\"" )
   endif()
-  
-  handleDeprecatedArguments( ARGUMENT_PREFIX setup_common_cache_var_
-                             FUNCTION_NAME handleCommonCacheVar
-                             OLD_ARGUMENTS GENERATE_CPACK_PROJECT PREFER_STATIC_LIBRARIES ENABLE_THREAD_LOCK_DEBUG
-                             NEW_ARGUMENTS GENERATE_H3D_PACKAGE_PROJECT H3D_PREFER_STATIC_LIBRARIES USE_thread_lock_debug )
-  
+
   if( setup_common_cache_var_CMAKE_INSTALL_PREFIX )
     # set the install directory to the H3D directory on Windows
     if( WIN32 AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND NOT H3D_CMAKE_INSTALL_PREFIX_ALREADY_SET )
