@@ -14,6 +14,9 @@ endif()
 set( SOFA_INSTALL_DIR "${sofa_default_install_dir}" CACHE PATH "Path to root of SOFA installation" )
 mark_as_advanced( SOFA_INSTALL_DIR )
 
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SOFA_INCLUDE_DIR_APPLICATIONS
+                                              OLD_VARIABLE_NAMES SOFA_INCLUDE_DIR_APP )
+
 # Look for the header file.
 find_path( SOFA_INCLUDE_DIR NAMES sofa/core/BehaviorModel.h
            PATHS /usr/local/include/sofa/framework
@@ -69,27 +72,30 @@ foreach( sofa_lib ${sofa_libs} )
   set( SOFA_LIBRARY_NAMES ${SOFA_LIBRARY_NAMES} ${sofa_lib}${sofa_lib_suffix}
        CACHE INTERNAL "Internal sofa library list variable. Can be used to setup delayload." FORCE )
 
+  handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SOFA_${sofa_lib}_LIBRARY_RELEASE SOFA_${sofa_lib}_LIBRARY_DEBUG
+                                                OLD_VARIABLE_NAMES SOFA_${_upper_lib_name}_LIBRARY SOFA_${_upper_lib_name}_DEBUG_LIBRARY)
+
   # Look for release library
-  find_library( SOFA_${_upper_lib_name}_LIBRARY NAMES sofa${sofa_lib}${sofa_lib_suffix}
-                                                      sofa_${sofa_lib}${sofa_lib_suffix}
+  find_library( SOFA_${sofa_lib}_LIBRARY_RELEASE NAMES sofa${sofa_lib}${sofa_lib_suffix}
+                                                       sofa_${sofa_lib}${sofa_lib_suffix}
                 PATHS ${SOFA_INSTALL_DIR}/lib
                       ${module_lib_search_paths} )
-  mark_as_advanced( SOFA_${_upper_lib_name}_LIBRARY )
-  set( required_release_lib_vars ${required_release_lib_vars} SOFA_${_upper_lib_name}_LIBRARY )
+  mark_as_advanced( SOFA_${sofa_lib}_LIBRARY_RELEASE )
+  set( required_release_lib_vars ${required_release_lib_vars} SOFA_${sofa_lib}_LIBRARY_RELEASE )
 
   # Look for debug library
-  find_library( SOFA_${_upper_lib_name}_DEBUG_LIBRARY NAMES sofa${sofa_lib}${sofa_lib_suffix}d
-                                                            sofa_${sofa_lib}${sofa_lib_suffix}d
+  find_library( SOFA_${sofa_lib}_LIBRARY_DEBUG NAMES sofa${sofa_lib}${sofa_lib_suffix}d
+                                                     sofa_${sofa_lib}${sofa_lib_suffix}d
                 PATHS ${SOFA_INSTALL_DIR}/lib
                       ${module_lib_search_paths} )
-  mark_as_advanced( SOFA_${_upper_lib_name}_DEBUG_LIBRARY )
+  mark_as_advanced( SOFA_${sofa_lib}_LIBRARY_DEBUG )
 
-  if( SOFA_${_upper_lib_name}_LIBRARY )
-    set( sofa_libs_paths ${sofa_libs_paths} optimized ${SOFA_${_upper_lib_name}_LIBRARY} )
+  if( SOFA_${sofa_lib}_LIBRARY_RELEASE )
+    set( sofa_libs_paths ${sofa_libs_paths} optimized ${SOFA_${sofa_lib}_LIBRARY_RELEASE} )
   endif()
 
-  if( SOFA_${_upper_lib_name}_DEBUG_LIBRARY )
-    set( sofa_libs_debug_paths ${sofa_libs_debug_paths} debug ${SOFA_${_upper_lib_name}_DEBUG_LIBRARY} )
+  if( SOFA_${sofa_lib}_LIBRARY_DEBUG )
+    set( sofa_libs_debug_paths ${sofa_libs_debug_paths} debug ${SOFA_${sofa_lib}_LIBRARY_DEBUG} )
   else()
     set( sofa_libs_debug_found 0 )
     set( sofa_libs_debug_notfound ${sofa_libs_debug_notfound} ${sofa_lib} )
@@ -100,13 +106,13 @@ include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set SOFA_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( SOFA DEFAULT_MSG
-                                   SOFA_INCLUDE_DIR SOFA_INCLUDE_DIR_MODULES SOFA_INCLUDE_DIR_APP
+                                   SOFA_INCLUDE_DIR SOFA_INCLUDE_DIR_MODULES SOFA_INCLUDE_DIR_APPLICATIONS
                                    SOFA_INCLUDE_DIR_BOOST SOFA_INCLUDE_DIR_EIGEN SOFA_INCLUDE_DIR_TINYXML
                                    ${required_release_lib_vars} )
 
 # Copy the results to the output variables.
 set( SOFA_LIBRARIES ${sofa_libs_paths} ${sofa_libs_debug_paths} )
-set( SOFA_INCLUDE_DIR ${SOFA_INCLUDE_DIR} ${SOFA_INCLUDE_DIR_MODULES} ${SOFA_INCLUDE_DIR_APP} ${SOFA_INCLUDE_DIR_BOOST} ${SOFA_INCLUDE_DIR_EIGEN} ${SOFA_INCLUDE_DIR_TINYXML} )
+set( SOFA_INCLUDE_DIR ${SOFA_INCLUDE_DIR} ${SOFA_INCLUDE_DIR_MODULES} ${SOFA_INCLUDE_DIR_APPLICATIONS} ${SOFA_INCLUDE_DIR_BOOST} ${SOFA_INCLUDE_DIR_EIGEN} ${SOFA_INCLUDE_DIR_TINYXML} )
 
 if( SOFA_FOUND AND NOT sofa_libs_debug_found )
   message( STATUS "Warning: SOFA debug libraries not found. The debug build will not work." )
