@@ -15,6 +15,10 @@ function( getMSVCPostFix post_fix_output )
     if( ${h3d_msvc_version} GREATER 12 ) # MSVC skipped 13 in their numbering system.
       math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
     endif()
+    if( ( ${h3d_msvc_version} GREATER 14 ) OR ( ${MSVC_VERSION} GREATER 1900 ) )
+      # MSVC vs 2015 has number 1900 and vs 2017 has number 1910. So this is a guess on upcoming vs versions.
+      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
+    endif()
     set( ${post_fix_output} _vc${h3d_msvc_version} PARENT_SCOPE )
   endif()
 endfunction()

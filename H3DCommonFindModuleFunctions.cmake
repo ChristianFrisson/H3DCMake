@@ -40,7 +40,11 @@ if( MSVC )
   elseif( MSVC12 )
     set( h3d_external_base_dir_name vs2013 )
   elseif( MSVC14 )
-    set( h3d_external_base_dir_name vs2015 )
+    if( ${MSVC_VERSION} GREATER 1900 )
+      set( h3d_external_base_dir_name vs2017 )
+    else()
+      set( h3d_external_base_dir_name vs2015 )
+    endif()
   endif()
 
   if( NOT h3d_external_base_dir_name ) # fallback for future compilers, this assumes cmake version 3.0 and up.
