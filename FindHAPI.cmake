@@ -13,14 +13,18 @@
 # SameComponentsAsInstalledLibrary - Will require all enabled features of the installed
 #   library to be found. Enabled features can be found by searching for HAVE_<Feature> in the
 #   installed header.
-# SofaHelper - Used to enable profiling.
-# VLD - Used to enable memory leak profiling.
-# ZLIB - Used to compress/uncompress files.
-# FreeImage - Used to add support for reading/writing to a number of image file formats.
-# Teem - Used to add support for the nrrd file format.
-# DCMTK - Used to add support for DICOM file format.
-# NvidiaToolsExt - Used for debugging with Nvidia Tools Extension Library.
-# OpenEXR - Used to add support for exr file format.
+# OpenHaptics - Support for devices interfacing through OpenHaptics as well as enabling OpenHapticsRenderer surface haptics rendering.
+# Chai3D - Support for Chai3DRenderer surface haptics rendering.
+# EntactAPI - Support for devices using Entact api.
+# DHD - Support for devices from ForceDimension.
+# VirtuoseAPI - Support for devices usign virtuose api.
+# FalconAPI - Support for the falcon haptics device (on windows).
+# NiFalconAPI - Support for the falcon haptics device using the open source library nifalconapi.
+# fparser - Support for some specific force effects that can be defined by a function.
+# Haptik - Support for devices interfacing through the haptik library.
+# SimballMedical - Support for devices using the simball medical api.
+# MLHI - Support for devices from MLHI.
+# OpenGL - Support for some extra OpenGL features such as using FeedbackBufferCollector to create haptic surfaces.
 #
 # If the COMPONENTS feature of HAPI is not set then it is assumed that
 # the caller does not intend to use any of the supported components in the
