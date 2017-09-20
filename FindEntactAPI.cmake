@@ -8,7 +8,7 @@
 include( H3DUtilityFunctions )
 
 handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES EntactAPI_INCLUDE_DIR EntactAPI_LIBRARY_RELEASE  
-                                              OLD_VARIALBE_NAMES EntactAPI_INCLUDE_DIR EntactAPI_LIBRARY
+                                              OLD_VARIALBE_NAMES EntactAPI_INCLUDE_DIR ENTACTAPI_LIBRARY
                                               DOC_STRINGS "Path in which the file EntactAPI.h is located. Needed to support Entact haptics device."
                                                           "Path to EntactAPI.lib library. Needed to support Entact haptics device." )
 
@@ -49,9 +49,9 @@ include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set EntactAPI_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( EntactAPI DEFAULT_MSG
-                                   EntactAPI_LIBRARY_DEBUG EntactAPI_LIBRARY_RELEASE EntactAPI_INCLUDE_DIR )
+                                   EntactAPI_LIBRARY EntactAPI_INCLUDE_DIR )
 
-set( EntactAPI_LIBRARIES ${EntactAPI_LIBRARY_DEBUG} ${EntactAPI_LIBRARY_RELEASE} )
+set( EntactAPI_LIBRARIES ${EntactAPI_LIBRARY} )
 set( EntactAPI_INCLUDE_DIRS ${EntactAPI_INCLUDE_DIR} )
 
 # Backwards compatibility values set here.
