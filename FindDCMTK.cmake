@@ -148,6 +148,12 @@ foreach( dcmtk_lib_name ${dcmtk_lib_names} )
   endif()
 endforeach()
 
+# Extra libs to link against.
+if( WIN32 )
+  set( required_libs ${required_libs} optimized iphlpapi.lib debug iphlpapi.lib)
+endif()
+
+
 set( if_tiff_needed_then_tiff_found_variable )
 set( tiff_needed NO )
 if( DCMTK_config_INCLUDE_DIR )
