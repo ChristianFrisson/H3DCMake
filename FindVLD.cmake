@@ -9,9 +9,6 @@ include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
-if( CMAKE_CL_64 )
-  message( SEND_ERROR "64 bit version of visual leak detector is not tested yet." )
-endif()
 # Look for the header file.
 find_path( VLD_INCLUDE_DIR NAMES vld/vld.h
                            PATHS ${module_include_search_paths}
@@ -32,3 +29,5 @@ find_package_handle_standard_args( VLD DEFAULT_MSG
 
 set( VLD_LIBRARIES ${VLD_LIBRARY} )
 set( VLD_INCLUDE_DIRS ${VLD_INCLUDE_DIR} )
+
+option( VLD_FORCE_ENABLE "Enable Visual leak detector for all configurations. By default it is only enabled in debug." OFF )
