@@ -1,3 +1,6 @@
+if( POLICY CMP0054)
+  cmake_policy( SET CMP0054 NEW )
+endif()
 # Contains utility H3D functions that are used a bit here and there.
 
 # Get the library/executable postfix commonly used by our library/executable names for MSVC.
@@ -51,12 +54,12 @@ function( enableCpp11 )
   if( enable_c++11_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to enableCpp11(): \"${enable_c++11_UNPARSED_ARGUMENTS}\"" )
   endif()
-  
+
   set( fail_message "Compiler does not support c++11." )
   if( enable_c++11_FAIL_MESSAGE )
     set( fail_message ${enable_c++11_FAIL_MESSAGE} )
   endif()
-  
+
   if( "${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" )
     execute_process(
         COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE gcc_version )
