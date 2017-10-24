@@ -223,7 +223,7 @@ if( H3DAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
       set( externals_to_look_for "#define HAVE_XERCES"
                                  "include" "xercesc"
                                  "lib" "xerces-c_3"
-                                 "bin" "xerces-c_3_1"
+                                 "bin" "xerces-c_3_2"
 
                                  "#define HAVE_OPENAL"
                                  "include" "AL"

@@ -109,7 +109,7 @@ if( H3DUtil_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
       set( externals_to_look_for "#define HAVE_ZLIB"
                                  "include" "zlib"
                                  "lib" "zlib"
-                                 "bin" "zlib1"
+                                 "bin" "zlib"
 
                                  "#define HAVE_FREEIMAGE"
                                  "include" "FreeImage"
