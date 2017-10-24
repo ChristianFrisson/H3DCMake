@@ -52,15 +52,15 @@ function( addCommonH3DMSVCCompileFlags compile_flags_container )
 endfunction()
 
 # Iterates through a list of libraries and adds them to be delayloaded
-# set config to "" if you want no separation
-function( addDelayLoadFlags libraries_list link_flags_container config )
+# you can optionally pass a fourth argument which will be used to specify configuration
+function( addDelayLoadFlags libraries_list link_flags_container )
   if( MSVC )
     set( link_flags_container_internal "" )
     set( previous_str "")
     foreach( lib_path ${${libraries_list}} )
       get_filename_component( lib_name ${lib_path} NAME_WE )
       if( ( NOT "${lib_name}" STREQUAL "debug" ) AND ( NOT "${lib_name}" STREQUAL "optimized" ) )
-        if ("${config}" STREQUAL "${previous_str}" OR "${previous_str}" STREQUAL "")
+        if ("${ARGV0}" STREQUAL "${previous_str}" OR "${previous_str}" STREQUAL "")
           set( link_flags_container_internal "${link_flags_container_internal} /DELAYLOAD:\"${lib_name}.dll\"" )
           set( previous_str "" )
         endif()
