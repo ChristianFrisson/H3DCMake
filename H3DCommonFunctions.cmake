@@ -1,3 +1,6 @@
+if( POLICY CMP0054)
+  cmake_policy( SET CMP0054 NEW )
+endif()
 # Contains common H3D functions that are used by CMakeLists.txt to setup projects.
 include( H3DUtilityFunctions )
 

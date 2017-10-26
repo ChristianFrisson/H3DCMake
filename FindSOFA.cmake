@@ -28,10 +28,10 @@ find_path( SOFA_INCLUDE_DIR_MODULES NAMES sofa/sofa.h
                  ${SOFA_INSTALL_DIR}/modules )
 mark_as_advanced( SOFA_INCLUDE_DIR_MODULES )
 
-find_path( SOFA_INCLUDE_DIR_APP NAMES sofa/gui/SofaGUI.h
+find_path( SOFA_INCLUDE_DIR_APPLICATIONS NAMES sofa/gui/SofaGUI.h
            PATHS /usr/local/include/sofa/applications
                  ${SOFA_INSTALL_DIR}/applications )
-mark_as_advanced( SOFA_INCLUDE_DIR_APP )
+mark_as_advanced( SOFA_INCLUDE_DIR_APPLICATIONS )
 
 find_path( SOFA_INCLUDE_DIR_BOOST NAMES boost/version.hpp
            PATHS /usr/local/include/sofa/extlibs/miniBoost
