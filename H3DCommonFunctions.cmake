@@ -54,6 +54,22 @@ function( addCommonH3DMSVCCompileFlags compile_flags_container )
   endif()
 endfunction()
 
+# Add common compile flags that are used by GNU (GCC/G++) compilers for H3D projects.
+# compile_flags_container Compile flags will be added here
+function( addCommonH3DGNUCompileFlags compile_flags_container )
+
+  # Since g++ 6.0 the c++ standard has been set to -std=gnu++14.
+  # To avoid compile warnings about deprecated features we
+  # set the standard back to c++98 for gcc versions greater than or equal to 6.0.
+  if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
+    execute_process( COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GPP_VERSION )
+    if( GPP_VERSION VERSION_GREATER 6.0 OR GPP_VERSION VERSION_EQUAL 6.0 )
+      set( compile_flags_container "${compile_flags_container} -std=gnu++98" )
+    endif()
+  endif()
+  
+endfunction()
+
 # Iterates through a list of libraries and adds them to be delayloaded
 # you can optionally pass a fourth argument which will be used to specify configuration
 function( addDelayLoadFlags libraries_list link_flags_container )
