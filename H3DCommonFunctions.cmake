@@ -1,6 +1,11 @@
 if( POLICY CMP0054)
   cmake_policy( SET CMP0054 NEW )
 endif()
+
+# add_definitions is used in H3DUtilityFunctions.enableCpp11 to add compiler options
+# setting this policy to OLD so that the DEFINITIONS property contains the added options.
+cmake_policy( SET CMP0059 OLD )
+
 # Contains common H3D functions that are used by CMakeLists.txt to setup projects.
 include( H3DUtilityFunctions )
 
@@ -58,14 +63,24 @@ endfunction()
 # compile_flags_container Compile flags will be added here
 function( addCommonH3DGNUCompileFlags compile_flags_container )
 
+  # compiler options added with add_definitions
+  get_directory_property( current_compiler_definitions DEFINITIONS )
+  
   # Since g++ 6.0 the c++ standard has been set to -std=gnu++14.
   # To avoid compile warnings about deprecated features we
   # set the standard back to c++98 for gcc versions greater than or equal to 6.0.
-  if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
+  # If the -std command appears as an argument before then the standard will not be reverted as it's assumed to be intentional.
+  if( "${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU"
+      AND NOT "${current_compiler_definitions}" MATCHES "-std"
+      AND NOT "${compile_flags_container}"      MATCHES "-std" 
+      AND NOT "${CMAKE_CXX_FLAGS}"              MATCHES "-std" )
+     
     execute_process( COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GPP_VERSION )
     if( GPP_VERSION VERSION_GREATER 6.0 OR GPP_VERSION VERSION_EQUAL 6.0 )
-      set( compile_flags_container "${compile_flags_container} -std=gnu++98" )
+      set( compile_flags_container_internal "${compile_flags_container_internal} -std=gnu++98" )
     endif()
+    
+    set( ${compile_flags_container} "${${compile_flags_container}} ${compile_flags_container_internal}" PARENT_SCOPE )
   endif()
   
 endfunction()
