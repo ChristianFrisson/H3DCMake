@@ -81,6 +81,7 @@ function( addCommonH3DGNUCompileFlags compile_flags_container )
     execute_process( COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GPP_VERSION )
     if( GPP_VERSION VERSION_GREATER 6.0 OR GPP_VERSION VERSION_EQUAL 6.0 )
       set( compile_flags_container_internal "${compile_flags_container_internal} -std=gnu++98" )
+      MESSAGE( WARNING "A version of GNU C++ compiler which is greater than 6.0 has been detected. The C++ standard has been set to gnu++98 instead of the default gnu++14." )
     endif()
     
     set( ${compile_flags_container} "${${compile_flags_container}} ${compile_flags_container_internal}" PARENT_SCOPE )
