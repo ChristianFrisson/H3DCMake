@@ -1,10 +1,9 @@
+cmake_minimum_required( VERSION 2.8.7 )
+cmake_policy( VERSION 2.8.7 )
+
 if( POLICY CMP0054)
   cmake_policy( SET CMP0054 NEW )
 endif()
-
-# add_definitions is used in H3DUtilityFunctions.enableCpp11 to add compiler options
-# setting this policy to OLD so that the DEFINITIONS property contains the added options.
-cmake_policy( SET CMP0059 OLD )
 
 # Contains common H3D functions that are used by CMakeLists.txt to setup projects.
 include( H3DUtilityFunctions )
@@ -64,7 +63,11 @@ endfunction()
 function( addCommonH3DGNUCompileFlags compile_flags_container )
 
   # compiler options added with add_definitions
-  get_directory_property( current_compiler_definitions DEFINITIONS )
+  if( CMAKE_VERSION VERSION_LESS 2.8.12 )
+    get_directory_property( current_compiler_definitions DEFINITIONS )
+  else()
+    get_directory_property( current_compiler_definitions COMPILE_OPTIONS )
+  endif()
   
   # Since g++ 6.0 the c++ standard has been set to -std=gnu++14.
   # To avoid compile warnings about deprecated features we
