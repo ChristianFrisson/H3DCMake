@@ -61,31 +61,17 @@ endfunction()
 # Add common compile flags that are used by GNU (GCC/G++) compilers for H3D projects.
 # compile_flags_container Compile flags will be added here
 function( addCommonH3DGNUCompileFlags compile_flags_container )
-
-  # compiler options added with add_definitions
-  if( CMAKE_VERSION VERSION_LESS 2.8.12 )
-    get_directory_property( current_compiler_definitions DEFINITIONS )
-  else()
-    get_directory_property( current_compiler_definitions COMPILE_OPTIONS )
+  
+  # Versions of g++ greater than 6.0 have the c++ standard set to 14 by default.
+  # Compiling with these will cause deprecation warnings regarding auto_ptr to be given
+  # so deprecation warnings are switched off for these versions of g++.
+  execute_process( COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GPP_VERSION )
+  if( GPP_VERSION VERSION_GREATER 6.0 OR GPP_VERSION VERSION_EQUAL 6.0 )
+    set( compile_flags_container_internal "${compile_flags_container_internal} -Wno-deprecated-declarations" )
+    MESSAGE( WARNING "A version of GNU C++ compiler which is greater than 6.0 has been detected. Deprecated declaration warnings have been disabled to avoid auto_ptr warnings." )
   endif()
   
-  # Since g++ 6.0 the c++ standard has been set to -std=gnu++14.
-  # To avoid compile warnings about deprecated features we
-  # set the standard back to c++98 for gcc versions greater than or equal to 6.0.
-  # If the -std command appears as an argument before then the standard will not be reverted as it's assumed to be intentional.
-  if( "${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU"
-      AND NOT "${current_compiler_definitions}" MATCHES "-std"
-      AND NOT "${compile_flags_container}"      MATCHES "-std" 
-      AND NOT "${CMAKE_CXX_FLAGS}"              MATCHES "-std" )
-     
-    execute_process( COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GPP_VERSION )
-    if( GPP_VERSION VERSION_GREATER 6.0 OR GPP_VERSION VERSION_EQUAL 6.0 )
-      set( compile_flags_container_internal "${compile_flags_container_internal} -std=gnu++98" )
-      MESSAGE( WARNING "A version of GNU C++ compiler which is greater than 6.0 has been detected. The C++ standard has been set to gnu++98 instead of the default gnu++14." )
-    endif()
-    
-    set( ${compile_flags_container} "${${compile_flags_container}} ${compile_flags_container_internal}" PARENT_SCOPE )
-  endif()
+  set( ${compile_flags_container} "${${compile_flags_container}} ${compile_flags_container_internal}" PARENT_SCOPE )
   
 endfunction()
 
