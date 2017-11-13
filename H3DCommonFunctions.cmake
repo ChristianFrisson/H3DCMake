@@ -65,10 +65,11 @@ function( addCommonH3DGNUCompileFlags compile_flags_container )
   # Versions of g++ greater than 6.0 have the c++ standard set to 14 by default.
   # Compiling with these will cause deprecation warnings regarding auto_ptr to be given
   # so deprecation warnings are switched off for these versions of g++.
+  set( compile_flags_container_internal "" )
   execute_process( COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GPP_VERSION )
   if( GPP_VERSION VERSION_GREATER 6.0 OR GPP_VERSION VERSION_EQUAL 6.0 )
     set( compile_flags_container_internal "${compile_flags_container_internal} -Wno-deprecated-declarations" )
-    MESSAGE( WARNING "A version of GNU C++ compiler which is greater than 6.0 has been detected. Deprecated declaration warnings have been disabled to avoid auto_ptr warnings." )
+    message( WARNING "A version of GNU C++ compiler which is greater than 6.0 has been detected. Deprecated declaration warnings have been disabled to avoid auto_ptr warnings." )
   endif()
   
   set( ${compile_flags_container} "${${compile_flags_container}} ${compile_flags_container_internal}" PARENT_SCOPE )
