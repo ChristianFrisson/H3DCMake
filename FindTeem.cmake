@@ -26,6 +26,7 @@ if( Teem_FOUND AND Teem_USE_FILE )
   # Teem_LIBRARIES and Teem_INCLUDE_DIRS. If Teem_USE_FILE is ever updated we can
   # check the Teem_VERSION* cmake variables to update this module.
   # include( ${Teem_USE_FILE} ) should be the normal way to do this.
+  # On ubuntu artful Teem_USE_FILE also does not work due to using deprecated cmake functionality that sets up a target that does not build.
   # On windows Teem_USE_FILE does not work at all due to it not handling Release and Debug
   # sub directories.
   set( Teem_INCLUDE_DIR ${Teem_INCLUDE_DIRS} )
@@ -34,6 +35,8 @@ if( Teem_FOUND AND Teem_USE_FILE )
     set( Teem_LIBRARIES "${Teem_LIBRARY_DIRS}/lib${Teem_LIBRARIES}.so" )
   elseif( EXISTS "${Teem_LIBRARY_DIRS}/lib${Teem_LIBRARIES}.dylib" )
     set( Teem_LIBRARIES "${Teem_LIBRARY_DIRS}/lib${Teem_LIBRARIES}.dylib" )
+  elseif( EXISTS "/usr/lib/lib${Teem_LIBRARIES}.so" )
+    set( Teem_LIBRARIES "/usr/lib/lib${Teem_LIBRARIES}.so" )
   else()
     # The library version is now assumed to be in a default location so we can actually use the UseFile.
     include( ${Teem_USE_FILE} )
