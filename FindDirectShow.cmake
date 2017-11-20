@@ -71,7 +71,7 @@ include( FindPackageHandleStandardArgs )
 find_package_handle_standard_args( DirectShow DEFAULT_MSG
                                    DirectShow_LIBRARY DirectShow_INCLUDE_DIR_STREAMS_H DirectShow_INCLUDE_DIR_DDRAW_H DirectShow_INCLUDE_DIR_INTSAFE_H )
 
-set( DirectShow_LIBRARIES ${DirectShow_LIBRARY} )
+set( DirectShow_LIBRARIES ${DirectShow_LIBRARY} strmiids.lib )
 set( DirectShow_INCLUDE_DIRS ${DirectShow_INCLUDE_DIR_STREAMS_H} ${DirectShow_INCLUDE_DIR_DDRAW_H} )
 
 # Backwards compatibility values set here.
