@@ -114,7 +114,7 @@ if( HAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
       set( externals_to_look_for ${externals_to_look_for}
                                  "lib" "OpenHapticsRenderer"
                                  "bin" "OpenHapticsRenderer"
-                                 "warning" "NOTE: HAPI compiled with OpenHaptics support. Test that application starts on system without OpenHaptics before distributing package if you do not distribute it yourself."
+                                 "warning" "NOTE: HAPI compiled with OpenHaptics support. If OpenHaptics is not distributed together with the package then test that the application starts on a system without OpenHaptics."
 
                                  "#define HAVE_CHAI3D" )
       if( NOT TARGET HAPI )
@@ -140,19 +140,19 @@ if( HAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
                                  "lib" "virtuoseDLL"
 
                                  "#define HAVE_FALCONAPI"
-                                 "warning" "NOTE: HAPI compiled with Novint Falcon support. Test that application starts on system without Novint Falcon dlls before distributing package if you do not distribute it yourself."
+                                 "warning" "NOTE: HAPI compiled with Novint Falcon support. If Novint Falcon dlls is not distributed together with the package then test that the application starts on a system without Novint Falcon dlls."
 
                                  "#define HAVE_NIFALCONAPI"
-                                 "warning" "NOTE: HAPI compiled with NiFalcon api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+                                 "warning" "NOTE: HAPI compiled with NiFalcon api support. If NiFalcon dlls is not distributed together with the package then test that the application starts on a system without NiFalcon dlls"
 
                                  "#define NIFALCONAPI_LIBUSB"
-                                 "warning" "NOTE: HAPI compiled with NiFalcon api LIBUSB support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+                                 "warning" "NOTE: HAPI compiled with NiFalcon api LIBUSB support. If NiFalcon dlls ( if there are any ) is not distributed together with the package then test that the application starts on a system without NiFalcon dlls"
 
                                  "#define NIFALCONAPI_LIBFTD2XX"
-                                 "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTD2XX api support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+                                 "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTD2XX api support. If NiFalcon dlls ( if there are any ) is not distributed together with the package then test that the application starts on a system without NiFalcon dlls"
 
                                  "#define NIFALCONAPI_LIBFTDI"
-                                 "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTDI support. Test that application starts on system without NiFalcon dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+                                 "warning" "NOTE: HAPI compiled with NiFalcon api LIBFTDI support. If NiFalcon dlls ( if there are any ) is not distributed together with the package then test that the application starts on a system without NiFalcon dlls"
 
                                  "#define HAVE_FPARSER"
                                  "include" "fparser"
@@ -160,7 +160,7 @@ if( HAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
                                  "bin" "fparser"
 
                                  "#define HAVE_HAPTIK_LIBRARY"
-                                 "warning" "NOTE: HAPI compiled with HAPTIK library support. Test that application starts on system without HAPTIK dlls ( if there are any ) before distributing package if you do not distribute it yourself."
+                                 "warning" "NOTE: HAPI compiled with HAPTIK library support. If HAPTIK dlls( if there are any ) is not distributed together with the package then test that the application starts on a system without HAPTIK dlls"
 
                                  "#define HAVE_SIMBALLMEDICAL_API"
                                  "include" "Simball"

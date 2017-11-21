@@ -264,7 +264,7 @@ if( H3DAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
                                  "warning" "NOTE: H3DAPI compiled with font config support. Make sure font config features are included."
 
                                  "#define HAVE_3DXWARE"
-                                 "warning" "NOTE: H3DAPI compiled with 3DXWare support. Test that application starts on system without 3DConnection drivers installed before distributing package if you do not distribute it yourself."
+                                 "warning" "NOTE: H3DAPI compiled with 3DXWare support. If 3DConnection drivers is not distributed together with the package then test that the application starts on a system without 3DConnection drivers installed"
 
                                  "#define HAVE_PYTHON"
                                  "nsisextrainstall" ${h3dpython_nsis_extra_install_commands}
@@ -285,10 +285,10 @@ if( H3DAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
                                  "lib" "strmbase"
 
                                  "#define HAVE_FFMPEG"
-                                 "warning" "NOTE: H3DAPI compiled with ffmpeg support. Make sure fmpeg features are included."
+                                 "warning" "NOTE: H3DAPI compiled with ffmpeg support. Make sure ffmpeg features are included."
 
                                  "#define HAVE_VIRTUAL_HAND_SDK"
-                                 "warning" "NOTE: H3DAPI compiled with Virtual Hand support. Test that application starts on system without Virtual hand installed before distributing package if you do not distribute it yourself."
+                                 "warning" "NOTE: H3DAPI compiled with Virtual Hand support. If Virtual hand is not distributed together with the package then test that the application starts on a system without Virtual hand installed"
 
                                  "#define"
                                  "include" "GL/freeglut" "GL/freeglut" "GL/freeglut_ext" "GL/freeglut_std" "GL/glew" "GL/glext" "GL/glut" "GL/wglew" "H3D"
