@@ -121,7 +121,6 @@ Description: ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}
     DEPENDS ${CMAKE_BINARY_DIR}/cmake_install.cmake    
     COMMENT "Building debian_package directory with DESTDIR"
     )
-  ADD_DEPENDENCIES(deb_destdir_install all preinstall)
 
   # create data.tar.gz from the make install stuff
   # all files starts with: ./usr
