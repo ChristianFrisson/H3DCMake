@@ -18,7 +18,7 @@ include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "DirectShow/BaseClasses" "static" )
 
-if( CMake_HAVE_MFC AND NOT MSVC14 )
+if( CMake_HAVE_MFC )
   # Look for the header file.
   set( directshow_extra_dir )
   if( MSVC70 OR MSVC71 )
@@ -29,6 +29,8 @@ if( CMake_HAVE_MFC AND NOT MSVC14 )
     set( directshow_extra_dir $ENV{VS90COMNTOOLS}../../VC/PlatformSDK/Include )
   elseif( MSVC10 )
     set( directshow_extra_dir $ENV{VS100COMNTOOLS}../../VC/PlatformSDK/Include )
+  elseif( MSVC14 )
+    set( directshow_extra_dir $ENV{VS140COMNTOOLS}../../VC/PlatformSDK/Include )
   endif()
 
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
