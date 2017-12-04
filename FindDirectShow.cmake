@@ -20,39 +20,40 @@ set( check_if_h3d_external_matches_vs_version ON )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "DirectShow/BaseClasses" "static" )
 
 if( CMake_HAVE_MFC )
+ 
   # Look for the header file.
-  set( directshow_extra_dir )
+  set( directshow_extra_dir "C:/Program Files (x86)/Microsoft SDKs/Windows/*/Include"
+                            $ENV{DXSDK_DIR}/include )
   if( MSVC70 OR MSVC71 )
-    set( directshow_extra_dir $ENV{VS71COMNTOOLS}../../Vc7/PlatformSDK/Include )
+    set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS71COMNTOOLS}../../Vc7/PlatformSDK/Include )
   elseif( MSVC80 )
-    set( directshow_extra_dir $ENV{VS80COMNTOOLS}../../VC/PlatformSDK/Include )
+    set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS80COMNTOOLS}../../VC/PlatformSDK/Include )
   elseif( MSVC90 )
-    set( directshow_extra_dir $ENV{VS90COMNTOOLS}../../VC/PlatformSDK/Include )
+    set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS90COMNTOOLS}../../VC/PlatformSDK/Include )
   elseif( MSVC10 )
-    set( directshow_extra_dir $ENV{VS100COMNTOOLS}../../VC/PlatformSDK/Include )
+    set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS100COMNTOOLS}../../VC/PlatformSDK/Include )
   elseif( MSVC14 )
-    set( directshow_extra_dir $ENV{VS140COMNTOOLS}../../VC/PlatformSDK/Include )
+    set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS140COMNTOOLS}../../VC/PlatformSDK/Include )
   endif()
 
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
   
- find_path( DirectShow_INCLUDE_DIR_STREAMS_H NAMES streams.h
-             PATHS ${module_include_search_paths}
-             DOC "Path in which the file streams.h is located." )
+ find_path( DirectShow_INCLUDE_DIR_STREAMS_H 
+            NAMES streams.h
+            PATHS ${module_include_search_paths}
+            DOC "Path in which the file streams.h is located." )
   mark_as_advanced( DirectShow_INCLUDE_DIR_STREAMS_H )
 
   find_library( DirectShow_LIBRARY NAMES strmbase
                 PATHS ${module_lib_search_paths}
-                DOC "Path to strmbase library in the externals folder."
-				NO_DEFAULT_PATH	)
+                DOC "Path to strmbase library in the externals folder." 
+                NO_DEFAULT_PATH	)
   mark_as_advanced( DirectShow_LIBRARY )
   
   find_path( DirectShow_INCLUDE_DIR_INTSAFE_H 
              NAME intsafe.h
              PATHS "C:/Program Files (x86)/Windows Kits/*/Include/*/shared"
              "C:/Program Files (x86)/Windows Kits/*/Include/shared"
-             "C:/Program Files (x86)/Microsoft SDKs/Windows/*/Include"
-             $ENV{DXSDK_DIR}/include
              ${directshow_extra_dir}
              DOC "Path in which the file intsafe.h is located. Make sure the path matches the Target Plateform used to build your solution." )
   mark_as_advanced( DirectShow_INCLUDE_DIR_INTSAFE_H )
@@ -62,12 +63,10 @@ if( CMake_HAVE_MFC )
              PATHS ${DirectShow_INCLUDE_DIR_INTSAFE_H}
              "C:/Program Files (x86)/Windows Kits/*/Include/*/um"
              "C:/Program Files (x86)/Windows Kits/*/Include/um"
-             "C:/Program Files (x86)/Microsoft SDKs/Windows/*/Include"
-             $ENV{DXSDK_DIR}/include
              ${directshow_extra_dir}
-             DOC "Path in which the file ddraw.h is located. Make sure the path matches the Target Plateform used to build your solution." 
-              )
+             DOC "Path in which the file ddraw.h is located. Make sure the path matches the Target Plateform used to build your solution." )
   mark_as_advanced( DirectShow_INCLUDE_DIR_DDRAW_H )
+
 endif()
 
 include( FindPackageHandleStandardArgs )
