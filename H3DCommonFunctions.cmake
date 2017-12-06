@@ -487,7 +487,10 @@ function( findIncludeDirsAndLibrariesForH3DProjects )
   endforeach()
   
   if( DEFINED H3D_USE_DEPENDENCIES_ONLY )
-    message( AUTHOR_WARNING "The variable H3D_USE_DEPENDENCIES_ONLY is deprecated and will be removed in the future. Please purge it from your CMakeLists.txt." )
+    checkIfCacheVariableMarkedAsDeprecated( CACHE_VARIABLE H3D_USE_DEPENDENCIES_ONLY OUTPUT_VARIABLE created_internally )
+    if( NOT created_internally )
+      message( AUTHOR_WARNING "The variable H3D_USE_DEPENDENCIES_ONLY is deprecated and will be removed in the future. Please replace it by checking for existing targets instead." )
+    endif()
   endif()
   
   set( tmp_include_dirs )
