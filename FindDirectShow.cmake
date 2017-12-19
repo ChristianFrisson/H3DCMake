@@ -33,7 +33,10 @@ if( CMake_HAVE_MFC )
   elseif( MSVC10 )
     set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS100COMNTOOLS}../../VC/PlatformSDK/Include )
   elseif( MSVC14 )
-    set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS140COMNTOOLS}../../VC/PlatformSDK/Include )
+    set( directshow_extra_dir "C:/Program Files (x86)/Windows Kits/*/Include/*/shared"
+                              "C:/Program Files (x86)/Windows Kits/*/Include/shared"
+                              ${directshow_extra_dir}
+                              $ENV{VS140COMNTOOLS}../../VC/PlatformSDK/Include )
   endif()
 
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
@@ -52,18 +55,14 @@ if( CMake_HAVE_MFC )
   
   find_path( DirectShow_INCLUDE_DIR_INTSAFE_H 
              NAME intsafe.h
-             PATHS "C:/Program Files (x86)/Windows Kits/*/Include/*/shared"
-             "C:/Program Files (x86)/Windows Kits/*/Include/shared"
-             ${directshow_extra_dir}
+             PATHS ${directshow_extra_dir}
              DOC "Path in which the file intsafe.h is located. Make sure the path matches the Target Plateform used to build your solution." )
   mark_as_advanced( DirectShow_INCLUDE_DIR_INTSAFE_H )
   
   find_path( DirectShow_INCLUDE_DIR_DDRAW_H 
              NAME ddraw.h
              PATHS ${DirectShow_INCLUDE_DIR_INTSAFE_H}
-             "C:/Program Files (x86)/Windows Kits/*/Include/*/um"
-             "C:/Program Files (x86)/Windows Kits/*/Include/um"
-             ${directshow_extra_dir}
+                   ${directshow_extra_dir}
              DOC "Path in which the file ddraw.h is located. Make sure the path matches the Target Plateform used to build your solution." )
   mark_as_advanced( DirectShow_INCLUDE_DIR_DDRAW_H )
 
