@@ -477,30 +477,35 @@ endfunction()
 #                                a target in the current build. Each component have to be listed as
 #                                ProjectName_ComponentName where ProjectName refers to a project in REQUIRED_PROJECTS
 #                                and ComponentName is the name of the component for that project.
+# PROJECTS_USE_CPP11_OUTPUT_VAR - If set then it will be set to true if any of the found H3D projects enable c++11 support. Currently only H3DAPI is checked though.
 function( findIncludeDirsAndLibrariesForH3DProjects )
   set( options )
-  set( one_value_args )
+  set( one_value_args PROJECTS_USE_CPP11_OUTPUT_VAR )
   set( multi_value_args PROJECT_NAMES INCLUDE_DIRS_OUTPUT_VAR LIBRARIES_OUTPUT_VAR REQUIRED_PROJECTS REQUIRED_PROJECTS_COMPONENTS )
   include( CMakeParseArguments )
   cmake_parse_arguments( find_h3d_projects_dirs_libs "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
   if( find_h3d_projects_dirs_libs_UNPARSED_ARGUMENTS )
     message( FATAL_ERROR "Unknown keywords given to findIncludeDirsAndLibrariesForH3DProjects (): \"${find_h3d_projects_dirs_libs_UNPARSED_ARGUMENTS}\"" )
   endif()
-  
+
   set( required_args PROJECT_NAMES )
   foreach( required_arg ${required_args} )
     if( NOT find_h3d_projects_dirs_libs_${required_arg} )
       message( FATAL_ERROR "The required argument ${required_arg} is missing when calling findIncludeDirsAndLibrariesForH3DProjects ." )
     endif()
   endforeach()
-  
+
   if( DEFINED H3D_USE_DEPENDENCIES_ONLY )
     checkIfCacheVariableMarkedAsDeprecated( CACHE_VARIABLE H3D_USE_DEPENDENCIES_ONLY OUTPUT_VARIABLE created_internally )
     if( NOT created_internally )
       message( AUTHOR_WARNING "The variable H3D_USE_DEPENDENCIES_ONLY is deprecated and will be removed in the future. Please replace it by checking for existing targets instead." )
     endif()
   endif()
-  
+
+  if( find_h3d_projects_dirs_libs_PROJECTS_USE_CPP11_OUTPUT_VAR )
+    set( ${find_h3d_projects_dirs_libs_PROJECTS_USE_CPP11_OUTPUT_VAR} NO PARENT_SCOPE )
+  endif()
+
   set( tmp_include_dirs )
   set( tmp_libraries )
   foreach( project_name ${find_h3d_projects_dirs_libs_PROJECT_NAMES} )
@@ -552,6 +557,9 @@ function( findIncludeDirsAndLibrariesForH3DProjects )
             if( ${CMAKE_MATCH_1} GREATER 2 )
               # H3DAPI is version 3 or later.
               enableCpp11( FAIL_MESSAGE "H3DAPI ${CMAKE_MATCH_1} used by this library requires partial C++11 support. This compiler lacks such support." )
+              if( find_h3d_projects_dirs_libs_PROJECTS_USE_CPP11_OUTPUT_VAR )
+                set( ${find_h3d_projects_dirs_libs_PROJECTS_USE_CPP11_OUTPUT_VAR} YES PARENT_SCOPE )
+              endif()
             endif()
           endif()
         endif()
