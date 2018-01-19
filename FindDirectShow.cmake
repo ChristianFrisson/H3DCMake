@@ -22,21 +22,13 @@ getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths $
 if( CMake_HAVE_MFC )
  
   # Look for the header file.
-  set( directshow_extra_dir "C:/Program Files (x86)/Microsoft SDKs/Windows/*/Include"
-                            $ENV{DXSDK_DIR}/include )
+  set( directshow_extra_dir $ENV{DXSDK_DIR}/include )
   if( MSVC70 OR MSVC71 )
     set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS71COMNTOOLS}../../Vc7/PlatformSDK/Include )
   elseif( MSVC80 )
     set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS80COMNTOOLS}../../VC/PlatformSDK/Include )
   elseif( MSVC90 )
     set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS90COMNTOOLS}../../VC/PlatformSDK/Include )
-  elseif( MSVC10 )
-    set( directshow_extra_dir ${directshow_extra_dir} $ENV{VS100COMNTOOLS}../../VC/PlatformSDK/Include )
-  elseif( MSVC14 )
-    set( directshow_extra_dir "C:/Program Files (x86)/Windows Kits/*/Include/*/shared"
-                              "C:/Program Files (x86)/Windows Kits/*/Include/shared"
-                              ${directshow_extra_dir}
-                              $ENV{VS140COMNTOOLS}../../VC/PlatformSDK/Include )
   endif()
 
   get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
@@ -69,13 +61,21 @@ if( CMake_HAVE_MFC )
 endif()
 
 include( FindPackageHandleStandardArgs )
-# handle the QUIETLY and REQUIRED arguments and set DirectShow_FOUND to TRUE
+# Handle the QUIETLY and REQUIRED arguments and set DirectShow_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( DirectShow DEFAULT_MSG
-                                   DirectShow_LIBRARY DirectShow_INCLUDE_DIR_STREAMS_H DirectShow_INCLUDE_DIR_DDRAW_H DirectShow_INCLUDE_DIR_INTSAFE_H )
+                                   DirectShow_LIBRARY DirectShow_INCLUDE_DIR_STREAMS_H )
 
 set( DirectShow_LIBRARIES ${DirectShow_LIBRARY} strmiids.lib )
-set( DirectShow_INCLUDE_DIRS ${DirectShow_INCLUDE_DIR_STREAMS_H} ${DirectShow_INCLUDE_DIR_DDRAW_H} )
+
+# Set the directories to include, depending on whether the paths have been found above, configured manually or not found
+set( DirectShow_INCLUDE_DIRS ${DirectShow_INCLUDE_DIR_STREAMS_H} )
+if( DirectShow_INCLUDE_DIR_DDRAW_H )
+  set( DirectShow_INCLUDE_DIRS ${DirectShow_INCLUDE_DIRS} ${DirectShow_INCLUDE_DIR_DDRAW_H} )
+endif()
+if( DirectShow_INCLUDE_DIR_INTSAFE_H )
+  set( DirectShow_INCLUDE_DIRS ${DirectShow_INCLUDE_DIRS} ${DirectShow_INCLUDE_DIR_INTSAFE_H} )
+endif()
 
 # Backwards compatibility values set here.
 set( DIRECTSHOW_INCLUDE_DIR ${DirectShow_INCLUDE_DIRS} )
