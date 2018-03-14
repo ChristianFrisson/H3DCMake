@@ -9,17 +9,24 @@ include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "pthread" )
 
+set( no_system_environment_path_on_windows )
+if( WIN32 )
+  set( no_system_environment_path_on_windows NO_SYSTEM_ENVIRONMENT_PATH )
+endif()
+
 # Look for the header file.
 find_path( PTHREAD_INCLUDE_DIR NAMES pthread.h
                                PATHS ${module_include_search_paths}
-                               DOC "Path in which the file pthread.h is located." )
+                               DOC "Path in which the file pthread.h is located."
+                               ${no_system_environment_path_on_windows} )
 mark_as_advanced( PTHREAD_INCLUDE_DIR )
 
 # Look for the library.
 if( WIN32 )
   find_library( PTHREAD_LIBRARY NAMES pthreadVC2 
                                 PATHS ${module_lib_search_paths}
-                                DOC "Path to pthreadVC2 library." )
+                                DOC "Path to pthreadVC2 library."
+                                ${no_system_environment_path_on_windows} )
 else()
   find_library( PTHREAD_LIBRARY NAMES pthread
                 DOC "Path to pthread library." )
