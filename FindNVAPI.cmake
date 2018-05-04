@@ -10,7 +10,7 @@ include( H3DUtilityFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH  )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "nvapi" )
 
-set(NVAPI_INSTALL_DIR "" CACHE PATH "NVAPI_INSTALL_DIR")
+set(NVAPI_INSTALL_DIR "" CACHE PATH "NVAPI library installation directory which contains nvapi.h")
 # Look for the header file
 find_path( NVAPI_INCLUDE_DIRS NAMES nvapi.h
            PATHS ${NVAPI_INSTALL_DIR}
