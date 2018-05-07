@@ -12,12 +12,12 @@ getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths $
 
 set(NVAPI_INSTALL_DIR "" CACHE PATH "NVAPI library installation directory which contains nvapi.h")
 # Look for the header file
-find_path( NVAPI_INCLUDE_DIRS NAMES nvapi.h
+find_path( NVAPI_INCLUDE_DIR NAMES nvapi.h
            PATHS ${NVAPI_INSTALL_DIR}
                  ${module_include_search_paths}
            DOC "Path in which the file nvapi.h is located." )
-mark_as_advanced( NVAPI_INCLUDE_DIRS )
-
+mark_as_advanced( NVAPI_INCLUDE_DIR )
+set(NVAPI_INCLUDE_DIRS ${NVAPI_INCLUDE_DIR})
 
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "static" )
 
