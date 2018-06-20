@@ -25,10 +25,6 @@
 # was used when the checked H3DAPI version was built.
 # H3DAPI_BINARIES_INSTALL - Contains a list of binaries that
 # the built H3DAPI version needs.
-# TODO, IMPLEMENT FOR OTHER THAN WINDOWS IF IT MAKES SENSE TO DO THAT.
-# IMPLEMENT for other than MSVC10.
-# GET INCLUDE_DIR AND LIBS FROM FIND_MODULES used by H3DAPI?
-# IMPLEMENT to HANDLE debug libs/bins and configure to include them or not.
 if( COMMAND cmake_policy )
   if( POLICY CMP0026 )
     cmake_policy( SET CMP0026 OLD )

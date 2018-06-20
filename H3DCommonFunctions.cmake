@@ -445,7 +445,6 @@ function( handlePrecompiledHeaders )
   if( MSVC AND PRECOMPILED_HEADERS_${handle_precompiled_headers_PROJECT_NAME} )
     list( APPEND ${handle_precompiled_headers_HEADERS_VARIABLE} ${handle_precompiled_headers_STDAFX_HEADER_LOCATION}StdAfx.h )
     list( APPEND ${handle_precompiled_headers_SRCS_VARIABLE} ${handle_precompiled_headers_STDAFX_SOURCE_LOCATION}StdAfx.cpp )
-    # TODO, replace this with something that creates a path from the base of handle_precompiled_headers_STDAFX_SOURCE_LOCATION and handle_precompiled_headers_STDAFX_HEADER_LOCATION 
     string( REGEX REPLACE ".*include/" "" stdafx_header_location_no_include ${handle_precompiled_headers_STDAFX_HEADER_LOCATION} )
     if( stdafx_header_location_no_include STREQUAL ${handle_precompiled_headers_STDAFX_HEADER_LOCATION} )
       set( stdafx_header_location_no_include )

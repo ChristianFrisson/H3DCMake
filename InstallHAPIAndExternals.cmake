@@ -25,10 +25,6 @@
 # was used when the checked HAPI version was built.
 # HAPI_BINARIES_INSTALL - Contains a list of binaries that
 # the built HAPI version needs.
-# TODO, IMPLEMENT FOR OTHER THAN WINDOWS if IT MAKES SENSE TO DO THAT.
-# IMPLEMENT for other than MSVC10.
-# GET INCLUDE_DIR AND LIBS FROM FIND_MODULES used by HAPI?
-# IMPLEMENT to HANDLE debug libs/bins and configure to include them or not.
 if( COMMAND cmake_policy )
   if( POLICY CMP0026 )
     cmake_policy( SET CMP0026 OLD )

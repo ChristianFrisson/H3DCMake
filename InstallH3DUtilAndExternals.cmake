@@ -25,10 +25,6 @@
 # was used when the checked H3DUTIL version was built.
 # H3DUTIL_BINARIES_INSTALL - Contains a list of binaries that
 # the built H3DUTIL version needs.
-# TODO, IMPLEMENT FOR OTHER THAN WINDOWS if IT MAKES SENSE TO DO THAT.
-# IMPLEMENT for other than MSVC10.
-# GET INCLUDE_DIR AND LIBS FROM FIND_MODULES used by H3DUTIL?
-# IMPLEMENT to HANDLE debug libs/bins and configure to include them or not.
 if( COMMAND cmake_policy )
   if( POLICY CMP0026 )
     cmake_policy( SET CMP0026 OLD )
@@ -103,7 +99,6 @@ if( H3DUtil_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
       math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
     endwhile()
 
-    ## TODO: Somehow check if TEEM is compiled against BZPI2, PNG and/or ZLIB, probably have to use find modules.
     # When the first item for an external entry is only "#define" then it will always be included.
     if( NOT EXCLUDE_EXTERNAL )
       set( externals_to_look_for "#define HAVE_ZLIB"

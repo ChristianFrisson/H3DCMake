@@ -16,7 +16,6 @@ find_path( 3DXWARE_INCLUDE_DIR NAMES si.h siapp.h H3D/xdrvlib.h X11/Xlib.h X11/X
 mark_as_advanced( 3DXWARE_INCLUDE_DIR )
 
 # Look for the library siapp.
-# TODO: Does this work on UNIX systems? (LINUX) I strongly doubt it. What are the libraries to find on linux?
 find_library( 3DXWARE_SIAPP_LIBRARY NAMES siapp
               PATHS ${module_lib_search_paths}
               DOC "Path to siapp library." )

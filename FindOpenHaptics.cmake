@@ -38,7 +38,6 @@ set( openhaptics_library_directories $ENV{3DTOUCH_BASE}/lib        # OpenHaptics
                               "${program_files_path}/SensAble/3DTouch/lib/${lib}" # OpenHaptics 3.0
                               "/usr/lib64" )
 
-# TODO: Add conditional checking for x64 system
 # Look for the library.
 find_library( OpenHaptics_HL_LIBRARY NAMES HL
                         PATHS ${openhaptics_library_directories}
