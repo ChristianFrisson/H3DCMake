@@ -17,6 +17,7 @@ getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths $
 # Look for the header file.
 find_path( fparser_INCLUDE_DIR NAMES fparser.hh
                                PATHS ${module_include_search_paths}
+                                     "/usr/local/include/fparser"
                                DOC "Path in which the file fparser.hh is located." )
 mark_as_advanced( fparser_INCLUDE_DIR )
 
