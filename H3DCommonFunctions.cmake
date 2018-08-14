@@ -627,3 +627,14 @@ function( populateProjectIncludeDirectoriesCacheVar )
     set( ${deprecated_var_name} ${${populate_project_include_dirs_cache_var_VARIABLE_NAME}} CACHE INTERNAL "Set to internal to propagate change" FORCE )
   endforeach()
 endfunction()
+
+# Add common compile flags that are used by Apple clang compilers for H3D projects.
+# compile_flags_container Compile flags will be added here
+function( addCommonAppleClangCompileFlags compile_flags_container )
+
+  if( APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+    set( ${compile_flags_container} "${${compile_flags_container}} -Wno-deprecated-declarations" PARENT_SCOPE )
+    message( WARNING "Deprecated declaration warnings have been disabled to avoid deprecated glu and glut warnings." )
+  endif()
+
+endfunction()
