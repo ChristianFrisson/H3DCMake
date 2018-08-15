@@ -71,3 +71,14 @@ set( ODE_INCLUDE_DIRS ${ODE_INCLUDE_DIR} )
 
 # Backwards compatibility values set here.
 set( ODE_INCLUDE_DIR ${ODE_INCLUDE_DIRS} )
+
+set( ODE_VERSION_013_OR_EARLIER ON )
+foreach( header_path ${ODE_INCLUDE_DIRS} )
+  if( EXISTS ${header_path}/ode/objects.h )
+    file( STRINGS ${header_path}/ode/objects.h regex_output REGEX "dJointSetHinge2Axes" )
+    list( LENGTH regex_output regex_output_length )
+    if( regex_output_length )
+      set( ODE_VERSION_013_OR_EARLIER )
+    endif()
+  endif()
+endforeach()
