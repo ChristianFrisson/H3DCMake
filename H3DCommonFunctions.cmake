@@ -119,20 +119,20 @@ endfunction()
 # Setup the desired RPath settings for H3D projects.
 function( setupRPathForLib )
   # use, i.e. don't skip the full RPATH for the build tree
-  set( CMAKE_SKIP_BUILD_RPATH FALSE )
+  set( CMAKE_SKIP_BUILD_RPATH FALSE PARENT_SCOPE )
 
   # when building, don't use the install RPATH already
   # (but later on when installing)
-  set( CMAKE_BUILD_WITH_INSTALL_RPATH FALSE )
+  set( CMAKE_BUILD_WITH_INSTALL_RPATH FALSE PARENT_SCOPE )
 
   # Add the automatically determined parts of the RPATH
   # which point to directories outside the build tree to the install RPATH
-  set( CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE )
+  set( CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE PARENT_SCOPE )
 
   # The RPATH to be used when installing, but only if it's not a system directory
   list( FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" is_system_dir )
   if( "${is_system_dir}" STREQUAL "-1" )
-     set( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib" )
+     set( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib" PARENT_SCOPE )
   endif()
 endfunction()
 
@@ -637,4 +637,17 @@ function( addCommonAppleClangCompileFlags compile_flags_container )
     message( WARNING "Deprecated declaration warnings have been disabled to avoid deprecated glu and glut warnings." )
   endif()
 
+endfunction()
+
+# Add common compile flags that are used by various compilers for H3D projects.
+# compile_flags_container Compile flags will be added here.
+function( addCommonH3DCompileFlags compile_flags_container )
+  set( compile_flags_container_internal )
+  addCommonH3DMSVCCompileFlags( compile_flags_container_internal )
+  if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
+    addCommonH3DGNUCompileFlags( compile_flags_container_internal )
+  endif()
+  addCommonAppleClangCompileFlags( compile_flags_container_internal )
+
+  set( ${compile_flags_container} "${${compile_flags_container}} ${compile_flags_container_internal}" PARENT_SCOPE )
 endfunction()
