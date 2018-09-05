@@ -127,7 +127,17 @@ if( WIN32 )
   endif()
 endif()
 
-find_package( Boost COMPONENTS program_options thread )
+if( NiFalconAPI_INCLUDE_DIR AND NiFalconAPI_LIBRARY )
+  set( search_for_Boost ON )
+  foreach( comm_lib_var ${required_comm_lib_vars} )
+    if( NOT ${comm_lib_var} )
+      set( search_for_Boost OFF )
+    endif()
+  endforeach()
+  if( search_for_Boost )
+    find_package( Boost COMPONENTS program_options thread )
+  endif()
+endif()
 
 include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set NiFalconAPI_FOUND to TRUE
