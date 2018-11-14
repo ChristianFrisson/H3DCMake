@@ -311,6 +311,9 @@ endfunction()
 #               should also get the SameComponentsAsInstalledLibrary
 #               special name.
 function( handleComponentsForLib module_name )
+  if( POLICY CMP0072 )
+    cmake_policy( SET CMP0072 NEW )
+  endif()
   set( options )
   set( one_value_args MODULE_HEADER MODULE_HEADER_SUFFIX )
   set( multi_value_args REQUIRED OPTIONAL OPTIONAL_DEFINES DESIRED OUTPUT H3D_MODULES MODULE_HEADER_DIRS )
