@@ -31,12 +31,13 @@ if ( WIN32 )
   endif( CMAKE_CL_64 )
 endif()
 # Look for the library.
-find_library( NVAPI_LIBRARIES NAMES  nvapi${LIBPOSTFIX}
+find_library( NVAPI_LIBRARY NAMES  nvapi${LIBPOSTFIX}
                           PATHS ${NVAPI_INSTALL_DIR}/${sdk_lib}
                                 ${module_lib_search_paths}
                                 
                           DOC "Path to nvapi library." )
-mark_as_advanced( NVAPI_LIBRARIES )
+mark_as_advanced( NVAPI_LIBRARY )
+set(NVAPI_LIBRARIES ${NVAPI_LIBRARY})
 
 include( FindPackageHandleStandardArgs )
 find_package_handle_standard_args( NVAPI DEFAULT_MSG
