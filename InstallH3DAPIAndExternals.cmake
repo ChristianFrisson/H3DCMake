@@ -174,7 +174,7 @@ if( H3DAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
       endif()
 
       # Extra install commands will be set to install python and OpenAL
-      set( redist_versions 8 9 10 )
+      set( redist_versions 8 9 10 14 15 )
       foreach( redist_version ${redist_versions} )
         # Add cache variable vc${redist_version}_redist which should be set to the install file
         # for microsoft visual studio redistributables, they can be found in the
@@ -197,11 +197,16 @@ if( H3DAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
                                                    " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q:a /norestart /c:\\\"msiexec /i vcredist.msi /qn\\\"'\\n" )
             set( h3dvs_nsis_extra_uninstall_commands ${h3dvs_nsis_extra_uninstall_commands}
                                                    " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q:a /norestart /c:\\\"msiexec /x vcredist.msi /qn\\\"'\\n" )
+          elseif( ${redist_version} LESS 14 )
+            set( h3dvs_nsis_extra_install_commands ${h3dvs_nsis_extra_install_commands}
+                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q /norestart '\\n" )
+            set( h3dvs_nsis_extra_uninstall_commands ${h3dvs_nsis_extra_uninstall_commands}
+                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q /uninstall '\\n" )
           else()
             set( h3dvs_nsis_extra_install_commands ${h3dvs_nsis_extra_install_commands}
-                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q /norestart \\\"'\\n" )
+                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /install /quiet /norestart '\\n" )
             set( h3dvs_nsis_extra_uninstall_commands ${h3dvs_nsis_extra_uninstall_commands}
-                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /q /uninstall \\\"'\\n" )
+                                                   " Execute silent and wait\\n  ExecWait '\\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\" /uninstall /quiet /norestart '\\n" )
           endif()
           set( ms_redist_install_command_2 " Wait a bit for system to unlock file.\\n  Sleep 1000\\n"
                                            " Delete file\\n  Delete \\\"$INSTDIR\\\\vc${redist_version}\\\\${VC${redist_version}_FILE_NAME}\\\"\\n"

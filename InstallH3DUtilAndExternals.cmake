@@ -99,6 +99,14 @@ if( H3DUtil_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
       math( EXPR temp_msvc_version "${temp_msvc_version} + 100" )
     endwhile()
 
+    if( ${h3d_msvc_version} GREATER 12 ) # MSVC skipped 13 in their numbering system.
+      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
+    endif()
+    if( ( ${h3d_msvc_version} GREATER 14 ) OR ( ${MSVC_VERSION} GREATER 1900 ) )
+      # MSVC vs 2015 has number 1900 and vs 2017 has number 1910. So this is a guess on upcoming vs versions.
+      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
+    endif()
+
     # When the first item for an external entry is only "#define" then it will always be included.
     if( NOT EXCLUDE_EXTERNAL )
       set( externals_to_look_for "#define HAVE_ZLIB"
