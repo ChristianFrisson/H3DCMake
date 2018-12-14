@@ -247,6 +247,10 @@ if( H3DAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
                                  "lib" "cgGL" "cg"
                                  "bin" "cg" "cgGL"
 
+                                 "#define HAVE_LIBOVR"
+                                 "include" "libovr"
+                                 "lib" "LibOVR"
+
                                  "#define HAVE_FTGL"
                                  "include" "FTGL"
                                  "lib" "ftgl"
@@ -259,7 +263,7 @@ if( H3DAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
 
                                  "#define HAVE_FREETYPE"
                                  "include" "freetype"
-                                 "lib" "freetype2312"
+                                 "lib" "freetype"
 
                                  "#define HAVE_FONTCONFIG"
                                  "warning" "NOTE: H3DAPI compiled with font config support. Make sure font config features are included."
