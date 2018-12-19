@@ -11,6 +11,9 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES LibOVR_INCLUDE_
                                                           "Path to LibOVR library. Needed to support the OCULUS_RIFT stereo mode." )
 
 include( H3DCommonFindModuleFunctions )
+if( MSVC )
+  set( check_if_h3d_external_matches_vs_version ON )
+endif()
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "LibOVR" "static" )
 
