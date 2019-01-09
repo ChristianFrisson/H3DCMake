@@ -33,6 +33,14 @@ else()
 endif()
 mark_as_advanced( PTHREAD_LIBRARY )
 
+# Fix for pthread 2.9 under vs>=2015
+if( WIN32 )
+  # This file exists in pthread 2.11 but not in pthread 2.9
+  if(NOT EXISTS ${PTHREAD_INCLUDE_DIR}/_ptw32.h)
+	set( PTHREAD_W32_LEGACY_VERSION ON )
+  endif()
+endif()
+
 include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set PTHREAD_FOUND to TRUE
 # if all listed variables are TRUE
