@@ -8,7 +8,8 @@
 # Look for the header file.
 find_path( DirectX_INCLUDE_DIR NAMES d3d9.h
            PATHS $ENV{DXSDK_DIR}/Include
-           DOC "Path in which the file d3d9.h is located." )
+           DOC "Path in which the file d3d9.h is located."
+           NO_DEFAULT_PATH )
 mark_as_advanced( DirectX_INCLUDE_DIR )
 
 set( proc_arch x86 )
@@ -19,11 +20,13 @@ endif()
 # Look for the library.
 find_library( DirectX_d3d9_LIBRARY NAMES d3d9
               PATHS $ENV{DXSDK_DIR}/Lib/${proc_arch}
-              DOC "Path to d3d9 library." )
+              DOC "Path to d3d9 library." 
+              NO_DEFAULT_PATH )
 
 find_library( DirectX_d3dx9_LIBRARY NAMES d3dx9
               PATHS $ENV{DXSDK_DIR}/Lib/${proc_arch}
-              DOC "Path to d3dx9 library." )
+              DOC "Path to d3dx9 library." 
+              NO_DEFAULT_PATH )
 
 mark_as_advanced( DirectX_d3d9_LIBRARY )
 mark_as_advanced( DirectX_d3dx9_LIBRARY )
