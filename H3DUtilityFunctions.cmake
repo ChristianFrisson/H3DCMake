@@ -274,3 +274,18 @@ function( handleDeprecatedFunctionArguments )
   endforeach()
   set( ${handle_deprecated_arguments_ARGUMENT_PREFIX}UNPARSED_ARGUMENTS ${tmp_unparsed_list} PARENT_SCOPE )
 endfunction()
+
+# Used to set common policies for H3D CMake builds
+function( setCommonH3DCMakePolicies )
+  if( APPLE AND POLICY CMP0042 )
+  cmake_policy( SET CMP0042 NEW )
+  endif()
+
+  if( POLICY CMP0072 )
+    cmake_policy( SET CMP0072 NEW )
+  endif()
+  
+  if( POLICY CMP0054 )
+    cmake_policy( SET CMP0054 NEW )
+  endif()
+endfunction()
