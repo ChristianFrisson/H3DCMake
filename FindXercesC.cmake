@@ -15,6 +15,15 @@ handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES XercesC_INCLUDE
                                                           "Path to xerces static debug library." )
 
 include( H3DCommonFindModuleFunctions )
+set( msvc_before_vs2010 OFF )
+if( MSVC )
+  if( ${MSVC_VERSION} LESS 1600 )
+    set( msvc_before_vs2010 ON )
+  else()
+    set( check_if_h3d_external_matches_vs_version ON )
+  endif()
+endif()
+
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} )
 
