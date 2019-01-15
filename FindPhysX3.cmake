@@ -54,7 +54,7 @@ include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
 getExternalSearchPathsH3D( module_include_search_paths module_lib_search_paths ${module_file_path} "physx3" )
 
-if( CMAKE_CL_64 )
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
   set( lib "64" )
   set( arch "x64" )
 else()
@@ -98,9 +98,11 @@ foreach( physx3_lib ${physx3_libs} )
 
   # Find release libs.
   find_library( ${lib_name}
-                NAMES ${physx3_lib}${physx3_lib_type_suffix}_${arch} ${physx3_lib}${physx3_lib_type_suffix}
+                NAMES ${physx3_lib}${physx3_lib_type_suffix}_${arch}
+		      ${physx3_lib}${physx3_lib_type_suffix}
                 PATHS ${PhysX3_INSTALL_DIR}/Lib/win${lib}
                       ${PhysX3_INSTALL_DIR}/Lib/vc10win${lib}
+                      ${PhysX3_INSTALL_DIR}/Bin/linux${lib}
                       ${PhysX3_INSTALL_DIR}/Lib/linux${lib}
                       ${PhysX3_INSTALL_DIR}/lib${lib}
                       ${module_lib_search_paths} )
@@ -116,9 +118,11 @@ foreach( physx3_lib ${physx3_libs} )
 
   # Find Debug libs.
   find_library( ${lib_debug_name}
-                NAMES ${physx3_lib}DEBUG_${arch} ${physx3_lib}DEBUG
+                NAMES ${physx3_lib}DEBUG_${arch}
+                      ${physx3_lib}DEBUG
                 PATHS ${PhysX3_INSTALL_DIR}/Lib/win${lib}
                       ${PhysX3_INSTALL_DIR}/Lib/vc10win${lib}
+                      ${PhysX3_INSTALL_DIR}/Bin/linux${lib}
                       ${PhysX3_INSTALL_DIR}/Lib/linux${lib}
                       ${PhysX3_INSTALL_DIR}/lib${lib}
                       ${module_lib_search_paths} )
