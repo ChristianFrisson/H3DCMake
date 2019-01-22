@@ -22,26 +22,16 @@ else()
       "PhysXCommon"
       "PhysXExtensions_static"
       "PhysX"
-	  "PhysXTask_static"
+      "PhysXTask_static"
       "PhysXVehicle_static"
       "PhysXCooking"
       "PhysXCharacterKinematic_static"
       "PhysXPvdSDK_static"
-	  "PhysXFoundation" )
+      "PhysXFoundation" )
   endif()
 endif()
 
 include( H3DUtilityFunctions )
-
-set( old_lib_names )
-set( new_lib_names )
-foreach( physx4_lib ${physx4_libs} )
-  set( new_lib_names ${new_lib_names} PhysX4_${physx4_lib}_LIBRARY_RELEASE PhysX4_${physx4_lib}_LIBRARY_DEBUG )
-  string( TOUPPER ${physx4_lib} _upper_lib_name )
-  set( old_lib_names ${old_lib_names} PHYSX4_${_upper_lib_name}_LIBRARY PHYSX4_${_upper_lib_name}_DEBUG_LIBRARY )
-endforeach()
-handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES ${new_lib_names} PhysX4_INCLUDE_DIR PhysX4_INSTALL_DIR PhysX4_LIB_TYPE
-                                              OLD_VARIABLE_NAMES ${old_lib_names} )
 
 include( H3DCommonFindModuleFunctions )
 get_filename_component( module_file_path ${CMAKE_CURRENT_LIST_FILE} PATH )
@@ -87,10 +77,8 @@ foreach( physx4_lib ${physx4_libs} )
   find_library( ${lib_name}
                 NAMES ${physx4_lib}_${lib} ${physx4_lib}
                 PATHS ${PhysX4_INSTALL_DIR}/Lib/win${lib}/${physx4_lib_type_dir}
-                      ${PhysX4_INSTALL_DIR}/Lib/vc10win${lib}/${physx4_lib_type_dir}
                       ${PhysX4_INSTALL_DIR}/Lib/linux${lib}/${physx4_lib_type_dir}
-                      ${PhysX4_INSTALL_DIR}/lib${lib}/${physx4_lib_type_dir}
-                      ${module_lib_search_paths} )
+                      ${PhysX4_INSTALL_DIR}/lib${lib}/${physx4_lib_type_dir} )
   mark_as_advanced( ${lib_name} )
 
   if( ${lib_name} )
@@ -105,10 +93,8 @@ foreach( physx4_lib ${physx4_libs} )
   find_library( ${lib_debug_name}
                 NAMES ${physx4_lib}_${lib} ${physx4_lib}
                 PATHS ${PhysX4_INSTALL_DIR}/Lib/win${lib}/debug
-                      ${PhysX4_INSTALL_DIR}/Lib/vc10win${lib}/debug
                       ${PhysX4_INSTALL_DIR}/Lib/linux${lib}/debug
-                      ${PhysX4_INSTALL_DIR}/lib${lib}/debug
-                      ${module_lib_search_paths} )
+                      ${PhysX4_INSTALL_DIR}/lib${lib}/debug )
   mark_as_advanced( ${lib_debug_name} )
 
   if( ${lib_debug_name} )
@@ -129,9 +115,3 @@ find_package_handle_standard_args( PhysX4 DEFAULT_MSG ${required_vars} )
 
 set( PhysX4_LIBRARIES ${physx4_libs_paths} ${physx4_libs_debug_paths} )
 set( PhysX4_INCLUDE_DIRS ${PhysX4_INCLUDE_DIR} )
-
-# Backwards compatibility values set here.
-set( PHYSX4_INCLUDE_DIR ${PhysX4_INCLUDE_DIRS} )
-set( PHYSX4_INCLUDE_DIRS ${PhysX4_INCLUDE_DIRS} )
-set( PHYSX4_LIBRARIES ${PhysX4_LIBRARIES} )
-set( PhysX4_FOUND ${PHYSX4_FOUND} ) # find_package_handle_standard_args for CMake 2.8 only define the upper case variant.
