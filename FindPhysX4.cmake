@@ -49,10 +49,10 @@ endif()
 mark_as_advanced( PhysX4_INSTALL_DIR )
 
 # Look for the header file.
-find_path( PhysX4_INCLUDE_DIR NAMES PhysX4/PxPhysics.h
+find_path( PhysX4_INCLUDE_DIR NAMES PxPhysics.h
            PATHS /usr/local/include
                  ${PhysX4_INSTALL_DIR}/Include
-                 ${PhysX4_INSTALL_DIR}/include
+                 ${PhysX4_INSTALL_DIR}/include/PhysX4
                  ${module_include_search_paths} )
 
 mark_as_advanced( PhysX4_INCLUDE_DIR )
