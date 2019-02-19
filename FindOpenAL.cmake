@@ -27,9 +27,10 @@ find_library( OPENAL_LIBRARY NAMES OpenAL32
 checkIfModuleFound( OPENAL
                     REQUIRED_VARS OPENAL_INCLUDE_DIR OPENAL_LIBRARY )
 
-set( OPENAL_LIBRARIES ${OPENAL_LIBRARY} )
-set( OPENAL_INCLUDE_DIRS ${OPENAL_INCLUDE_DIR} )
-
 if( NOT OPENAL_FOUND )
   checkCMakeInternalModule( OpenAL OUTPUT_AS_UPPER_CASE )  # Will call CMakes internal find module for this feature.
 endif()
+
+# The internal CMake find module does not define these variables, so we have to define them.
+set( OPENAL_LIBRARIES ${OPENAL_LIBRARY} )
+set( OPENAL_INCLUDE_DIRS ${OPENAL_INCLUDE_DIR} )
