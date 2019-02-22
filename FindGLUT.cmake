@@ -35,6 +35,17 @@ set( GLUT_LIBRARIES ${GLUT_LIBRARY} )
 
 if( NOT GLUT_FOUND )
   checkCMakeInternalModule( GLUT )  # Will call CMakes internal find module for this feature.
+  if( GLUT_FOUND )
+    if( "${GLUT_LIBRARIES}" MATCHES "NOTFOUND" )
+      # This is here to fix a bug in cmakes internal FindGLUT.cmake which can result in
+      # glut being marked as found but GLUT_LIBRARIES contain some variables which are not found.
+      # Since I have no idea if those variables are actually required or not I will play it safe
+      # and pretend that they are required and as such I will 
+      string( REGEX REPLACE ";[^;]+NOTFOUND" "" GLUT_LIBRARIES_NEW "${GLUT_LIBRARIES}" )
+      message( AUTHOR_WARNING "Due to a bug in FindGLUT.cmake that marks GLUT as found but sets output variables invalid values we have changed the variable GLUT_LIBRARIES from \"${GLUT_LIBRARIES}\" to \"${GLUT_LIBRARIES_NEW}\"" )
+      set( GLUT_LIBRARIES ${GLUT_LIBRARIES_NEW} )
+    endif()
+  endif()
 endif()
 
 if( GLUT_FOUND AND WIN32 AND PREFER_FREEGLUT_STATIC_LIBRARIES )
