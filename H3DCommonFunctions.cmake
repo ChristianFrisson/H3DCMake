@@ -651,3 +651,57 @@ function( addCommonH3DCompileFlags compile_flags_container )
 
   set( ${compile_flags_container} "${${compile_flags_container}} ${compile_flags_container_internal}" PARENT_SCOPE )
 endfunction()
+
+# Setup an option to disable building with certain external features.
+# OPTION_PREFIX - The prefix of the option to toggle building with the given externals. The variable name will be
+#                 ${OPTION_PREFIX}_INCLUDE_ALL_EXTERNALS and it will default to OFF. That is, the cache variables
+#                 that should be checked are set to NOTFOUND.
+# OPTION_DEFAULT - The default value of the given option. If omitted then OFF is selected.
+# INCLUDE_DIR_PREFIXES - A list of prefix names for cache variables ending with _INCLUDE_DIR that
+# should be set to NOTFOUND or empty string according to the option.
+# EXTRA_CACHE_VARIABLES - A list of names for cache variables ending that
+# should be set to NOTFOUND or empty string according to the option.
+function( setupDisabledExternalsOption )
+  set( options )
+  set( one_value_args OPTION_PREFIX OPTION_DEFAULT )
+  set( multi_value_args INCLUDE_DIR_PREFIXES EXTRA_CACHE_VARIABLES )
+  include( CMakeParseArguments )
+  cmake_parse_arguments( setup_disabled_externals_option "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
+  if( setup_disabled_externals_option_UNPARSED_ARGUMENTS )
+    message( FATAL_ERROR "Unknown keywords given to setupDisabledExternalsOption(): \"${setup_disabled_externals_option_UNPARSED_ARGUMENTS}\"" )
+  endif()
+
+  set( required_args OPTION_PREFIX )
+  foreach( required_arg ${required_args} )
+    if( NOT setup_disabled_externals_option_${required_arg} )
+      message( FATAL_ERROR "The required argument ${required_arg} is missing when calling setupDisabledExternalsOption." )
+    endif()
+  endforeach()
+  
+  set( option_var_name ${setup_disabled_externals_option_OPTION_PREFIX}_INCLUDE_ALL_EXTERNALS )
+
+  # Option to include all available external libraries.
+  if( NOT DEFINED ${option_var_name} )
+    set( default_value OFF )
+    if( setup_disabled_externals_option_OPTION_DEFAULT )
+      set( default_value ${setup_disabled_externals_option_OPTION_DEFAULT} )
+    endif()
+    set( ${option_var_name} ${default_value} CACHE BOOL "Option to include all available external libraries. Must be OFF for release!" )
+    mark_as_advanced( ${option_var_name} )
+  endif()
+
+  set( cache_var_names ${setup_disabled_externals_option_EXTRA_CACHE_VARIABLES} )
+  foreach( include_dir_cache_name ${setup_disabled_externals_option_INCLUDE_DIR_PREFIXES} )
+    set( cache_var_names ${cache_var_names} ${include_dir_cache_name}_INCLUDE_DIR )
+  endforeach()
+
+  foreach( cache_var_name ${cache_var_names} )
+    if( ${option_var_name} )
+      if( ${cache_var_name} STREQUAL "" )
+        set( ${cache_var_name} "NOTFOUND" CACHE PATH "" FORCE )
+      endif()
+    else()
+      set( ${cache_var_name} "" CACHE PATH "" FORCE )
+    endif()
+  endforeach()
+endfunction()
