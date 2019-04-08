@@ -22,6 +22,10 @@ function( getMSVCPostFix post_fix_output )
       # MSVC vs 2015 has number 1900 and vs 2017 has number 1910. So this is a guess on upcoming vs versions.
       math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
     endif()
+    if( ( ${h3d_msvc_version} GREATER 15 ) OR ( ( ${MSVC_VERSION} GREATER 1920 ) OR (${MSVC_VERSION} EQUAL 1920) ) )
+      # MSVC vs 2019 has number 1920 and should have _vc16. Anything between 1900 and 1920 should be _vc15 though
+      math( EXPR h3d_msvc_version "${h3d_msvc_version} + 1" )
+    endif()
     set( ${post_fix_output} _vc${h3d_msvc_version} PARENT_SCOPE )
   endif()
 endfunction()
