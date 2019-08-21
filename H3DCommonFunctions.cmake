@@ -1,7 +1,7 @@
 cmake_minimum_required( VERSION 2.8.7 )
 cmake_policy( VERSION 2.8.7 )
 
-if( POLICY CMP0054)
+if( POLICY CMP0054 )
   cmake_policy( SET CMP0054 NEW )
 endif()
 
@@ -89,7 +89,7 @@ endfunction()
 function( addDelayLoadFlags libraries_list link_flags_container )
   if( MSVC )
     set( link_flags_container_internal "" )
-    set( previous_str "")
+    set( previous_str "" )
     foreach( lib_path ${${libraries_list}} )
       get_filename_component( lib_name ${lib_path} NAME_WE )
       if( ( NOT "${lib_name}" STREQUAL "debug" ) AND ( NOT "${lib_name}" STREQUAL "optimized" ) )

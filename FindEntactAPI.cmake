@@ -7,7 +7,7 @@
 
 include( H3DUtilityFunctions )
 
-handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES EntactAPI_INCLUDE_DIR EntactAPI_LIBRARY_RELEASE  
+handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES EntactAPI_INCLUDE_DIR EntactAPI_LIBRARY_RELEASE
                                               OLD_VARIALBE_NAMES EntactAPI_INCLUDE_DIR ENTACTAPI_LIBRARY
                                               DOC_STRINGS "Path in which the file EntactAPI.h is located. Needed to support Entact haptics device."
                                                           "Path to EntactAPI.lib library. Needed to support Entact haptics device." )

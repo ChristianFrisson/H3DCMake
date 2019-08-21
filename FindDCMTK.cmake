@@ -150,7 +150,7 @@ endforeach()
 
 # Extra libs to link against.
 if( WIN32 )
-  set( required_libs ${required_libs} optimized iphlpapi.lib debug iphlpapi.lib)
+  set( required_libs ${required_libs} optimized iphlpapi.lib debug iphlpapi.lib )
 endif()
 
 

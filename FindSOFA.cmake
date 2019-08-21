@@ -73,7 +73,7 @@ foreach( sofa_lib ${sofa_libs} )
        CACHE INTERNAL "Internal sofa library list variable. Can be used to setup delayload." FORCE )
 
   handleRenamingVariablesBackwardCompatibility( NEW_VARIABLE_NAMES SOFA_${sofa_lib}_LIBRARY_RELEASE SOFA_${sofa_lib}_LIBRARY_DEBUG
-                                                OLD_VARIABLE_NAMES SOFA_${_upper_lib_name}_LIBRARY SOFA_${_upper_lib_name}_DEBUG_LIBRARY)
+                                                OLD_VARIABLE_NAMES SOFA_${_upper_lib_name}_LIBRARY SOFA_${_upper_lib_name}_DEBUG_LIBRARY )
 
   # Look for release library
   find_library( SOFA_${sofa_lib}_LIBRARY_RELEASE NAMES sofa${sofa_lib}${sofa_lib_suffix}

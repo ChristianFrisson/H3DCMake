@@ -99,7 +99,7 @@ foreach( physx3_lib ${physx3_libs} )
   # Find release libs.
   find_library( ${lib_name}
                 NAMES ${physx3_lib}${physx3_lib_type_suffix}_${arch}
-		      ${physx3_lib}${physx3_lib_type_suffix}
+                      ${physx3_lib}${physx3_lib_type_suffix}
                 PATHS ${PhysX3_INSTALL_DIR}/Lib/win${lib}
                       ${PhysX3_INSTALL_DIR}/Lib/vc10win${lib}
                       ${PhysX3_INSTALL_DIR}/Bin/linux${lib}

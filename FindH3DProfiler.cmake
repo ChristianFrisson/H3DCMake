@@ -14,7 +14,7 @@ else()
   set( h3dprofiler_name h3dprofiler )
 endif()
 
-set(H3DProfiler_INSTALL_DIR "$ENV{H3DPROFILER_ROOT}" CACHE PATH "H3DProfiler_INSTALL_DIR")
+set( H3DProfiler_INSTALL_DIR "$ENV{H3DPROFILER_ROOT}" CACHE PATH "H3DProfiler_INSTALL_DIR" )
 # Look for the header file
 find_path( H3DProfiler_INCLUDE_DIR NAMES H3DProfiler.h
            PATHS ${H3DProfiler_INSTALL_DIR}/include/H3DProfiler
@@ -22,12 +22,12 @@ find_path( H3DProfiler_INCLUDE_DIR NAMES H3DProfiler.h
 mark_as_advanced( H3DProfiler_INCLUDE_DIR )
 set( H3DProfiler_INCLUDE_DIRS ${H3DProfiler_INCLUDE_DIR}/.. )
 
-if ( WIN32 )
+if( WIN32 )
   if( CMAKE_CL_64 )
     set( lib_folder "lib64" )
-  else( CMAKE_CL_64 )
+  else()
     set( lib_folder "lib32" )
-  endif( CMAKE_CL_64 )
+  endif()
 endif()
 
 # Look for the library.

@@ -1,6 +1,6 @@
 # Contains functionality that can be used by find modules to make it easier to write them.
 
-include( H3DUtilityFunctions)
+include( H3DUtilityFunctions )
 
 # This variable can be set after this file is included but before getExternalSearchPathsH3D function is called.
 # If set to true then then ExternalPath/include/ACKNOWLEDGMENTS file is checked if it corresponds to the current
