@@ -87,8 +87,8 @@ set( HAPI_BINARIES_INSTALL "" CACHE INTERNAL "List of External binaries used by 
 
 getDefaultH3DOutputDirectoryName( default_bin_install default_lib_install )
 
-set( hapi_external_bin "${H3D_EXTERNAL_ROOT}/${default_bin_install}" )
-set( hapi_external_lib "${H3D_EXTERNAL_ROOT}/${default_lib_install}" )
+file( TO_CMAKE_PATH "${H3D_EXTERNAL_ROOT}/${default_bin_install}" hapi_external_bin )
+file( TO_CMAKE_PATH "${H3D_EXTERNAL_ROOT}/${default_lib_install}" hapi_external_lib )
 
 if( HAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
   set( externals_to_look_for )

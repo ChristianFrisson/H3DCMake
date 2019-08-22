@@ -88,8 +88,8 @@ set( H3DAPI_NSIS_EXTRA_INSTALL_COMMANDS "\\n" CACHE INTERNAL "Extra install comm
 set( H3DAPI_NSIS_EXTRA_UNINSTALL_COMMANDS "\\n" CACHE INTERNAL "Extra uninstall commands for installing with nsi." )
 
 getDefaultH3DOutputDirectoryName( default_bin_install default_lib_install )
-set( h3dapi_external_bin "${H3D_EXTERNAL_ROOT}/${default_bin_install}" )
-set( h3dapi_external_lib "${H3D_EXTERNAL_ROOT}/${default_lib_install}" )
+file( TO_CMAKE_PATH "${H3D_EXTERNAL_ROOT}/${default_bin_install}" h3dapi_external_bin )
+file( TO_CMAKE_PATH "${H3D_EXTERNAL_ROOT}/${default_lib_install}" h3dapi_external_lib )
 
 if( H3DAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
   set( externals_to_look_for )

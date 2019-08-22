@@ -86,8 +86,8 @@ set( H3DUTIL_BINARIES_INSTALL "" CACHE INTERNAL "List of External binaries used 
 
 getDefaultH3DOutputDirectoryName( default_bin_install default_lib_install )
 
-set( h3dutil_external_bin "${H3D_EXTERNAL_ROOT}/${default_bin_install}" )
-set( h3dutil_external_lib "${H3D_EXTERNAL_ROOT}/${default_lib_install}" )
+file( TO_CMAKE_PATH "${H3D_EXTERNAL_ROOT}/${default_bin_install}" h3dutil_external_bin )
+file( TO_CMAKE_PATH "${H3D_EXTERNAL_ROOT}/${default_lib_install}" h3dutil_external_lib )
 
 if( H3DUtil_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
   set( externals_to_look_for )
