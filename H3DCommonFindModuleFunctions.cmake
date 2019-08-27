@@ -61,6 +61,8 @@ endif()
 
 # Check the ACKNOWLEDGMENTS file of the given External directory for a specific string to know if the directory contains
 # libraries that are built for the current compiler.
+# arg1 Will contain the result of the validation check.
+# arg2 Should contain the external base folder
 function( checkIfValidH3DWinExternal arg1 arg2 )
   set( ${arg1} ON PARENT_SCOPE )
   if( check_if_h3d_external_matches_vs_version )
@@ -69,6 +71,8 @@ function( checkIfValidH3DWinExternal arg1 arg2 )
       file( STRINGS ${arg2}/include/ACKNOWLEDGEMENTS the_first_line LIMIT_COUNT 1 REGEX "[-][-][-][-] Compiled for ${h3d_external_base_dir_name} [-][-][-][-]" ) # Check if first line contains the correct vsx string.
       if( the_first_line )
         set( ${arg1} ON PARENT_SCOPE )
+      else( the_first_line )
+        message( WARNING "Library located in ${arg2} is not suitable for ${h3d_external_base_dir_name}" )
       endif()
     endif()
   endif()
@@ -104,7 +108,9 @@ function( getExternalSearchPathsH3D arg1 arg2 arg3 )
     set( h3d_external_base_include_dirs "" )
     set( h3d_external_base_lib_dirs "" )
     foreach( h3d_ebd ${h3d_external_base_dirs} )
+      #message(INFO "searching in ${h3d_ebd}")
       checkIfValidH3DWinExternal( add_dir ${h3d_ebd} )
+      #message( INFO  "dir valid: ${add_dir}")
       if( add_dir )
         list( APPEND h3d_external_base_include_dirs ${h3d_ebd}/include )
         list( APPEND h3d_external_base_lib_dirs ${h3d_ebd}/${lib} )
@@ -127,7 +133,9 @@ function( getExternalSearchPathsH3D arg1 arg2 arg3 )
         list( APPEND tmp_include_dir_output ${h3d_base_include_dir}/${f} )
       endforeach()
     endforeach()
+    #message(INFO "include dir : ${tmp_include_dir_output}")
     set( ${arg1} ${tmp_include_dir_output} PARENT_SCOPE )
+
     
     set( tmp_lib_dir_output "" )
     foreach( h3d_base_lib_dir ${h3d_external_base_lib_dirs} )
