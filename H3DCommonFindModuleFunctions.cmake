@@ -148,7 +148,6 @@ function( getExternalSearchPathsH3D arg1 arg2 arg3 )
         list( APPEND tmp_include_dir_output ${h3d_base_include_dir}/${f} )
       endforeach()
     endforeach()
-    #message(INFO "include dir : ${tmp_include_dir_output}")
     set( ${arg1} ${tmp_include_dir_output} PARENT_SCOPE )
 
     
