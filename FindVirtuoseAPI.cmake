@@ -47,6 +47,9 @@ find_package_handle_standard_args( VirtuoseAPI DEFAULT_MSG
                                    VirtuoseAPI_LIBRARY VirtuoseAPI_INCLUDE_DIR )
 
 set( VirtuoseAPI_LIBRARIES ${VirtuoseAPI_LIBRARY} )
+if( WIN32 )
+  set( VirtuoseAPI_LIBRARIES ${VirtuoseAPI_LIBRARY} legacy_stdio_definitions.lib )
+endif
 set( VirtuoseAPI_INCLUDE_DIRS ${VirtuoseAPI_INCLUDE_DIR} )
 
 # Backwards compatibility values set here.
