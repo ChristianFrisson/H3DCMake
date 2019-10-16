@@ -318,12 +318,24 @@ function( setupResourceFile target_name )
     configure_file( ${setup_resource_file_RESOURCE_FILE_CMAKE_TEMPLATE} ${setup_resource_file_RESOURCE_FILE_OUTPUT_LOCATION} )
     
     if( USE_svn_info )
+      set( tmp_major_version 0 )
+      if( DEFINED ${setup_resource_file_VERSION_PREFIX}_MAJOR_VERSION )
+        set( tmp_major_version ${${setup_resource_file_VERSION_PREFIX}_MAJOR_VERSION} )
+      endif()
+      set( tmp_minor_version 0 )
+      if( DEFINED ${setup_resource_file_VERSION_PREFIX}_MINOR_VERSION )
+        set( tmp_minor_version ${${setup_resource_file_VERSION_PREFIX}_MINOR_VERSION} )
+      endif()
+      set( tmp_build_version 0 )
+      if( DEFINED ${setup_resource_file_VERSION_PREFIX}_BUILD_VERSION )
+        set( tmp_build_version ${${setup_resource_file_VERSION_PREFIX}_BUILD_VERSION} )
+      endif()
       add_custom_command( TARGET ${target_name}
                           PRE_BUILD
                           COMMAND ${setup_resource_file_UPDATERESOURCEFILE_EXE}
                           ARGS ${setup_resource_file_VERSION_PREFIX} ${setup_resource_file_RESOURCE_FILE_OUTPUT_LOCATION} ${setup_resource_file_RESOURCE_FILE_CMAKE_TEMPLATE}
-                          ${${setup_resource_file_VERSION_PREFIX}_MAJOR_VERSION} ${${setup_resource_file_VERSION_PREFIX}_MINOR_VERSION}
-                          ${${setup_resource_file_VERSION_PREFIX}_BUILD_VERSION} "${${setup_resource_file_VERSION_PREFIX}_SVN_VERSION}"
+                          ${tmp_major_version} ${tmp_minor_version}
+                          ${tmp_build_version} "${${setup_resource_file_VERSION_PREFIX}_SVN_VERSION}"
                           ${setup_resource_file_UPDATERESOURCEFILE_EXE_EXTRA_ARGS} )
     endif()
 
