@@ -67,11 +67,38 @@ if( NOT DEFINED PhysX3_INSTALL_DIR )
 endif()
 mark_as_advanced( PhysX3_INSTALL_DIR )
 
+set( physx3_install_dir_include_search_paths ${PhysX3_INSTALL_DIR}/Include
+                                             ${PhysX3_INSTALL_DIR}/include/PhysX3 )
+set( physx3_install_dir_lib_search_paths ${PhysX3_INSTALL_DIR}/Lib/win${lib}
+                                         ${PhysX3_INSTALL_DIR}/Lib/vc10win${lib}
+                                         ${PhysX3_INSTALL_DIR}/Bin/linux${lib}
+                                         ${PhysX3_INSTALL_DIR}/Lib/linux${lib}
+                                         ${PhysX3_INSTALL_DIR}/lib${lib} )
+
+if( MSVC )
+  # The reason for doing this is that I (markus) prefer to add the additional
+  # include and library paths based on our already existing and checked MSVC_VERSION
+  # check code instead of having to repeat that kind of code here.
+  getMSVCPostFix( msvc_post_fix )
+  set( msvc_postfix_for_physx3 )
+  if( ${msvc_post_fix} STREQUAL "_vc14" )
+    set( msvc_postfix_for_physx3 "vs2015" )
+  elseif( ${msvc_post_fix} STREQUAL "_vc15" )
+    set( msvc_postfix_for_physx3 "vs2017" )
+  endif()
+
+  if( msvc_postfix_for_physx3 )
+    set( physx3_install_dir_include_search_paths ${physx3_install_dir_include_search_paths}
+                                                 ${PhysX3_INSTALL_DIR}/${msvc_postfix_for_physx3}/include/PhysX3 )
+    set( physx3_install_dir_lib_search_paths ${physx3_install_dir_lib_search_paths}
+                                             ${PhysX3_INSTALL_DIR}/${msvc_postfix_for_physx3}/lib${lib} )
+  endif()
+endif()
+
 # Look for the header file.
 find_path( PhysX3_INCLUDE_DIR NAMES PxPhysics.h
            PATHS /usr/local/include
-                 ${PhysX3_INSTALL_DIR}/Include
-                 ${PhysX3_INSTALL_DIR}/include/PhysX3
+                 ${physx3_install_dir_include_search_paths}
                  ${module_include_search_paths} )
 
 mark_as_advanced( PhysX3_INCLUDE_DIR )
@@ -100,11 +127,7 @@ foreach( physx3_lib ${physx3_libs} )
   find_library( ${lib_name}
                 NAMES ${physx3_lib}${physx3_lib_type_suffix}_${arch}
                       ${physx3_lib}${physx3_lib_type_suffix}
-                PATHS ${PhysX3_INSTALL_DIR}/Lib/win${lib}
-                      ${PhysX3_INSTALL_DIR}/Lib/vc10win${lib}
-                      ${PhysX3_INSTALL_DIR}/Bin/linux${lib}
-                      ${PhysX3_INSTALL_DIR}/Lib/linux${lib}
-                      ${PhysX3_INSTALL_DIR}/lib${lib}
+                PATHS ${physx3_install_dir_lib_search_paths}
                       ${module_lib_search_paths} )
   mark_as_advanced( ${lib_name} )
 
@@ -120,11 +143,7 @@ foreach( physx3_lib ${physx3_libs} )
   find_library( ${lib_debug_name}
                 NAMES ${physx3_lib}DEBUG_${arch}
                       ${physx3_lib}DEBUG
-                PATHS ${PhysX3_INSTALL_DIR}/Lib/win${lib}
-                      ${PhysX3_INSTALL_DIR}/Lib/vc10win${lib}
-                      ${PhysX3_INSTALL_DIR}/Bin/linux${lib}
-                      ${PhysX3_INSTALL_DIR}/Lib/linux${lib}
-                      ${PhysX3_INSTALL_DIR}/lib${lib}
+                PATHS ${physx3_install_dir_lib_search_paths}
                       ${module_lib_search_paths} )
   mark_as_advanced( ${lib_debug_name} )
 
