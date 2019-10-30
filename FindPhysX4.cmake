@@ -48,19 +48,52 @@ if( NOT DEFINED PhysX4_INSTALL_DIR )
 endif()
 mark_as_advanced( PhysX4_INSTALL_DIR )
 
-# Look for the header file.
-find_path( PhysX4_INCLUDE_DIR NAMES PxPhysics.h
-           PATHS /usr/local/include
-                 ${PhysX4_INSTALL_DIR}/Include
-                 ${PhysX4_INSTALL_DIR}/include/PhysX4
-                 ${module_include_search_paths} )
-
-mark_as_advanced( PhysX4_INCLUDE_DIR )
-
 set( PhysX4_LIB_TYPE "checked" CACHE STRING "PhysX library type" )
 set_property( CACHE PhysX4_LIB_TYPE PROPERTY STRINGS release checked profile )
 set( physx4_lib_type_dir ${PhysX4_LIB_TYPE} )
 
+set( physx4_install_dir_include_search_paths /usr/local/include
+                                             ${PhysX4_INSTALL_DIR}/Include
+                                             ${PhysX4_INSTALL_DIR}/include/PhysX4 )
+set( physx4_install_dir_lib_search_paths ${PhysX4_INSTALL_DIR}/Lib/win${lib}/${physx4_lib_type_dir}
+                                         ${PhysX4_INSTALL_DIR}/Lib/linux${lib}/${physx4_lib_type_dir}
+                                         ${PhysX4_INSTALL_DIR}/lib${lib}/${physx4_lib_type_dir} )
+set( physx4_install_dir_debuglib_search_paths ${PhysX4_INSTALL_DIR}/Lib/win${lib}/debug
+                                              ${PhysX4_INSTALL_DIR}/Lib/linux${lib}/debug
+                                              ${PhysX4_INSTALL_DIR}/lib${lib}/debug )
+
+if( MSVC )
+  # The reason for doing this is that I (markus) prefer to add the additional
+  # include and library paths based on our already existing and checked MSVC_VERSION
+  # check code instead of having to repeat that kind of code here.
+  getMSVCPostFix( msvc_post_fix )
+  set( msvc_postfix_for_physx4 )
+  if( ${msvc_post_fix} STREQUAL "_vc14" )
+    set( msvc_postfix_for_physx4 "vs2015" )
+  elseif( ${msvc_post_fix} STREQUAL "_vc15" )
+    set( msvc_postfix_for_physx4 "vs2017" )
+  endif()
+
+  if( msvc_postfix_for_physx4 )
+    set( physx4_install_dir_include_search_paths ${physx4_install_dir_include_search_paths}
+                                                 ${PhysX4_INSTALL_DIR}/${msvc_postfix_for_physx4}/include/PhysX4 )
+    set( physx4_install_dir_lib_search_paths ${physx4_install_dir_lib_search_paths}
+                                             ${PhysX4_INSTALL_DIR}/${msvc_postfix_for_physx4}/Lib/win${lib}/${physx4_lib_type_dir}
+                                             ${PhysX4_INSTALL_DIR}/${msvc_postfix_for_physx4}/Lib/linux${lib}/${physx4_lib_type_dir}
+                                             ${PhysX4_INSTALL_DIR}/${msvc_postfix_for_physx4}/lib${lib}/${physx4_lib_type_dir} )
+    set( physx4_install_dir_debuglib_search_paths ${physx4_install_dir_debuglib_search_paths}
+                                                  ${PhysX4_INSTALL_DIR}/${msvc_postfix_for_physx4}/Lib/win${lib}/debug
+                                                  ${PhysX4_INSTALL_DIR}/${msvc_postfix_for_physx4}/Lib/linux${lib}/debug
+                                                  ${PhysX4_INSTALL_DIR}/${msvc_postfix_for_physx4}/lib${lib}/debug )
+  endif()
+endif()
+
+# Look for the header file.
+find_path( PhysX4_INCLUDE_DIR NAMES PxPhysics.h
+           PATHS ${physx4_install_dir_include_search_paths}
+                 ${module_include_search_paths} )
+
+mark_as_advanced( PhysX4_INCLUDE_DIR )
 
 set( required_vars PhysX4_INCLUDE_DIR )
 set( physx4_libs_paths )
@@ -76,9 +109,7 @@ foreach( physx4_lib ${physx4_libs} )
   # Find release libs.
   find_library( ${lib_name}
                 NAMES ${physx4_lib}_${lib} ${physx4_lib}
-                PATHS ${PhysX4_INSTALL_DIR}/Lib/win${lib}/${physx4_lib_type_dir}
-                      ${PhysX4_INSTALL_DIR}/Lib/linux${lib}/${physx4_lib_type_dir}
-                      ${PhysX4_INSTALL_DIR}/lib${lib}/${physx4_lib_type_dir} )
+                PATHS ${physx4_install_dir_lib_search_paths} )
   mark_as_advanced( ${lib_name} )
 
   if( ${lib_name} )
@@ -92,9 +123,7 @@ foreach( physx4_lib ${physx4_libs} )
   # Find Debug libs.
   find_library( ${lib_debug_name}
                 NAMES ${physx4_lib}_${lib} ${physx4_lib}
-                PATHS ${PhysX4_INSTALL_DIR}/Lib/win${lib}/debug
-                      ${PhysX4_INSTALL_DIR}/Lib/linux${lib}/debug
-                      ${PhysX4_INSTALL_DIR}/lib${lib}/debug )
+                PATHS ${physx4_install_dir_debuglib_search_paths} )
   mark_as_advanced( ${lib_debug_name} )
 
   if( ${lib_debug_name} )
