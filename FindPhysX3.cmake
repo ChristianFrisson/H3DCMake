@@ -29,11 +29,16 @@ else()
 
     if( UNIX )
       set( physx3_libs ${physx3_libs}
-        "PvdRuntime"
-        "LowLevel"
-        "LowLevelCloth"
-        "SceneQuery"
-        "SimulationController" )
+	# TODO: Having these included for PhysX 3.3 causes runtime error of symbol not found.
+	# Everything seems to run fine without them but leaving them here cpmmented out for now to
+	# make it easier for other people to try to add if they have other issues because of this change.
+	# It is very hard to find otherwise.
+#        "PvdRuntime"
+#        "LowLevel"
+#        "LowLevelCloth"
+#        "SceneQuery"
+#        "SimulationController"
+)
     endif()
   endif()
 endif()
@@ -116,6 +121,12 @@ set( required_vars PhysX3_INCLUDE_DIR )
 set( physx3_libs_paths )
 set( physx3_libs_debug_paths )
 # Look for the libraries.
+if( UNIX )
+   # To avoid undefined symbols at runtime we need to include the entire static library in our shared library
+   set( physx3_libs_paths ${physx3_libs_paths} -Wl,-whole-archive )
+   set( physx3_libs_debug_paths ${physx3_libs_debug_paths} -Wl,-whole-archive )
+endif()
+
 foreach( physx3_lib ${physx3_libs} )
   set( lib_name PhysX3_${physx3_lib}_LIBRARY_RELEASE )
   set( lib_debug_name PhysX3_${physx3_lib}_LIBRARY_DEBUG )
@@ -132,10 +143,6 @@ foreach( physx3_lib ${physx3_libs} )
   mark_as_advanced( ${lib_name} )
 
   if( ${lib_name} )
-    if( UNIX )
-      # To avoid undefined symbols at runtime we need to include the entire static library in our shared library
-      set( ${lib_name} -Wl,-whole-archive ${${lib_name}} -Wl,-no-whole-archive )
-    endif()
     set( physx3_libs_paths ${physx3_libs_paths} optimized ${${lib_name}} )
   endif()
 
@@ -148,22 +155,24 @@ foreach( physx3_lib ${physx3_libs} )
   mark_as_advanced( ${lib_debug_name} )
 
   if( ${lib_debug_name} )
-    if( UNIX )
-      # To avoid undefined symbols at runtime we need to include the entire static library in our shared library
-      set( ${lib_debug_name} -Wl,-whole-archive ${${lib_debug_name}} -Wl,-no-whole-archive )
-    endif()
     set( physx3_libs_debug_paths ${physx3_libs_debug_paths} debug ${${lib_debug_name}} )
   endif()
 
   set( required_vars ${required_vars} ${lib_name} ${lib_debug_name} )
 endforeach()
 
+if( UNIX )
+   # To avoid undefined symbols at runtime we need to include the entire static library in our shared library
+   set( physx3_libs_paths ${physx3_libs_paths} -Wl,-no-whole-archive )
+   set( physx3_libs_debug_paths ${physx3_libs_debug_paths} -Wl,-no-whole-archive )
+ endif()
+
 include( FindPackageHandleStandardArgs )
 # handle the QUIETLY and REQUIRED arguments and set PhysX3_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args( PhysX3 DEFAULT_MSG ${required_vars} )
 
-set( PhysX3_LIBRARIES ${physx3_libs_paths} ${physx3_libs_debug_paths} )
+set( PhysX3_LIBRARIES ${physx3_libs_paths}  ${physx3_libs_debug_paths} )
 set( PhysX3_INCLUDE_DIRS ${PhysX3_INCLUDE_DIR} )
 
 # Backwards compatibility values set here.
