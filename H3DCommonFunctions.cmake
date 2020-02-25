@@ -1,5 +1,5 @@
-cmake_minimum_required( VERSION 2.8.7 )
-cmake_policy( VERSION 2.8.7 )
+cmake_minimum_required( VERSION 2.8.8 ) # PYTHONLIBS_VERSION_STRING requires version 2.8.8
+cmake_policy( VERSION 2.8.8 )
 
 if( POLICY CMP0054 )
   cmake_policy( SET CMP0054 NEW )
@@ -720,4 +720,172 @@ function( setupDisabledExternalsOption )
       set( ${cache_var_name} "" CACHE PATH "" FORCE )
     endif()
   endforeach()
+endfunction()
+
+# Convenience function to be able to handle all the various ways one have to find python when wanting to switch between
+# them since none of the built in CMake modules can handle switching.
+# Will find python 2 or 3 depending on the USE_Python3 variable.
+# python_include_dirs - The include directories for python. Only set if python is found.
+# python_libs - The libraries for python. Only set if python is found.
+# have_python_debug_library - ON if the found python version also have a debug library.
+# have_python_os_framework - ON if the found python version is a python framework on OSX.
+# python_definitions - Contain definitions required to compile properly. (Use with add_definitions function).
+function( findPython2Or3 python_include_dirs python_libs have_python_debug_library have_python_os_framework python_definitions )
+  set( USE_Python3 "ON" CACHE BOOL "Check if you want to use Python 3 instead of 2" )
+  set( PYTHON_VER "UNDEFINED" CACHE STRING "Located python version" )
+
+  set( python3_not_found_warning "COULD NOT FIND PYTHON 3 - GENERATED PROJECT WILL HAVE ZERO PYTHON SUPPORT. UNCHECK USE_Python3 IF YOU WISH TO LOOK FOR PYTHON 2." )
+  set( python2_not_found_warning "COULD NOT FIND PYTHON 2 - GENERATED PROJECT WILL HAVE ZERO PYTHON SUPPORT." )
+  set( python_include_dirs_local )
+  set( python_libs_local )
+  set( have_python_debug_library_local OFF )
+  set( python_definitions_local )
+  set( python_not_found_warning )
+  set( python_ver_string )
+
+  if( APPLE )
+    set( CMAKE_FIND_FRAMEWORK FIRST )
+  endif()
+
+  # Whether or not a local python environment is available and should be used (virtual env or full distribution).
+  if( PYTHON_USE_LOCAL_ENV )
+    set( python_definitions_local -DPYTHON_USE_LOCAL_ENV=1 )
+  endif()
+
+  if( CMAKE_VERSION VERSION_GREATER_EQUAL "3.12" )
+    # Use FindPython2 and FindPython3 and simply set an alias target
+    if( USE_Python3 )
+      find_package( Python3 COMPONENTS Development )
+      if( Python3_FOUND )
+        set( python_libs_local ${Python3_LIBRARIES} )
+        set( python_include_dirs_local ${Python3_INCLUDE_DIRS} )
+        set( python_ver_string ${Python3_VERSION} )
+        if( Python3_LIBRARY_DEBUG )
+          set( have_python_debug_library_local ON )
+        endif()
+      else()
+        set( python_not_found_warning ${python3_not_found_warning} )
+      endif()
+    else()
+      find_package( Python2 COMPONENTS Development )
+      if( Python2_FOUND )
+        set( python_libs_local ${Python2_LIBRARIES} )
+        set( python_include_dirs_local ${Python2_INCLUDE_DIRS} )
+        set( python_ver_string ${Python2_VERSION} )
+        if( Python2_LIBRARY_DEBUG )
+          set( have_python_debug_library_local ON )
+        endif()
+      else()
+        set( python_not_found_warning ${python2_not_found_warning} )
+      endif()
+    endif()
+  else()
+    # Legacy code. Remove if we ever set required cmake version to be 3.12 or higher.
+    # Use FindPythonLibs which is deprecated as of CMake version 3.12.
+
+    # Check if the wrong version of python is located.
+    # If so, clear the cache variables FindPythonLibs-module uses otherwise it will complain and not find the right one
+    if( NOT (PYTHON_VER STREQUAL "UNDEFINED") )
+      if( USE_Python3 AND PYTHON_VER VERSION_LESS "3.0.0" )
+        unset(PYTHON_LIBRARY CACHE)
+        unset(PYTHON_INCLUDE_DIR CACHE)
+        unset(PYTHON_DEBUG_LIBRARY CACHE)
+      elseif( (NOT USE_Python3 ) AND ( PYTHON_VER VERSION_GREATER "3.0.0" OR PYTHON_VER VERSION_EQUAL "3.0.0") )
+        unset(PYTHON_LIBRARY CACHE)
+        unset(PYTHON_INCLUDE_DIR CACHE)
+        unset(PYTHON_DEBUG_LIBRARY CACHE)
+      endif()
+    endif()
+
+    if( USE_Python3 )
+      find_package( PythonLibs 3 )
+      if( NOT PYTHONLIBS_FOUND )
+        if( WIN32 )
+          # For all windows distributions: define which architectures can be used
+          if (CMAKE_SIZEOF_VOID_P)
+            # In this case, search only for 64bit or 32bit
+            math (EXPR _${_PYTHON_PREFIX}_ARCH "${CMAKE_SIZEOF_VOID_P} * 8")
+            set (_${_PYTHON_PREFIX}_ARCH2 ${_${_PYTHON_PREFIX}_ARCH})
+          else()
+            # architecture unknown, search for both 64bit and 32bit
+            set (_${_PYTHON_PREFIX}_ARCH 64)
+            set (_${_PYTHON_PREFIX}_ARCH2 32)
+          endif()
+
+          foreach(_CURRENT_VERSION ${_Python_VERSIONS})
+            string(REPLACE "." "" _CURRENT_VERSION_NO_DOTS ${_CURRENT_VERSION})
+            find_library(PYTHON_LIBRARY
+              NAMES
+                python${_CURRENT_VERSION_NO_DOTS}
+                python${_CURRENT_VERSION}mu
+                python${_CURRENT_VERSION}m
+                python${_CURRENT_VERSION}u
+                python${_CURRENT_VERSION}
+              NAMES_PER_DIR
+              PATHS
+                [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH}\\InstallPath]/libs
+                [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH2}\\InstallPath]/libs
+                [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH}\\InstallPath]/libs
+                [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH2}\\InstallPath]/libs
+            )
+          endforeach()
+          find_package( PythonLibs 3 )
+        endif()
+        if( NOT PYTHONLIBS_FOUND )
+          set( python_not_found_warning ${python3_not_found_warning} )
+        endif()
+      endif()
+    else()
+      find_package( PythonLibs 2 )
+      if( NOT PYTHONLIBS_FOUND )
+        set( python_not_found_warning ${python2_not_found_warning} )
+      endif()
+    endif()
+    
+    if( PYTHONLIBS_FOUND )
+      set( python_libs_local ${PYTHON_LIBRARIES} )
+      set( python_include_dirs_local ${PYTHON_INCLUDE_DIRS} )
+      set( python_ver_string ${PYTHONLIBS_VERSION_STRING} )
+      if( PYTHON_DEBUG_LIBRARY )
+        set( have_python_debug_library_local ON )
+      endif()
+      if( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" AND CMAKE_VERSION VERSION_LESS "3.12" AND NOT USE_Python3 )
+        # pyconfig.h is put in different directory from Ubuntu 13.04 (raring)
+        # and CMake FindPythonLibs module is not updated for this yet.
+        # Adding it explicitly here in the mean time.
+        set( python_include_dirs_local ${python_include_dirs_local} /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/python2.7 )
+      endif()
+    endif()
+  endif()
+
+  # Set the result variables or warn.
+  if( python_libs_local AND python_include_dirs_local )
+    set( ${python_include_dirs} ${python_include_dirs_local} PARENT_SCOPE )
+    set( ${python_libs} ${python_libs_local} PARENT_SCOPE )
+    set( ${have_python_debug_library} ${have_python_debug_library_local} PARENT_SCOPE )
+    set( PYTHON_VER ${python_ver_string} CACHE STRING "Located python version" FORCE )
+    set( ${have_python_os_framework} OFF PARENT_SCOPE )
+    if( APPLE )
+      foreach( dir ${python_include_dirs_local} )
+        if( dir MATCHES "/System/Library/Frameworks/Python[.]framework" )
+          set( ${have_python_os_framework} ON PARENT_SCOPE )
+          break()
+        endif()
+      endforeach()
+    endif()
+    if( PYTHON_VER VERSION_LESS "3.0.0" AND (CMAKE_COMPILER_IS_GNUCXX OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang") )
+      # Python 2.7 does not follow strict aliasing rules (pointers to objects
+      # of different types will never refer to the same memory location). So we
+      # must disable optimizations based on this assumption. Failing to do so
+      # gives warnings (with -Wall) and could give undefined results.
+      # This issue is fixed in Python 3. As far as I can see VS does not make
+      # such optimizations, so no action is required there.
+      # Also see: http://legacy.python.org/dev/peps/pep-3123/
+      set( python_definitions_local ${python_definitions_local} -fno-strict-aliasing )
+    endif()
+    set( ${python_definitions} ${python_definitions_local} PARENT_SCOPE )
+  else()
+    message( WARNING ${python_not_found_warning} )
+    set( PYTHON_VER "UNDEFINED" CACHE STRING "Located python version" FORCE )
+  endif()
 endfunction()
