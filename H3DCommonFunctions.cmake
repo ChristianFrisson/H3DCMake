@@ -722,6 +722,85 @@ function( setupDisabledExternalsOption )
   endforeach()
 endfunction()
 
+# Helper macro to function findPython2Or3.
+# Legacy code. Remove if we ever set required cmake version to be 3.12 or higher.
+# The macro is using FindPythonLibs which is deprecated as of CMake version 3.12.
+macro( findPython2Or3CMakeBelow3_12 )
+  # Check if the wrong version of python is located.
+  # If so, clear the cache variables FindPythonLibs-module uses otherwise it will complain and not find the right one
+  if( NOT (PYTHON_VER STREQUAL "UNDEFINED") )
+    if( USE_Python3 AND PYTHON_VER VERSION_LESS "3.0.0" )
+      unset(PYTHON_LIBRARY CACHE)
+      unset(PYTHON_INCLUDE_DIR CACHE)
+      unset(PYTHON_DEBUG_LIBRARY CACHE)
+    elseif( (NOT USE_Python3 ) AND ( PYTHON_VER VERSION_GREATER "3.0.0" OR PYTHON_VER VERSION_EQUAL "3.0.0") )
+      unset(PYTHON_LIBRARY CACHE)
+      unset(PYTHON_INCLUDE_DIR CACHE)
+      unset(PYTHON_DEBUG_LIBRARY CACHE)
+    endif()
+  endif()
+
+  if( USE_Python3 )
+    find_package( PythonLibs 3 )
+    if( NOT PYTHONLIBS_FOUND )
+      if( WIN32 )
+        # For all windows distributions: define which architectures can be used
+        if (CMAKE_SIZEOF_VOID_P)
+          # In this case, search only for 64bit or 32bit
+          math (EXPR _${_PYTHON_PREFIX}_ARCH "${CMAKE_SIZEOF_VOID_P} * 8")
+          set (_${_PYTHON_PREFIX}_ARCH2 ${_${_PYTHON_PREFIX}_ARCH})
+        else()
+          # architecture unknown, search for both 64bit and 32bit
+          set (_${_PYTHON_PREFIX}_ARCH 64)
+          set (_${_PYTHON_PREFIX}_ARCH2 32)
+        endif()
+
+        foreach(_CURRENT_VERSION ${_Python_VERSIONS})
+          string(REPLACE "." "" _CURRENT_VERSION_NO_DOTS ${_CURRENT_VERSION})
+          find_library(PYTHON_LIBRARY
+            NAMES
+              python${_CURRENT_VERSION_NO_DOTS}
+              python${_CURRENT_VERSION}mu
+              python${_CURRENT_VERSION}m
+              python${_CURRENT_VERSION}u
+              python${_CURRENT_VERSION}
+            NAMES_PER_DIR
+            PATHS
+              [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH}\\InstallPath]/libs
+              [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH2}\\InstallPath]/libs
+              [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH}\\InstallPath]/libs
+              [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH2}\\InstallPath]/libs
+          )
+        endforeach()
+        find_package( PythonLibs 3 )
+      endif()
+      if( NOT PYTHONLIBS_FOUND )
+        set( python_not_found_warning ${python3_not_found_warning} )
+      endif()
+    endif()
+  else()
+    find_package( PythonLibs 2 )
+    if( NOT PYTHONLIBS_FOUND )
+      set( python_not_found_warning ${python2_not_found_warning} )
+    endif()
+  endif()
+  
+  if( PYTHONLIBS_FOUND )
+    set( python_libs_local ${PYTHON_LIBRARIES} )
+    set( python_include_dirs_local ${PYTHON_INCLUDE_DIRS} )
+    set( python_ver_string ${PYTHONLIBS_VERSION_STRING} )
+    if( PYTHON_DEBUG_LIBRARY )
+      set( have_python_debug_library_local ON )
+    endif()
+    if( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" AND CMAKE_VERSION VERSION_LESS "3.12" AND NOT USE_Python3 )
+      # pyconfig.h is put in different directory from Ubuntu 13.04 (raring)
+      # and CMake FindPythonLibs module is not updated for this yet.
+      # Adding it explicitly here in the mean time.
+      set( python_include_dirs_local ${python_include_dirs_local} /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/python2.7 )
+    endif()
+  endif()
+endmacro()
+
 # Convenience function to be able to handle all the various ways one have to find python when wanting to switch between
 # them since none of the built in CMake modules can handle switching.
 # Will find python 2 or 3 depending on the USE_Python3 variable.
@@ -753,82 +832,7 @@ function( findPython2Or3 python_include_dirs python_libs have_python_debug_libra
   endif()
 
   if( CMAKE_VERSION VERSION_LESS "3.12" )
-    # Legacy code. Remove if we ever set required cmake version to be 3.12 or higher.
-    # Use FindPythonLibs which is deprecated as of CMake version 3.12.
-
-    # Check if the wrong version of python is located.
-    # If so, clear the cache variables FindPythonLibs-module uses otherwise it will complain and not find the right one
-    if( NOT (PYTHON_VER STREQUAL "UNDEFINED") )
-      if( USE_Python3 AND PYTHON_VER VERSION_LESS "3.0.0" )
-        unset(PYTHON_LIBRARY CACHE)
-        unset(PYTHON_INCLUDE_DIR CACHE)
-        unset(PYTHON_DEBUG_LIBRARY CACHE)
-      elseif( (NOT USE_Python3 ) AND ( PYTHON_VER VERSION_GREATER "3.0.0" OR PYTHON_VER VERSION_EQUAL "3.0.0") )
-        unset(PYTHON_LIBRARY CACHE)
-        unset(PYTHON_INCLUDE_DIR CACHE)
-        unset(PYTHON_DEBUG_LIBRARY CACHE)
-      endif()
-    endif()
-
-    if( USE_Python3 )
-      find_package( PythonLibs 3 )
-      if( NOT PYTHONLIBS_FOUND )
-        if( WIN32 )
-          # For all windows distributions: define which architectures can be used
-          if (CMAKE_SIZEOF_VOID_P)
-            # In this case, search only for 64bit or 32bit
-            math (EXPR _${_PYTHON_PREFIX}_ARCH "${CMAKE_SIZEOF_VOID_P} * 8")
-            set (_${_PYTHON_PREFIX}_ARCH2 ${_${_PYTHON_PREFIX}_ARCH})
-          else()
-            # architecture unknown, search for both 64bit and 32bit
-            set (_${_PYTHON_PREFIX}_ARCH 64)
-            set (_${_PYTHON_PREFIX}_ARCH2 32)
-          endif()
-
-          foreach(_CURRENT_VERSION ${_Python_VERSIONS})
-            string(REPLACE "." "" _CURRENT_VERSION_NO_DOTS ${_CURRENT_VERSION})
-            find_library(PYTHON_LIBRARY
-              NAMES
-                python${_CURRENT_VERSION_NO_DOTS}
-                python${_CURRENT_VERSION}mu
-                python${_CURRENT_VERSION}m
-                python${_CURRENT_VERSION}u
-                python${_CURRENT_VERSION}
-              NAMES_PER_DIR
-              PATHS
-                [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH}\\InstallPath]/libs
-                [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH2}\\InstallPath]/libs
-                [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH}\\InstallPath]/libs
-                [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}-${_${_PYTHON_PREFIX}_ARCH2}\\InstallPath]/libs
-            )
-          endforeach()
-          find_package( PythonLibs 3 )
-        endif()
-        if( NOT PYTHONLIBS_FOUND )
-          set( python_not_found_warning ${python3_not_found_warning} )
-        endif()
-      endif()
-    else()
-      find_package( PythonLibs 2 )
-      if( NOT PYTHONLIBS_FOUND )
-        set( python_not_found_warning ${python2_not_found_warning} )
-      endif()
-    endif()
-    
-    if( PYTHONLIBS_FOUND )
-      set( python_libs_local ${PYTHON_LIBRARIES} )
-      set( python_include_dirs_local ${PYTHON_INCLUDE_DIRS} )
-      set( python_ver_string ${PYTHONLIBS_VERSION_STRING} )
-      if( PYTHON_DEBUG_LIBRARY )
-        set( have_python_debug_library_local ON )
-      endif()
-      if( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" AND CMAKE_VERSION VERSION_LESS "3.12" AND NOT USE_Python3 )
-        # pyconfig.h is put in different directory from Ubuntu 13.04 (raring)
-        # and CMake FindPythonLibs module is not updated for this yet.
-        # Adding it explicitly here in the mean time.
-        set( python_include_dirs_local ${python_include_dirs_local} /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/python2.7 )
-      endif()
-    endif()
+    findPython2Or3CMakeBelow3_12()
   else()
     # Use FindPython2 and FindPython3 and simply set an alias target
     if( USE_Python3 )
