@@ -242,11 +242,6 @@ if( H3DAPI_INCLUDE_DIRS AND H3D_EXTERNAL_ROOT )
                                  "lib" "audiofile"
                                  "bin" "audiofile"
 
-                                 "#define HAVE_CG"
-                                 "include" "Cg"
-                                 "lib" "cgGL" "cg"
-                                 "bin" "cg" "cgGL"
-
                                  "#define HAVE_LIBOVR"
                                  "include" "libovr"
                                  "lib" "LibOVR"

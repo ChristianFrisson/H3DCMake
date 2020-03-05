@@ -71,7 +71,7 @@ if( H3DAPI_INCLUDE_DIR )
                           REQUIRED HAPI OpenGL GLEW
                           OPTIONAL         XercesC OpenAL Vorbis Audiofile NvidiaCG LibOVR FTGL Freetype 3DXWARE PythonLibs CURL
                                            SpiderMonkey DirectShow SixenseSDK FFmpeg VirtualHand GLUT OpenEXR
-                          OPTIONAL_DEFINES HAVE_XERCES HAVE_OPENAL HAVE_LIBVORBIS HAVE_LIBAUDIOFILE HAVE_CG  HAVE_LIBOVR HAVE_FTGL HAVE_FREETYPE HAVE_3DXWARE HAVE_PYTHON HAVE_LIBCURL
+                          OPTIONAL_DEFINES HAVE_XERCES HAVE_OPENAL HAVE_LIBVORBIS HAVE_LIBAUDIOFILE HAVE_LIBOVR HAVE_FTGL HAVE_FREETYPE HAVE_3DXWARE HAVE_PYTHON HAVE_LIBCURL
                                            HAVE_SPIDERMONKEY HAVE_DSHOW HAVE_SIXENSE HAVE_FFMPEG HAVE_VIRTUAL_HAND_SDK HAVE_GLUT HAVE_OPENEXR
                           OUTPUT found_vars component_libraries component_include_dirs
                           H3D_MODULES HAPI )
