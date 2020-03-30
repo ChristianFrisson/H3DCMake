@@ -893,3 +893,24 @@ function( findPython2Or3 python_include_dirs python_libs have_python_debug_libra
     set( PYTHON_VER "UNDEFINED" CACHE STRING "Located python version" FORCE )
   endif()
 endfunction()
+
+# Embeds the specified shader source files as C++ strings in the specified shader library header file
+# shader_src_files - A list of shader source files relative to CMAKE_CURRENT_SOURCE_DIR
+# header_template  - The full path to A template file to use as the shader library header, the template string
+#                    shader_str_declarations will be replaced by the string declarations.
+# header_output    - The full path to the header file which will be generated.
+function( embedShaderLib shader_src_files header_template header_output )
+  set( shader_str_declarations "" )
+  foreach( shader_file ${shader_src_files} )
+    # this first configure_file() just creates a dependency on the shader source so that changing it will trigger
+    # re-embedding it
+    get_filename_component( cached_filename ${shader_file} NAME )
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../${shader_file} ${CMAKE_CURRENT_BINARY_DIR}/${shader_file} )
+    get_filename_component( string_name ${shader_file} NAME_WE )
+    set( string_name "${string_name}_str" )
+    file( READ ${CMAKE_CURRENT_BINARY_DIR}/${shader_file} ${string_name} )
+    set( shader_str_declarations
+      "${shader_str_declarations}\nconst std::string ${string_name} = R\"GLSL(\n${${string_name}})GLSL\";\n" )
+  endforeach()
+  configure_file( ${header_template} ${header_output} )
+endfunction()
